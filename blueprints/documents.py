@@ -17,14 +17,14 @@ def documents_view(docID):
     pass
 
 @documents_blueprint.route('/publish', methods=['PUT'])
-def documents_publish(docID):
+def documents_publish():
     """
     Set a document state to be pusblished.
     """
     pass
 
 @documents_blueprint.route('/unpublish', methods=['PUT'])
-def documents_publish(docID):
+def documents_unpublish():
     """
     Set a document state to be unpublished.
     """
