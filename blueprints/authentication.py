@@ -1,6 +1,6 @@
 from flask import Blueprint, Response, request
 
-auth_blueprint = Blueprint('authentication', __name__, url_prefix='/admin/api/auth/')
+auth_blueprint = Blueprint('authentication', __name__, url_prefix='/admin/api/auth')
 
 
 

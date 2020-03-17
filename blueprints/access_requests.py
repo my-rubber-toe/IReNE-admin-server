@@ -1,6 +1,6 @@
 from flask import Blueprint, Response, request
 
-access_req_blueprint = Blueprint('access-requests', __name__, url_prefix='/admin/api/access-request/')
+access_req_blueprint = Blueprint('access-requests', __name__, url_prefix='/admin/api/access-request')
 
 @access_req_blueprint.route('/', methods=['GET'])
 def access_requests():
