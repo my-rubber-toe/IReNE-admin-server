@@ -10,7 +10,7 @@ def tags():
     pass
 
 @tags_blueprint.route('/remove', methods=['DELETE'])
-def tags():
+def tags_remove():
     """
     Remove a tag from all documents and the system tags colleciton.
     """
