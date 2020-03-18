@@ -7,18 +7,18 @@ def collaborators():
     """
     Return all the collaborators with their respective first name, last name, collabID and email.
     """
-    pass
+    return "Collaborators"
 
 @blueprint.route('/ban', methods=['PUT'])
 def collaborators_ban():
     """
     Ban a collaborator from the system
     """
-    pass
+    return "Ban Collaborator"
 
 @blueprint.route('/unban', methods=['PUT'])
 def collaborators_unban():
     """
     UnBan a collaborator from the system
     """
-    pass
+    return "Unban Collaborator"

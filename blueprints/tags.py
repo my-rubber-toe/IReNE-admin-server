@@ -7,11 +7,11 @@ def tags():
     """
     Retrieve a list of all the system tags.
     """
-    pass
+    return "Tags"
 
 @blueprint.route('/remove', methods=['DELETE'])
 def tags_remove():
     """
     Remove a tag from all documents and the system tags colleciton.
     """
-    pass
+    return "Removed tag"

@@ -30,11 +30,11 @@ def access_requests_approve():
     """
     Approve the access request of a user. 
     """
-    pass
+    return "Access Request Approve"
 
 @blueprint.route('/deny', methods=['DELETE'])
 def access_requests_deny():
     """
     Deny the access request of a user. 
     """
-    pass
+    return "Access Request Deny"

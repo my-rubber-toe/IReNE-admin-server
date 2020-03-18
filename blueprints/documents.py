@@ -7,25 +7,25 @@ def documents():
     """
     Retrieve a list of all the documents in the database.
     """
-    pass
+    return "Documents"
 
 @blueprint.route('/view/<docID>', methods=['GET'])
 def documents_view(docID):
     """
     Retrieve a list of metadata of all the documents in the database.
     """
-    pass
+    return "Document view ID: " + str(docID)
 
 @blueprint.route('/publish', methods=['PUT'])
 def documents_publish():
     """
     Set a document state to be pusblished.
     """
-    pass
+    return "Successful publish"
 
 @blueprint.route('/unpublish', methods=['PUT'])
 def documents_unpublish():
     """
     Set a document state to be unpublished.
     """
-    pass
+    return "Successful unpublish"
