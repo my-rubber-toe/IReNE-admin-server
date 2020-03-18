@@ -1,10 +1,10 @@
 from flask import Blueprint, Response, request
 
-auth_blueprint = Blueprint('authentication', __name__, url_prefix='/admin/api/auth')
+blueprint = Blueprint('authentication', __name__, url_prefix='/admin/api/auth')
 
 
 
-@auth_blueprint.route('/login', methods=['GET'])
+@blueprint.route('/login', methods=['GET'])
 def login():
     """
     Login the user and establish a new firebase session using a valid firebase token. 
@@ -28,7 +28,7 @@ def login():
     pass
 
 
-@auth_blueprint.route('/logout', methods=['GET'])
+@blueprint.route('/logout', methods=['GET'])
 def logout():
     """
     Logout the user and by setting the user session invalid and revoking all tokens from the user.
@@ -42,7 +42,7 @@ def logout():
     #return session_handler.session_logout()
 
 
-@auth_blueprint.route('/verify', methods=['GET'])
+@blueprint.route('/verify', methods=['GET'])
 def verify():
     """
     Verify user sessions and return session informatio
@@ -58,13 +58,13 @@ def verify():
         'message': 'TO-DO: Verify email!',
     })"""
 
-@auth_blueprint.route('/register', methods=['POST'])
+@blueprint.route('/register', methods=['POST'])
 def register_user():
     """ Registers new user to the database"""
     pass
     #return user_handler.register_new_user(request.json)
 
-@auth_blueprint.before_request
+@blueprint.before_request
 def authentication_before_req():
     """
     `Before request` function for the `admin/api/auth/` routes to validate the sessions and token
