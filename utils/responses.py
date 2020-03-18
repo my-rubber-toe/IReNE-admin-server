@@ -9,19 +9,20 @@ Improves the ease of debugging
 class ApiException(object):
     """API exception response wrapper class"""
 
-    def __init__(self,  message, _type='Error', status=400):
-        self.message = message
+    def __init__(self,  message, error_type='Error', status=400):
         self.status = status
-        self._type = _type
+        self.error_type = error_type
+        self.message = message
 
     def to_result(self):
         return Response(
             json.dumps(
                 {
                     'error': {
-                        'type': self._type,
+                        'status': self.status,
+                        'type': self.error_type,
                         'message': self.message,
-                        'status': self.status
+                        
                     }
                 }
             ),
@@ -34,12 +35,12 @@ class ApiException(object):
 class ApiResult(object):
     """API result response wrapper class"""
 
-    def __init__(self, value, status=200):
-        self.value = value
+    def __init__(self, message, status=200):
+        self.message = message
         self.status = status
 
     def to_response(self):
-        return Response(json.dumps(self.value),
+        return Response(json.dumps(self.message),
                         headers=add_headers(),
                         status=self.status,
                         mimetype='application/json')
