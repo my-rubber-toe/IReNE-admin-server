@@ -3,6 +3,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+/.vscode
+
 # C extensions
 *.so
 
@@ -127,3 +129,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+package-lock.json
+package.json
+/node_modules
