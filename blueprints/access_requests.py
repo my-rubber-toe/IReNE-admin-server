@@ -1,22 +1,38 @@
 from flask import Blueprint, Response, request
 
-access_req_blueprint = Blueprint('access-requests', __name__, url_prefix='/admin/api/access-request')
+blueprint = Blueprint('access-requests', __name__, url_prefix='/admin/api/access-request')
 
-@access_req_blueprint.route('/', methods=['GET'])
+@blueprint.route('/', methods=['GET'])
 def access_requests():
     """
     Retrieve the list of access requests from the database.
     """
-    pass
+    # TODO: Check if user has a valid session token.
+    return "Access Request"
+"""
+    try:
+        GetDocumentsValidator().load(request.json)
+    except ValidationError as err:
+        return ApiException(
+            error_type='Validation Error',
+            message=err.messages,
+            status=400
+        )
 
-@access_req_blueprint.route('/approve', methods=['PUT'])
+    # TODO: Use DAOs to retrieve the necessary information.
+
+    return ApiResult(
+        message='Valid Data'
+    )"""
+
+@blueprint.route('/approve', methods=['PUT'])
 def access_requests_approve():
     """
     Approve the access request of a user. 
     """
     pass
 
-@access_req_blueprint.route('/deny', methods=['DELETE'])
+@blueprint.route('/deny', methods=['DELETE'])
 def access_requests_deny():
     """
     Deny the access request of a user. 
