@@ -36,14 +36,23 @@ def collaborators_ban():
             status=401
         )
     
+    #valid_collab_id = ObjectID().is_valid(collab_id)
     valid_collab_id = False
-    # TODO: Check if collab id exist
     if not valid_collab_id:
+        return ApiException(
+            error_type='Bad Request',
+            message='The collaborators ID given was not validated.',
+            status=400
+        )
+    collab_id_exist = False
+    # TODO: Check if collab id exist
+    if not collab_id_exist:
         return ApiException(
             error_type='Not Found',
             message='The collaborators ID given was not found.',
             status=404
         )
+
 
     # TODO: Use DAOs to ban collaborator.
     # TODO: Unpublish all collaborators documents.
@@ -66,15 +75,23 @@ def collaborators_unban():
             status=401
         )
     
+    
+    #valid_collab_id = ObjectID().is_valid(collab_id)
     valid_collab_id = False
-    # TODO: Check if collab id exist
     if not valid_collab_id:
+        return ApiException(
+            error_type='Bad Request',
+            message='The collaborators ID given was not validated.',
+            status=400
+        )
+    collab_id_exist = False
+    # TODO: Check if collab id exist
+    if not collab_id_exist:
         return ApiException(
             error_type='Not Found',
             message='The collaborators ID given was not found.',
             status=404
         )
-
     # TODO: Use DAOs to unban collaborator.
     # TODO: Publish all collaborators documents.
     return ApiResult(

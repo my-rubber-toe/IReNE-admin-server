@@ -1,5 +1,6 @@
 from flask import Blueprint, Response, request
 from utils.responses import ApiResult, ApiException
+from utils.validators import ObjectID
 
 blueprint = Blueprint('access-requests', __name__, url_prefix='/admin/api/access-request')
 
@@ -36,9 +37,17 @@ def access_requests_approve():
             status=401
         )
     
+    #valid_collab_id = ObjectID().is_valid(collab_id)
     valid_collab_id = False
-    # TODO: Check if collab id exist
     if not valid_collab_id:
+        return ApiException(
+            error_type='Bad Request',
+            message='The collaborators ID given was not validated.',
+            status=400
+        )
+    collab_id_exist = False
+    # TODO: Check if collab id exist
+    if not collab_id_exist:
         return ApiException(
             error_type='Not Found',
             message='The collaborators ID given was not found.',
@@ -65,9 +74,18 @@ def access_requests_deny():
             status=401
         )
     
+    #valid_collab_id = ObjectID().is_valid(collab_id)
     valid_collab_id = False
-    # TODO: Check if collab id exist
     if not valid_collab_id:
+        return ApiException(
+            error_type='Bad Request',
+            message='The collaborators ID given was not validated.',
+            status=400
+        )
+    # TODO: Check if collab id exist
+    collab_id_exist = False
+    # TODO: Check if collab id exist
+    if not collab_id_exist:
         return ApiException(
             error_type='Not Found',
             message='The collaborators ID given was not found.',

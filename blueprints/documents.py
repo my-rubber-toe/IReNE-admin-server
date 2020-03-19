@@ -35,12 +35,21 @@ def documents_view(docID):
             status=401
         )
     
+       
+    #valid_doc_id = ObjectID().is_valid(docID)
     valid_doc_id = False
-    # TODO: Check if doc id exist
     if not valid_doc_id:
         return ApiException(
+            error_type='Bad Request',
+            message='The documents ID given was not validated.',
+            status=400
+        )
+    doc_id_exist = False
+    # TODO: Check if doc id exist
+    if not doc_id_exist:
+        return ApiException(
             error_type='Not Found',
-            message='The document ID given was not found.',
+            message='The documents ID given was not found.',
             status=404
         )
 
@@ -64,12 +73,20 @@ def documents_publish():
             status=401
         )
     
+    #valid_doc_id = ObjectID().is_valid(doc_id)
     valid_doc_id = False
-    # TODO: Check if doc id exist
     if not valid_doc_id:
         return ApiException(
+            error_type='Bad Request',
+            message='The documents ID given was not validated.',
+            status=400
+        )
+    doc_id_exist = False
+    # TODO: Check if doc id exist
+    if not doc_id_exist:
+        return ApiException(
             error_type='Not Found',
-            message='The document ID given was not found.',
+            message='The documents ID given was not found.',
             status=404
         )
 
@@ -93,12 +110,20 @@ def documents_unpublish():
             status=401
         )
     
+    #valid_doc_id = ObjectID().is_valid(doc_id)
     valid_doc_id = False
-    # TODO: Check if doc id exist
     if not valid_doc_id:
         return ApiException(
+            error_type='Bad Request',
+            message='The documents ID given was not validated.',
+            status=400
+        )
+    doc_id_exist = False
+    # TODO: Check if doc id exist
+    if not doc_id_exist:
+        return ApiException(
             error_type='Not Found',
-            message='The document ID given was not found.',
+            message='The documents ID given was not found.',
             status=404
         )
 
