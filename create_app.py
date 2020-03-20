@@ -1,6 +1,7 @@
 from werkzeug.utils import find_modules, import_string
 from flask import Flask, request, current_app
 from utils.responses import ApiException, ApiResult
+from exceptions.handler import *
 #from utils import validator
 from flask_cors import CORS
 import os
@@ -44,7 +45,7 @@ def create_app(config=None):
     register_blueprints(app)
 
     # Register the error handlers
-    #register_error_handlers(app)
+    register_error_handlers(app)
 
     # register '/api endpoint'
     register_base_url(app)
@@ -109,4 +110,75 @@ def register_cors(app: Flask):
         methods=methods_list,
         allowed_headers=allowed_headers_list,
         supports_credentials=True
+    )
+
+def register_error_handlers(app):
+    """Register error daos to flask application instance.
+
+    Arguments:
+        app {flask application} -- application instance
+    """
+    if False:#app.config['DEBUG']:
+        # If debug true, then return the whole stack
+        @app.errorhandler(AdminServerError)
+        def handle_error(error):
+            return ApiException(
+                error_type=error.__class__.__name__,
+                message=error.error_stack,
+                status=error.status
+            )
+    else:
+        @app.errorhandler(AdminServerApiError)
+        def handle_error(error):
+            return ApiException(
+                error_type=error.__class__.__name__,
+                message=error.msg,
+                status=error.status
+            )
+
+        @app.errorhandler(AdminServerAuthError)
+        def handle_auth_error(error):
+            return ApiException(
+                error_type=error.__class__.__name__,
+                message=error.msg,
+                status=error.status
+            )
+
+        @app.errorhandler(AdminServerRequestError)
+        def handle_request_error(error):
+            return ApiException(
+                error_type=error.__class__.__name__,
+                message=error.msg,
+                status=error.status
+            )
+
+        @app.errorhandler(Exception)
+        def handle_unexpected_error(error):
+            AdminServerError(
+                err=error,
+                msg='An unexpected error has occurred.',
+                status=500
+            ).log()
+            return ApiException(
+                error_type='UnexpectedException',
+                message='An unexpected error has occurred.',
+                status=500
+            )
+
+    app.register_error_handler(
+        400,
+        lambda err: ApiException(message=str(
+            err), status=400, error_type='Bad request')
+    )
+
+    app.register_error_handler(
+        404,
+        lambda err: ApiException(message=str(
+            err), status=404, error_type='Not found')
+    )
+
+    app.register_error_handler(
+        405,
+        lambda err: ApiException(message=str(
+            err), status=405, error_type='Request method')
     )

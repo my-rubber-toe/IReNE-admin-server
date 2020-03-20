@@ -1,5 +1,6 @@
 from flask import Blueprint, Response, request
 from utils.responses import ApiResult, ApiException
+from exceptions.handler import AdminServerApiError, AdminServerAuthError
 
 blueprint = Blueprint('tags', __name__, url_prefix='/admin/api/tags')
 
@@ -11,11 +12,10 @@ def tags():
     valid_session_token = False
     # TODO: Check if user has a valid session token.
     if not valid_session_token:
-        return ApiException(
-            error_type='Unauthorized',
-            message='Unauthorized access to admin dashboard.',
-            status=401
-        )
+        raise AdminServerAuthError(
+            msg= 'Unauthorized access to admin dashboard.', 
+            status = 401
+            )
     # TODO: Use DAOs to retrieve all the tags.
     return ApiResult(
         message='All available tags'
@@ -30,18 +30,16 @@ def tags_remove():
     valid_session_token = False
     # TODO: Check if user has a valid session token.
     if not valid_session_token:
-        return ApiException(
-            error_type='Unauthorized',
-            message='Unauthorized access to admin dashboard.',
-            status=401
-        )
+        raise AdminServerAuthError(
+            msg= 'Unauthorized access to admin dashboard.', 
+            status = 401
+            )
     
     valid_tag = False
     # TODO: Check if tag exist
     if not valid_tag:
-        return ApiException(
-            error_type='Not Found',
-            message='The tag given was not found.',
+        raise AdminServerApiError(
+            msg='The tag given was not found.',
             status=404
         )
 

@@ -1,5 +1,6 @@
 from flask import Blueprint, Response, request
 from utils.responses import ApiResult, ApiException
+from exceptions.handler import AdminServerApiError, AdminServerAuthError
 
 blueprint = Blueprint('documents', __name__, url_prefix='/admin/api/documents')
 
@@ -11,11 +12,10 @@ def documents():
     valid_session_token = False
     # TODO: Check if user has a valid session token.
     if not valid_session_token:
-        return ApiException(
-            error_type='Unauthorized',
-            message='Unauthorized access to admin dashboard.',
-            status=401
-        )
+        raise AdminServerAuthError(
+            msg= 'Unauthorized access to admin dashboard.', 
+            status = 401
+            )
     # TODO: Use DAOs to retrieve all the documents.
     return ApiResult(
         message='All available documents'
@@ -29,27 +29,22 @@ def documents_view(docID):
     valid_session_token = False
     # TODO: Check if user has a valid session token.
     if not valid_session_token:
-        return ApiException(
-            error_type='Unauthorized',
-            message='Unauthorized access to admin dashboard.',
-            status=401
-        )
-    
-       
+        raise AdminServerAuthError(
+            msg= 'Unauthorized access to admin dashboard.', 
+            status = 401
+            )
     #valid_doc_id = ObjectID().is_valid(docID)
     valid_doc_id = False
     if not valid_doc_id:
-        return ApiException(
-            error_type='Bad Request',
-            message='The documents ID given was not validated.',
+        raise AdminServerApiError(
+            msg='The documents ID given was not validated.',
             status=400
         )
     doc_id_exist = False
     # TODO: Check if doc id exist
     if not doc_id_exist:
-        return ApiException(
-            error_type='Not Found',
-            message='The documents ID given was not found.',
+        raise AdminServerApiError(
+            msg='The documents ID given was not found.',
             status=404
         )
 
@@ -67,26 +62,23 @@ def documents_publish():
     valid_session_token = False
     # TODO: Check if user has a valid session token.
     if not valid_session_token:
-        return ApiException(
-            error_type='Unauthorized',
-            message='Unauthorized access to admin dashboard.',
-            status=401
-        )
+        raise AdminServerAuthError(
+            msg= 'Unauthorized access to admin dashboard.', 
+            status = 401
+            )
     
     #valid_doc_id = ObjectID().is_valid(doc_id)
     valid_doc_id = False
     if not valid_doc_id:
-        return ApiException(
-            error_type='Bad Request',
-            message='The documents ID given was not validated.',
+        raise AdminServerApiError(
+            msg='The documents ID given was not validated.',
             status=400
         )
     doc_id_exist = False
     # TODO: Check if doc id exist
     if not doc_id_exist:
-        return ApiException(
-            error_type='Not Found',
-            message='The documents ID given was not found.',
+        raise AdminServerApiError(
+            msg='The documents ID given was not found.',
             status=404
         )
 
@@ -104,26 +96,23 @@ def documents_unpublish():
     valid_session_token = False
     # TODO: Check if user has a valid session token.
     if not valid_session_token:
-        return ApiException(
-            error_type='Unauthorized',
-            message='Unauthorized access to admin dashboard.',
-            status=401
-        )
+        raise AdminServerAuthError(
+            msg= 'Unauthorized access to admin dashboard.', 
+            status = 401
+            )
     
     #valid_doc_id = ObjectID().is_valid(doc_id)
     valid_doc_id = False
     if not valid_doc_id:
-        return ApiException(
-            error_type='Bad Request',
-            message='The documents ID given was not validated.',
+        raise AdminServerApiError(
+            msg='The documents ID given was not validated.',
             status=400
         )
     doc_id_exist = False
     # TODO: Check if doc id exist
     if not doc_id_exist:
-        return ApiException(
-            error_type='Not Found',
-            message='The documents ID given was not found.',
+        raise AdminServerApiError(
+            msg='The documents ID given was not found.',
             status=404
         )
 
