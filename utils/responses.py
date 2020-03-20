@@ -1,5 +1,4 @@
-from flask import Response, json
-from werkzeug.datastructures import Headers
+from flask import make_response, jsonify
 """
 Classes to standardize the response methods.
 Improves the ease of debugging
@@ -8,47 +7,19 @@ Improves the ease of debugging
 
 class ApiException(object):
     """API exception response wrapper class"""
-
-    def __init__(self,  message, error_type='Error', status=400):
+    def __init__(self, error_type='ApiError', message='Error', status=500):
+        self.res = jsonify(error_type=error_type, message=message, status=status)
         self.status = status
-        self.error_type = error_type
-        self.message = message
 
     def to_result(self):
-        return Response(
-            json.dumps(
-                {
-                    'error': {
-                        'status': self.status,
-                        'type': self.error_type,
-                        'message': self.message,
-                        
-                    }
-                }
-            ),
-            headers=add_headers(),
-            status=self.status,
-            mimetype='application/json'
-        )
-
+        return make_response(self.res, self.status)
 
 class ApiResult(object):
     """API result response wrapper class"""
 
-    def __init__(self, message, status=200):
-        self.message = message
+    def __init__(self, status=200, **kwargs):
+        self.res = jsonify(**kwargs)
         self.status = status
 
     def to_response(self):
-        return Response(json.dumps(self.message),
-                        headers=add_headers(),
-                        status=self.status,
-                        mimetype='application/json')
-
-
-
-def add_headers():
-    h = Headers()
-    # add headers here
-    return h
-
+        return make_response(self.res, self.status)

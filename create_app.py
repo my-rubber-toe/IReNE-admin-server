@@ -4,6 +4,8 @@ from utils.responses import ApiException, ApiResult
 from exceptions.handler import *
 #from utils import validator
 from flask_cors import CORS
+from flask_jwt_extended import JWTManager
+from flask_jwt_extended.exceptions import *
 import os
 
 class ApiFlask(Flask):
@@ -29,29 +31,33 @@ def create_app(config=None):
         [flask_application] -- instance of a flask app
     """
     app = ApiFlask(__name__)
+    with app.app_context():
+        app.config.from_object(config or {})
 
-    app.config.from_object(config or {})
-    
-    app.secret_key = app.config['SECRET_KEY']
+        # Setup Flask Secret Key
+        app.secret_key = os.urandom(24)
 
+        # Setup JWTManager to the app context on the attribute "jwt"
+        app.config['JWT_BLACKLIST_ENABLED'] = True
+        app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
+        app.__setattr__("jwt", JWTManager(app))
 
-    # Setup CORS for all endpoints
-    register_cors(app)
+        # Setup CORS for all endpoints
+        register_cors(app)
 
-    # Setup database plugin
-    #sql_db.init_app(app)
+        # Setup database plugin
+        #sql_db.init_app(app)
 
-    # Setup Flask blueprints to establish app endpoints
-    register_blueprints(app)
+        # Setup Flask blueprints to establish app endpoints
+        register_blueprints(app)
 
-    # Register the error handlers
-    register_error_handlers(app)
+        # Register the error handlers
+        register_error_handlers(app)
 
-    # register '/api endpoint'
-    register_base_url(app)
+        # register '/api endpoint'
+        register_base_url(app)
 
-
-    return app
+        return app
 
 def register_blueprints(app):
     """Register all blueprints under the {.blueprint} module
@@ -74,8 +80,7 @@ def register_base_url(app):
         return ApiResult(
             {
                 'message': 'You have reach the IReNE Administrative API. Please refer to the documentation.'
-            },
-            status=200
+            }
         )
 
 
@@ -118,7 +123,7 @@ def register_error_handlers(app):
     Arguments:
         app {flask application} -- application instance
     """
-    if False:#app.config['DEBUG']:
+    if True:#app.config['DEBUG']:
         # If debug true, then return the whole stack
         @app.errorhandler(AdminServerError)
         def handle_error(error):
