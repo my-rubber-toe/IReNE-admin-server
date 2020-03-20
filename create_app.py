@@ -1,11 +1,10 @@
 from werkzeug.utils import find_modules, import_string
-from flask import Flask, request, current_app
+from flask import Flask, request, current_app, redirect
 from utils.responses import ApiException, ApiResult
-from exceptions.handler import *
+from exceptions.handler import AdminServerApiError, AdminServerAuthError, AdminServerError, AdminServerRequestError
 #from utils import validator
 from flask_cors import CORS
-from flask_jwt_extended import JWTManager
-from flask_jwt_extended.exceptions import *
+from flask_jwt_extended import JWTManager, unset_jwt_cookies
 import os
 
 class ApiFlask(Flask):
@@ -169,6 +168,13 @@ def register_error_handlers(app):
                 message='An unexpected error has occurred.',
                 status=500
             )
+        jwt = app["jwt"]
+        @jwt.invalid_token_loader
+        def invalid_token_callback(callback):
+            # Invalid Fresh/Non-Fresh Access token in auth header
+            resp = app.make_response(redirect('/admin/api/auth/login'))
+            unset_jwt_cookies(resp)
+            return resp, 302 
 
     app.register_error_handler(
         400,
