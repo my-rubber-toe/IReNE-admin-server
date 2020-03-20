@@ -1,38 +1,27 @@
 from flask import Blueprint, Response, request
 from utils.responses import ApiResult, ApiException
 from exceptions.handler import AdminServerApiError, AdminServerAuthError
+from flask_jwt_extended import get_jwt_identity, fresh_jwt_required
 
 blueprint = Blueprint('documents', __name__, url_prefix='/admin/api/documents')
 
 @blueprint.route('/', methods=['GET'])
+@fresh_jwt_required
 def documents():
     """
     Retrieve a list of all the documents in the database.
     """
-    valid_session_token = False
-    # TODO: Check if user has a valid session token.
-    if not valid_session_token:
-        raise AdminServerAuthError(
-            msg= 'Unauthorized access to admin dashboard.', 
-            status = 401
-            )
     # TODO: Use DAOs to retrieve all the documents.
     return ApiResult(
         message='All available documents'
     )
 
 @blueprint.route('/view/<docID>', methods=['GET'])
+@fresh_jwt_required
 def documents_view(docID):
     """
     Retrieve a list of metadata of all the documents in the database.
     """
-    valid_session_token = False
-    # TODO: Check if user has a valid session token.
-    if not valid_session_token:
-        raise AdminServerAuthError(
-            msg= 'Unauthorized access to admin dashboard.', 
-            status = 401
-            )
     #valid_doc_id = ObjectID().is_valid(docID)
     valid_doc_id = False
     if not valid_doc_id:
@@ -54,19 +43,12 @@ def documents_view(docID):
     )
 
 @blueprint.route('/publish', methods=['PUT'])
+@fresh_jwt_required
 def documents_publish():
     """
     Set a document state to be pusblished.
     """
     #doc_id  = request.form.get('docID')
-    valid_session_token = False
-    # TODO: Check if user has a valid session token.
-    if not valid_session_token:
-        raise AdminServerAuthError(
-            msg= 'Unauthorized access to admin dashboard.', 
-            status = 401
-            )
-    
     #valid_doc_id = ObjectID().is_valid(doc_id)
     valid_doc_id = False
     if not valid_doc_id:
@@ -88,19 +70,12 @@ def documents_publish():
     )
 
 @blueprint.route('/unpublish', methods=['PUT'])
+@fresh_jwt_required
 def documents_unpublish():
     """
     Set a document state to be unpublished.
     """
     #doc_id  = request.form.get('docID')
-    valid_session_token = False
-    # TODO: Check if user has a valid session token.
-    if not valid_session_token:
-        raise AdminServerAuthError(
-            msg= 'Unauthorized access to admin dashboard.', 
-            status = 401
-            )
-    
     #valid_doc_id = ObjectID().is_valid(doc_id)
     valid_doc_id = False
     if not valid_doc_id:

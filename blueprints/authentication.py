@@ -1,9 +1,9 @@
 from flask import current_app, jsonify
-from flask import Blueprint, Response, request
-from flask_jwt_extended import create_access_token, create_refresh_token, jwt_refresh_token_required, \
-    jwt_required, get_jwt_identity, get_raw_jwt
+from flask import Blueprint, Flask, request
+from flask_jwt_extended import create_access_token, get_jwt_identity, fresh_jwt_required, \
+     get_raw_jwt, unset_jwt_cookies
 from utils.responses import ApiResult, ApiException
-from exceptions.handler import AdminServerApiError, AdminServerAuthError
+from exceptions.handler import AdminServerAuthError
 from datetime import timedelta
 
 
@@ -36,13 +36,12 @@ def login():
             )
     # Use the username as the token identity
     return ApiResult(
-        access_token=create_access_token(identity=username, expires_delta=timedelta(hours=1)),
-        refresh_token=create_refresh_token(identity=username, expires_delta=timedelta(weeks=2))
+        access_token=create_access_token(identity=username, fresh = timedelta(hours=1))
     )
 
 
 @blueprint.route('/me')
-@jwt_required
+@fresh_jwt_required
 def me():
     """"Return information from the database."""
     # TODO: Use DAOs to look for user in the database.
@@ -50,17 +49,17 @@ def me():
 
 
 @blueprint.route('/refresh', methods=["GET"])
-@jwt_refresh_token_required
-def refresh():
+@fresh_jwt_required
+def get_fresh():
     """Return a new access_token given a valid refresh token."""
     username = get_jwt_identity()
-    return ApiResult(access_token=create_access_token(identity=username, expires_delta=timedelta(hours=2)))
+    return ApiResult(access_token=create_access_token(identity=username, fresh=timedelta(hours=1)))
 
 
 @blueprint.route("/logout")
-@jwt_required
+@fresh_jwt_required
 def logout():
-    """Revoke the Google authorization and add tokens to blacklist"""
+    """Revoke the authorization and add tokens to blacklist"""
     # Blacklist jwt tokens
     jti = get_raw_jwt()['jti']
     token_blacklist.add(jti)
