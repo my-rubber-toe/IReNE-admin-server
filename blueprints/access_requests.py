@@ -4,7 +4,7 @@ from utils.responses import ApiResult, ApiException
 from utils.validators import ObjectID
 from exceptions.handler import AdminServerApiError, AdminServerAuthError
 
-blueprint = Blueprint('access-requests', __name__, url_prefix='/admin/api/access-request')
+blueprint = Blueprint('access-requests', __name__, url_prefix='/admin/access-request')
 
 @blueprint.route('/', methods=['GET'])
 @fresh_jwt_required

@@ -9,7 +9,7 @@ from datetime import timedelta
 
 
 
-blueprint = Blueprint('authentication', __name__, url_prefix='/admin/api/auth')
+blueprint = Blueprint('authentication', __name__, url_prefix='/admin/auth')
 
 # Set blacklist set for blacklisted tokens
 # TODO change ttl to the decided token ttl

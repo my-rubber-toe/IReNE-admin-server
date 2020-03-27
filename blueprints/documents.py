@@ -3,7 +3,7 @@ from utils.responses import ApiResult, ApiException
 from exceptions.handler import AdminServerApiError, AdminServerAuthError
 from flask_jwt_extended import get_jwt_identity, fresh_jwt_required
 
-blueprint = Blueprint('documents', __name__, url_prefix='/admin/api/documents')
+blueprint = Blueprint('documents', __name__, url_prefix='/admin/documents')
 
 @blueprint.route('/', methods=['GET'])
 @fresh_jwt_required
