@@ -73,3 +73,32 @@ def collaborators_unban():
         message='Valid Collaborator Ban',
         collabID = collab_id
     )
+
+
+@blueprint.route('/remove', methods=['DELETE'])
+@fresh_jwt_required
+def collaborators_remove():
+    """
+    UnBan a collaborator from the system
+    """
+    collab_id  = request.form.get('collabID')
+    #valid_collab_id = ObjectID().is_valid(collab_id)
+    valid_collab_id = True
+    if not valid_collab_id:
+        raise AdminServerApiError(
+            msg='The collaborators ID given was not validated.',
+            status=400
+        )
+    collab_id_exist = True
+    # TODO: Check if collab id exist
+    if not collab_id_exist:
+        raise AdminServerApiError(
+            msg='The collaborators ID given was not found.',
+            status=404
+        )
+    # TODO: Use DAOs to unban collaborator.
+    # TODO: Publish all collaborators documents.
+    return ApiResult(
+        message='Valid Collaborator Removal',
+        collabID = collab_id
+    )
