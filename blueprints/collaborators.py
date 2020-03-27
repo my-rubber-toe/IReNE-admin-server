@@ -22,15 +22,15 @@ def collaborators_ban():
     """
     Ban a collaborator from the system
     """
-    #collab_id  = request.form.get('collabID')
+    collab_id  = request.form.get('collabID')
     #valid_collab_id = ObjectID().is_valid(collab_id)
-    valid_collab_id = False
+    valid_collab_id = True
     if not valid_collab_id:
         raise AdminServerApiError(
             msg='The collaborators ID given was not validated.',
             status=400
         )
-    collab_id_exist = False
+    collab_id_exist = True
     # TODO: Check if collab id exist
     if not collab_id_exist:
         raise AdminServerApiError(
@@ -42,7 +42,8 @@ def collaborators_ban():
     # TODO: Use DAOs to ban collaborator.
     # TODO: Unpublish all collaborators documents.
     return ApiResult(
-        message='Valid Collaborator Ban'
+        message='Valid Collaborator Ban',
+        collabID = collab_id 
     )
 
 @blueprint.route('/unban', methods=['PUT'])
@@ -51,16 +52,15 @@ def collaborators_unban():
     """
     UnBan a collaborator from the system
     """
-    #collab_id  = request.form.get('collabID')
-
+    collab_id  = request.form.get('collabID')
     #valid_collab_id = ObjectID().is_valid(collab_id)
-    valid_collab_id = False
+    valid_collab_id = True
     if not valid_collab_id:
         raise AdminServerApiError(
             msg='The collaborators ID given was not validated.',
             status=400
         )
-    collab_id_exist = False
+    collab_id_exist = True
     # TODO: Check if collab id exist
     if not collab_id_exist:
         raise AdminServerApiError(
@@ -70,5 +70,6 @@ def collaborators_unban():
     # TODO: Use DAOs to unban collaborator.
     # TODO: Publish all collaborators documents.
     return ApiResult(
-        message='Valid Collaborator Ban'
+        message='Valid Collaborator Ban',
+        collabID = collab_id
     )

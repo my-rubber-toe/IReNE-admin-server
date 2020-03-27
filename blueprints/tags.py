@@ -22,8 +22,8 @@ def tags_remove():
     """
     Remove a tag from all documents and the system tags colleciton.
     """
-    #tag  = request.form.get('tag')
-    valid_tag = False
+    tag_name  = request.form.get('tagName')
+    valid_tag = True
     # TODO: Check if tag exist
     if not valid_tag:
         raise AdminServerApiError(
@@ -33,5 +33,6 @@ def tags_remove():
 
     # TODO: Use DAOs to delete tag.
     return ApiResult(
-        message='Valid Tga Deletion'
+        message='Valid Tag Deletion',
+        tagName = tag_name
     )

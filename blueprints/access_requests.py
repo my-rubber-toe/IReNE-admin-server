@@ -23,15 +23,15 @@ def access_requests_approve():
     """
     Approve the access request of a user. 
     """
-    #collab_id  = request.form.get('collabID')
+    collab_id  = request.form.get('collabID')
     #valid_collab_id = ObjectID().is_valid(collab_id)
-    valid_collab_id = False
+    valid_collab_id = True
     if not valid_collab_id:
         raise AdminServerApiError(
             msg='The collaborators ID given was not validated.',
             status=400
         )
-    collab_id_exist = False
+    collab_id_exist = True
     # TODO: Check if collab id exist
     if not collab_id_exist:
         raise AdminServerApiError(
@@ -41,7 +41,8 @@ def access_requests_approve():
 
     # TODO: Use DAOs to retrieve the necessary information.
     return ApiResult(
-        message='Valid Data'
+        message='Valid Data',
+        collabID = collab_id
     )
 
 @blueprint.route('/deny', methods=['DELETE'])
@@ -50,16 +51,16 @@ def access_requests_deny():
     """
     Deny the access request of a user. 
     """
-    #collab_id  = request.form.get('collabID')
+    collab_id  = request.form.get('collabID')
     #valid_collab_id = ObjectID().is_valid(collab_id)
-    valid_collab_id = False
+    valid_collab_id = True
     if not valid_collab_id:
         raise AdminServerApiError(
             msg='The collaborators ID given was not validated.',
             status=400
         )
     # TODO: Check if collab id exist
-    collab_id_exist = False
+    collab_id_exist = True
     # TODO: Check if collab id exist
     if not collab_id_exist:
         return AdminServerApiError(
@@ -69,5 +70,6 @@ def access_requests_deny():
 
     # TODO: Use DAOs to retrieve the necessary information.
     return ApiResult(
-        message='Valid Data'
+        message='Valid Data',
+        collabID = collab_id
     )

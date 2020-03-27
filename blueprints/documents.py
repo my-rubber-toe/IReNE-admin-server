@@ -13,7 +13,7 @@ def documents():
     """
     # TODO: Use DAOs to retrieve all the documents.
     return ApiResult(
-        message='All available documents'
+        message='Documents'
     )
 
 @blueprint.route('/view/<docID>', methods=['GET'])
@@ -23,13 +23,13 @@ def documents_view(docID):
     Retrieve a list of metadata of all the documents in the database.
     """
     #valid_doc_id = ObjectID().is_valid(docID)
-    valid_doc_id = False
+    valid_doc_id = True
     if not valid_doc_id:
         raise AdminServerApiError(
             msg='The documents ID given was not validated.',
             status=400
         )
-    doc_id_exist = False
+    doc_id_exist = True
     # TODO: Check if doc id exist
     if not doc_id_exist:
         raise AdminServerApiError(
@@ -39,7 +39,8 @@ def documents_view(docID):
 
     # TODO: Use DAOs to retrieve document.
     return ApiResult(
-        message='Valid Collaborator Ban'
+        message='Valid Document View',
+        docID = docID
     )
 
 @blueprint.route('/publish', methods=['PUT'])
@@ -48,15 +49,15 @@ def documents_publish():
     """
     Set a document state to be pusblished.
     """
-    #doc_id  = request.form.get('docID')
+    doc_id  = request.form.get('docID')
     #valid_doc_id = ObjectID().is_valid(doc_id)
-    valid_doc_id = False
+    valid_doc_id = True
     if not valid_doc_id:
         raise AdminServerApiError(
             msg='The documents ID given was not validated.',
             status=400
         )
-    doc_id_exist = False
+    doc_id_exist = True
     # TODO: Check if doc id exist
     if not doc_id_exist:
         raise AdminServerApiError(
@@ -66,7 +67,8 @@ def documents_publish():
 
     # TODO: Use DAOs to publish document.
     return ApiResult(
-        message='Valid Document Publish'
+        message='Valid Document Publish',
+        docID = doc_id
     )
 
 @blueprint.route('/unpublish', methods=['PUT'])
@@ -75,15 +77,15 @@ def documents_unpublish():
     """
     Set a document state to be unpublished.
     """
-    #doc_id  = request.form.get('docID')
+    doc_id  = request.form.get('docID')
     #valid_doc_id = ObjectID().is_valid(doc_id)
-    valid_doc_id = False
+    valid_doc_id = True
     if not valid_doc_id:
         raise AdminServerApiError(
             msg='The documents ID given was not validated.',
             status=400
         )
-    doc_id_exist = False
+    doc_id_exist = True
     # TODO: Check if doc id exist
     if not doc_id_exist:
         raise AdminServerApiError(
@@ -93,5 +95,6 @@ def documents_unpublish():
 
     # TODO: Use DAOs to unpublish document.
     return ApiResult(
-        message='Valid Document Unpublish'
+        message='Valid Document Unpublish',
+        docID = doc_id
     )
