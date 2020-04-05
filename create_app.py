@@ -76,7 +76,7 @@ def register_base_url(app):
     @app.route('/')
     @app.route('/admin/api/')
     def api():
-        return ApiResult(
+        return ApiResult(body = 
             {
                 'message': 'You have reach the IReNE Administrative API. Please refer to the documentation.'
             }
@@ -122,7 +122,7 @@ def register_error_handlers(app):
     Arguments:
         app {flask application} -- application instance
     """
-    if True:#app.config['DEBUG']:
+    if False:#app.config['DEBUG']:
         # If debug true, then return the whole stack
         @app.errorhandler(AdminServerError)
         def handle_error(error):
@@ -168,10 +168,17 @@ def register_error_handlers(app):
                 message='An unexpected error has occurred.',
                 status=500
             )
-        jwt = app["jwt"]
+        jwt = app.jwt
         @jwt.invalid_token_loader
         def invalid_token_callback(callback):
             # Invalid Fresh/Non-Fresh Access token in auth header
+            resp = app.make_response(redirect('/admin/api/auth/login'))
+            unset_jwt_cookies(resp)
+            return resp, 302
+
+        @jwt.needs_fresh_token_loader
+        def nonfresh_token_callback(callback):
+            # Invalid Non-Fresh Access token in auth header
             resp = app.make_response(redirect('/admin/api/auth/login'))
             unset_jwt_cookies(resp)
             return resp, 302 

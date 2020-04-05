@@ -37,8 +37,7 @@ class AdminServerError(Exception):
             f.write(log_string)
 
     def __str__(self):
-        return f'\nApplication is in DEBUG MODE:\nError Pretty Print:\n\tType:{self.error_type}; Msg:{self.msg}; Status:{self.status}; ' \
-            f'ErrStackTrace:{self.error_stack}'
+        return {'error': self.error_type, 'message':self.msg, 'status':self.status}
 
 class AdminServerApiError(AdminServerError):
     error_type = "AdminServerApiError"
