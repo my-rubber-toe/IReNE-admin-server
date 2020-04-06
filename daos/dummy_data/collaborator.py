@@ -1,4 +1,4 @@
-requests  = [
+collaborators  = [
   {"_id": '5e89d57b3e1e4ef361ce68ef', 'documentsID': ['5e89dd1077c9a2c523f90179', '5e89e9e1664514d30949fb14'], 
   'firstName': 'Roberto', 'last_name': 'Guzman', 'email': 'roberto.guzman3@upr.edu', 'banned': False, 'faculty': 'INEL', 'approved': True},
 

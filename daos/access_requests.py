@@ -1,6 +1,6 @@
 from daos.dummy_data.access_request import requests
 
-class AccessRequests:
+class AccessRequestsDAO:
     requestList = []
     def __init__(self):
         for collab in requests:

@@ -1,9 +1,9 @@
-from daos.dummy_data.collaborator import requests
+from daos.dummy_data.collaborator import collaborators
 
 class CollaboratorsDAO:
     collaboratorList = []
     def __init__(self):
-        for collab in requests:
+        for collab in collaborators:
             if(collab['approved'] == True):
                 self.collaboratorList.append(collab)
     

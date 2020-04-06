@@ -3,10 +3,10 @@ from flask_jwt_extended import get_jwt_identity, fresh_jwt_required
 from utils.responses import ApiResult, ApiException
 from utils.validators import ObjectID
 from exceptions.handler import AdminServerApiError, AdminServerAuthError
-from daos.access_requests import AccessRequests
+from daos.access_requests import AccessRequestsDAO
 
 blueprint = Blueprint('access-requests', __name__, url_prefix='/admin/access-request')
-dao = AccessRequests()
+dao = AccessRequestsDAO()
 
 @blueprint.route('/', methods=['GET'])
 @fresh_jwt_required

@@ -1,6 +1,6 @@
 requests  = [
   {"_id": '5e89d57b3e1e4ef361ce68ef', 'documentsID': ['5e89dd1077c9a2c523f90179', '5e89e9e1664514d30949fb14'], 
-  'firstName': 'Roberto', 'last_name': 'Guzman', 'email': 'roberto.guzman3@upr.edu', 'banned': True, 'faculty': 'INEL', 'approved': True},
+  'firstName': 'Roberto', 'last_name': 'Guzman', 'email': 'roberto.guzman3@upr.edu', 'banned': False, 'faculty': 'INEL', 'approved': True},
 
   {'_id': '5e89d58b2ac039eb9ed2ebc9', 'documentsID': ['5e89dd288593ec9607e503ea'], 
   'firstName': 'Yomar', 'last_name': 'Ruiz', 'email': 'yomar.ruiz@upr.edu', 'banned': False, 'faculty': 'INCI', 'approved': True},
@@ -15,12 +15,12 @@ requests  = [
   'firstName': 'Alejandro', 'last_name': 'Vasquez', 'email': 'alejandro.vasquez@upr.edu', 'banned': False, 'faculty': 'INQU', 'approved': True},
 
   {'_id': '5e89d5b1cb472937a4eb1f01', 'documentsID': ['5e89e95ae4f48b88da892d8f'], 
-  'firstName': 'Don', 'last_name': 'Quijote', 'email': 'don.quijote@upr.edu', 'banned': True, 'faculty': 'ININ', 'approved': True},
+  'firstName': 'Don', 'last_name': 'Quijote', 'email': 'don.quijote@upr.edu', 'banned': False, 'faculty': 'ININ', 'approved': True},
 
 #Access Requests == approved flag to false
 
   {"_id": '5e89d5bc967dc3fab8d85c9f', 'documentsID': [''], 
-  'firstName': 'Sancho', 'last_name': 'Panza', 'email': 'sancho.panza@upr.edu', 'banned': True, 'faculty': 'ICOM', 'approved': False},
+  'firstName': 'Sancho', 'last_name': 'Panza', 'email': 'sancho.panza@upr.edu', 'banned': False, 'faculty': 'ICOM', 'approved': False},
 
   {'_id': '5e89d5c4c1f6abd06ac4a10d', 'documentsID': [''],
   'firstName': 'Dulcinea', 'last_name': 'del Toboso', 'email': 'dulcinea.deltoboso@upr.edu', 'banned': False, 'faculty': 'ICOM', 'approved': False},
@@ -35,5 +35,5 @@ requests  = [
   'firstName': 'William', 'last_name': 'Shakespeare', 'email': 'william.shakespeare@upr.edu', 'banned': False, 'faculty': 'ICOM', 'approved': False},
 
   {'_id': '5e89d5e276f5c8e4d9979ae6', 'documentsID': [''], 
-  'firstName': 'Julius', 'last_name': 'Ceasar', 'email': 'julius.ceasar@upr.edu', 'banned': True, 'faculty': 'ICOM', 'approved': False}
+  'firstName': 'Julius', 'last_name': 'Ceasar', 'email': 'julius.ceasar@upr.edu', 'banned': False, 'faculty': 'ICOM', 'approved': False}
 ]
