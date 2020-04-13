@@ -2,7 +2,7 @@ from mongoengine import *
 from schema_DB import *
 from dao_AD import *
 import datetime
-
+import init_db_test
 
 """
     DAO_AD_1 (Dao returns JSON object with admin)
@@ -82,7 +82,7 @@ import datetime
 # print("current tags in list")
 # for x in docs:
 #     print(x.title, x.tagsDoc)
-# remove_tag(tag)
+# remove_tag(tag_remove)
 # newtags = Tag.objects
 # newlisttags = []
 # for x in newtags:
