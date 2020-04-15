@@ -74,7 +74,7 @@ def register_blueprints(app):
 
 def register_base_url(app):
     @app.route('/')
-    @app.route('/admin/api/')
+    @app.route('/admin/')
     def api():
         return ApiResult(body = 
             {
@@ -110,7 +110,7 @@ def register_cors(app: Flask):
     
     CORS(
         app=app,
-        resources={r"/admin/api/*": {"origins": origins_list}},
+        resources={r"/admin/*": {"origins": origins_list}},
         methods=methods_list,
         allowed_headers=allowed_headers_list,
         supports_credentials=True
@@ -172,16 +172,20 @@ def register_error_handlers(app):
         @jwt.invalid_token_loader
         def invalid_token_callback(callback):
             # Invalid Fresh/Non-Fresh Access token in auth header
-            resp = app.make_response(redirect('/admin/api/auth/login'))
-            unset_jwt_cookies(resp)
-            return resp, 302
+            return ApiException(
+                error_type='AdminServerRequestError',
+                message='Invalid Authentication Token.',
+                status=400
+            )
 
         @jwt.needs_fresh_token_loader
         def nonfresh_token_callback(callback):
             # Invalid Non-Fresh Access token in auth header
-            resp = app.make_response(redirect('/admin/api/auth/login'))
-            unset_jwt_cookies(resp)
-            return resp, 302 
+            return ApiException(
+                error_type='AdminServerRequestError',
+                message='Invalid Authentication Token - Not Fresh.',
+                status=400
+            )
 
     app.register_error_handler(
         400,

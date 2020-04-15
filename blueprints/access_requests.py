@@ -30,13 +30,13 @@ def access_requests_approve():
     valid_collab_id = ObjectID().is_valid(collab_id)
     if not valid_collab_id:
         raise AdminServerApiError(
-            msg='The collaborators ID given is not valid.',
+            msg='The access request ID given is not valid.',
             status=400
         )
     access_request = dao.accept_access_request(collab_id)
     if access_request is None:
         raise AdminServerApiError(
-            msg='The collaborators ID given was not found.',
+            msg='The access request ID given was not found.',
             status=404
         )
 
@@ -55,13 +55,13 @@ def access_requests_deny():
     valid_collab_id = ObjectID().is_valid(collab_id)
     if not valid_collab_id:
         raise AdminServerApiError(
-            msg='The collaborators ID given is not valid.',
+            msg='The access request ID given is not valid.',
             status=400
         )
     access_request = dao.deny_access_request(collab_id)
     if access_request is None:
         raise AdminServerApiError(
-            msg='The collaborators ID given was not found.',
+            msg='The access request ID given was not found.',
             status=404
         )
 

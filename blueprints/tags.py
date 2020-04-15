@@ -28,7 +28,7 @@ def tags_remove():
     if not ObjectID().is_valid(tagID):
         raise AdminServerApiError(
             msg='The tag ID given is not valid.',
-            status=404
+            status=400
         )
 
     tag = dao.remove_tag(tagID)

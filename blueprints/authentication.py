@@ -33,12 +33,12 @@ def login():
     """
     username = request.form.get("username")
     password = request.form.get("password")
-    if username is None or username=='':
+    if username is None or username.replace(" ", "")=='':
         raise AdminServerAuthError(
             msg= 'Username field is empty.', 
             status = 400
             )
-    if password is None or password=='':
+    if password is None or password.replace(" ", "")=='':
         raise AdminServerAuthError(
             msg= 'Password field is empty.', 
             status = 400
@@ -46,22 +46,22 @@ def login():
     admin = dao.get_admin(username)
     if not admin:
         raise AdminServerAuthError(
-            msg= 'Unauthorized access to admin dashboard.', 
+            msg= 'Invalid username or password.', 
             status = 401
             )
     authorized = dao.check_password(admin['password_hash'], password)
     if not authorized:
         raise AdminServerAuthError(
-            msg= 'Unauthorized access to admin dashboard.', 
+            msg= 'Invalid username or password.', 
             status = 401
             )
     # Use the username as the token identity
     return ApiResult(body =
-        {'access_token':create_access_token(identity=username, fresh = timedelta(hours=1))}
+        {'access_token':create_access_token(identity=username, fresh = True, expires_delta = timedelta(minutes=10))}
     )
 
 
-@blueprint.route('/me')
+@blueprint.route('/me', methods = ['GET'])
 @fresh_jwt_required
 def me():
     """"Return information from the database."""
@@ -71,14 +71,14 @@ def me():
     )
 
 
-@blueprint.route('/refresh', methods=["GET"])
+"""@blueprint.route('/refresh', methods=["GET"])
 @fresh_jwt_required
 def get_fresh():
-    """Return a new access_token given a valid refresh token."""
+    #Return a new access_token given a valid refresh token.
     username = get_jwt_identity()
     return ApiResult(body = 
     {'access_token':create_access_token(identity=username, fresh=timedelta(hours=1))}
-    )
+    )"""
 
 
 @blueprint.route("/logout")
@@ -88,7 +88,8 @@ def logout():
     # Blacklist jwt tokens
     jti = get_raw_jwt()['jti']
     token_blacklist[jti] = True   # Add the jti to the cache with value true #
-    print(token_blacklist)
+    #print(token_blacklist)
     return ApiResult(body = 
-    {'message':"Successfully logged out."}
+        {'message':"Successfully logged out.",
+        'username': get_jwt_identity()}
     )

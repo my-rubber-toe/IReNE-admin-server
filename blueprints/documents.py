@@ -27,7 +27,7 @@ def documents_view(docID):
     valid_doc_id = ObjectID().is_valid(docID)
     if not valid_doc_id:
         raise AdminServerApiError(
-            msg='The documents ID given was not validated.',
+            msg='The documents ID given is not valid.',
             status=400
         )
     document = dao.get_document(docID)
