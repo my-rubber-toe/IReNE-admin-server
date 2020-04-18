@@ -1,3 +1,8 @@
+"""
+authentication.py
+====================================
+Every route regarding authentication, including but not limited to login, logout and current user id can be found here.
+"""
 from flask import current_app, jsonify
 from flask import Blueprint, Flask, request
 from flask_jwt_extended import create_access_token, get_jwt_identity, fresh_jwt_required, \
@@ -6,8 +11,8 @@ from utils.responses import ApiResult, ApiException
 from exceptions.handler import AdminServerAuthError
 from cachetools import TTLCache
 from datetime import timedelta
-from daos.admin import AdminDAO
-
+from daos.admin_dao import AdminDAO
+from utils.validators import username_isvalid, password_isvalid
 
 
 blueprint = Blueprint('authentication', __name__, url_prefix='/admin/auth')
@@ -17,9 +22,17 @@ dao = AdminDAO()
 token_blacklist = TTLCache(maxsize=10000, ttl=600)
 
 
-@current_app.jwt.token_in_blacklist_loader
+#@current_app.jwt.token_in_blacklist_loader
 def check_if_token_in_blacklist(decrypted_token):
-    """Verifies if a token has been blacklisted."""
+    """
+    Verifies if a token has been blacklisted.
+
+    Returns
+    -------
+    JTI
+        Blaclisted token or None if the token is not found.
+    """
+    """"""
     jti = decrypted_token['jti'] 
     if token_blacklist.currsize == 0:
         return False
@@ -29,19 +42,33 @@ def check_if_token_in_blacklist(decrypted_token):
 
 @blueprint.route('/login')
 def login():
-    """Generate a new access token for the user. User must sign in to the databse to get a valid token.
+    """
+    Generate a new access token for the user. User must have valid credentials in the databse to get a valid token.
+    
+    Parameters
+    ----------
+    username : string
+        Username of the administrator account.
+    password : string
+        Password of the administrator account.
+
+    Returns
+    -------
+    string
+        JWT token with the username as identity.
+    
+    Raises
+    ------
+    AdminServerAuthError
+        If the username or password fields are empty or are invalid. 
+
     """
     username = request.form.get("username")
     password = request.form.get("password")
-    if username is None or username.replace(" ", "")=='':
+    if not username_isvalid(username) or not password_isvalid(password):
         raise AdminServerAuthError(
-            msg= 'Username field is empty.', 
-            status = 400
-            )
-    if password is None or password.replace(" ", "")=='':
-        raise AdminServerAuthError(
-            msg= 'Password field is empty.', 
-            status = 400
+            msg= 'Invalid username or password.', 
+            status = 401
             )
     admin = dao.get_admin(username)
     if not admin:
@@ -64,31 +91,35 @@ def login():
 @blueprint.route('/me', methods = ['GET'])
 @fresh_jwt_required
 def me():
-    """"Return information from the database."""
-    # TODO: Use DAOs to look for user in the database.
+    """
+    Returns the username of the currently active administrator.
+    Returns
+    -------
+    string
+        Username of admin.
+
+    """
     return ApiResult(body = 
     {'identity':get_jwt_identity()}
     )
 
 
-"""@blueprint.route('/refresh', methods=["GET"])
-@fresh_jwt_required
-def get_fresh():
-    #Return a new access_token given a valid refresh token.
-    username = get_jwt_identity()
-    return ApiResult(body = 
-    {'access_token':create_access_token(identity=username, fresh=timedelta(hours=1))}
-    )"""
-
-
 @blueprint.route("/logout")
 @fresh_jwt_required
 def logout():
-    """Revoke the authorization and add tokens to blacklist"""
+    """
+    Revoke the authorization and adds token to a blacklist of previously used tokens.
+
+    Returns
+    -------
+    string
+        Successfull message.
+    string
+        Identity of the logout admin.
+    """
     # Blacklist jwt tokens
     jti = get_raw_jwt()['jti']
     token_blacklist[jti] = True   # Add the jti to the cache with value true #
-    #print(token_blacklist)
     return ApiResult(body = 
         {'message':"Successfully logged out.",
         'username': get_jwt_identity()}

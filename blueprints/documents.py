@@ -1,9 +1,14 @@
+"""
+documents.py
+====================================
+Every route regarding documents, including publishing or unpublishing a document and seeing all of current documents in the systen can be found here.
+"""
 from flask import Blueprint, Response, request
 from utils.responses import ApiResult, ApiException
 from exceptions.handler import AdminServerApiError, AdminServerAuthError
 from flask_jwt_extended import get_jwt_identity, fresh_jwt_required
-from daos.documents import DocumentsDAO
-from utils.validators import ObjectID
+from daos.documents_dao import DocumentsDAO
+from utils.validators import objectId_is_valid
 
 blueprint = Blueprint('documents', __name__, url_prefix='/admin/documents')
 dao = DocumentsDAO()
@@ -13,6 +18,10 @@ dao = DocumentsDAO()
 def documents():
     """
     Retrieve a list of all the documents in the database.
+    Returns
+    -------
+    Document[]
+        List of collaborators currently in the system.
     """
     return ApiResult(
         body={'documents':dao.get_all_documents()}
@@ -24,7 +33,7 @@ def documents_view(docID):
     """
     Retrieve a list of metadata of all the documents in the database.
     """
-    valid_doc_id = ObjectID().is_valid(docID)
+    valid_doc_id = objectId_is_valid(docID)
     if not valid_doc_id:
         raise AdminServerApiError(
             msg='The documents ID given is not valid.',
@@ -44,10 +53,26 @@ def documents_view(docID):
 @fresh_jwt_required
 def documents_publish():
     """
-    Set a document state to be pusblished.
+    Pusblish a document. 
+    
+    Parameters
+    ----------
+    docID : ObjectId
+        12-byte MongoDB compliant Object id of the document to be publish.
+    
+    Returns
+    -------
+    Document
+        Document that has been published.
+    
+    Raises
+    ------
+    AdminServerApiError
+        If the document id is not valid or if a document with the given id was not found.
+
     """
     doc_id  = request.form.get('docID')
-    valid_doc_id = ObjectID().is_valid(doc_id)
+    valid_doc_id = objectId_is_valid(doc_id)
     if not valid_doc_id:
         raise AdminServerApiError(
             msg='The documents ID given is not valid.',
@@ -67,10 +92,26 @@ def documents_publish():
 @fresh_jwt_required
 def documents_unpublish():
     """
-    Set a document state to be unpublished.
+    Unpusblish a document. 
+    
+    Parameters
+    ----------
+    docID : ObjectId
+        12-byte MongoDB compliant Object id of the document to be unpublish.
+    
+    Returns
+    -------
+    Document
+        Document that has been unpublished.
+    
+    Raises
+    ------
+    AdminServerApiError
+        If the document id is not valid or if a document with the given id was not found.
+
     """
     doc_id  = request.form.get('docID')
-    valid_doc_id = ObjectID().is_valid(doc_id)
+    valid_doc_id = objectId_is_valid(doc_id)
     if not valid_doc_id:
         raise AdminServerApiError(
             msg='The documents ID given is not valid.',

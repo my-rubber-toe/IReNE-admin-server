@@ -1,9 +1,14 @@
+"""
+tags.py
+====================================
+Every route regarding tags, including removing a tag and seeing all of current tags in the systen can be found here.
+"""
 from flask import Blueprint, Response, request
 from utils.responses import ApiResult, ApiException
 from exceptions.handler import AdminServerApiError, AdminServerAuthError
 from flask_jwt_extended import get_jwt_identity, fresh_jwt_required
-from utils.validators import ObjectID
-from daos.tags import TagsDAO
+from utils.validators import objectId_is_valid
+from daos.tags_dao import TagsDAO
 
 blueprint = Blueprint('tags', __name__, url_prefix='/admin/tags')
 dao = TagsDAO()
@@ -12,6 +17,10 @@ dao = TagsDAO()
 def tags():
     """
     Retrieve a list of all the system tags.
+    Returns
+    -------
+    Tag[]
+        List of tags currently in the system.
     """
     # TODO: Use DAOs to retrieve all the tags.
     return ApiResult( body = 
@@ -25,7 +34,7 @@ def tags_remove():
     Remove a tag from all documents and the system tags colleciton.
     """
     tagID  = request.form.get('tagID')
-    if not ObjectID().is_valid(tagID):
+    if not objectId_is_valid(tagID):
         raise AdminServerApiError(
             msg='The tag ID given is not valid.',
             status=400
