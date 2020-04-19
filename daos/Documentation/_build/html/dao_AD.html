@@ -1,0 +1,200 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>dao_AD module &#8212; Admin DAOs 2.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="dao_AD_test module" href="dao_AD_test.html" />
+    <link rel="prev" title="daos" href="modules.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-dao_AD">
+<span id="dao-ad-module"></span><h1>dao_AD module<a class="headerlink" href="#module-dao_AD" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="dao_AD.banned_collab">
+<code class="sig-prename descclassname">dao_AD.</code><code class="sig-name descname">banned_collab</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">collabid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#dao_AD.banned_collab" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAO that ban a collaborator</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dao_AD.get_collab_request">
+<code class="sig-prename descclassname">dao_AD.</code><code class="sig-name descname">get_collab_request</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dao_AD.get_collab_request" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAO that returns list of collabs that hasn’t been approved yet</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dao_AD.get_collabs">
+<code class="sig-prename descclassname">dao_AD.</code><code class="sig-name descname">get_collabs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dao_AD.get_collabs" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAO that returns list of collabs that were approved approved</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dao_AD.get_doc">
+<code class="sig-prename descclassname">dao_AD.</code><code class="sig-name descname">get_doc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">docid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#dao_AD.get_doc" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAO that returns a specific document</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dao_AD.get_doc_collab">
+<code class="sig-prename descclassname">dao_AD.</code><code class="sig-name descname">get_doc_collab</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">collabid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#dao_AD.get_doc_collab" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAO that returns list of documents by a collab</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dao_AD.get_docs">
+<code class="sig-prename descclassname">dao_AD.</code><code class="sig-name descname">get_docs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dao_AD.get_docs" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAO that returns list of documents</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dao_AD.get_login">
+<code class="sig-prename descclassname">dao_AD.</code><code class="sig-name descname">get_login</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">adminID</span></em><span class="sig-paren">)</span><a class="headerlink" href="#dao_AD.get_login" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAO that returns admin info in JSON</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dao_AD.get_tags_list">
+<code class="sig-prename descclassname">dao_AD.</code><code class="sig-name descname">get_tags_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dao_AD.get_tags_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAO that returns list of tags</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dao_AD.published_doc">
+<code class="sig-prename descclassname">dao_AD.</code><code class="sig-name descname">published_doc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">docid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#dao_AD.published_doc" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAO that publishes a document</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dao_AD.put_collab_request">
+<code class="sig-prename descclassname">dao_AD.</code><code class="sig-name descname">put_collab_request</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">collabid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#dao_AD.put_collab_request" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAO that approved an collab request</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dao_AD.remove_collab">
+<code class="sig-prename descclassname">dao_AD.</code><code class="sig-name descname">remove_collab</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">collabid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#dao_AD.remove_collab" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAO that deletes a collaborator</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dao_AD.remove_tag">
+<code class="sig-prename descclassname">dao_AD.</code><code class="sig-name descname">remove_tag</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tag</span></em><span class="sig-paren">)</span><a class="headerlink" href="#dao_AD.remove_tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAO that removes a tag</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dao_AD.unbanned_collab">
+<code class="sig-prename descclassname">dao_AD.</code><code class="sig-name descname">unbanned_collab</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">collabid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#dao_AD.unbanned_collab" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAO that unban a collaborator</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dao_AD.unpublished_doc">
+<code class="sig-prename descclassname">dao_AD.</code><code class="sig-name descname">unpublished_doc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">docid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#dao_AD.unpublished_doc" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAO that unpublishes a document</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Admin DAOs</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">daos</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">dao_AD module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dao_AD_test.html">dao_AD_test module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="init_db_test.html">init_db_test module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="schema_DB.html">schema_DB module</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">daos</a><ul>
+      <li>Previous: <a href="modules.html" title="previous chapter">daos</a></li>
+      <li>Next: <a href="dao_AD_test.html" title="next chapter">dao_AD_test module</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Jainel M. Torres Santos.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.0+/74f48f3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/dao_AD.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
