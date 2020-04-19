@@ -21,17 +21,17 @@ To have this project up and running on your local machine, follow the next serie
 
 In the directory of the repository, create a virtual environment with Python
 ```
-python3 -m venv .
+python3 -m venv ./venv
 ```
 
 Activate the virtual environment.
 ```
-source ./<venv>/bin/activate
+source ./venv/bin/activate
 ```
 
 Now install all the neccessary requirements for the application server to run with the following command:
 ```
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 
 ### Running the application

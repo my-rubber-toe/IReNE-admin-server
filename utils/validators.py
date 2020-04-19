@@ -26,6 +26,8 @@ def objectId_is_valid(object_id):
 def username_isvalid(username):
     """
     Returns whether or not the username given is valid.
+    The username is valid if it is between 6 and 20 characters, contains only alphanumeric characters and doesn't start
+    end or consecutively repeat dots.
     
     Parameters
     ----------
@@ -47,6 +49,7 @@ def username_isvalid(username):
 def password_isvalid(password):
     """
     Returns whether or not the password given is in a valid format.
+    The password is valid if its length is greater or equal to 8, and contains at least one upper case letter, one lower case letter and a number.
     
     Parameters
     ----------
@@ -59,7 +62,7 @@ def password_isvalid(password):
         True if valid, false otherwise.
 
     """
-    match = re.search(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,30}$", password)
+    match = re.search(r'(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d\w].{8,}', password)
     if(match is None):
         return False
     else:
