@@ -1,0 +1,2131 @@
+{
+	"info": {
+		"_postman_id": "f3f12565-7fa1-4339-8ebc-d99a21bc514b",
+		"name": "Admin-Server-API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login - Wrong Inputs",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "2971b328-f2f2-4e6d-840c-5703c30844f6",
+								"exec": [
+									"var usernames = pm.environment.get(\"test_usernames\");",
+									"var passwords = pm.environment.get(\"test_passwords\");",
+									"if(usernames == \"null\" && passwords == \"null\"){",
+									"    usernames = ['yomar.ruiz', 'kjebw', '@dqnd23@..', '      ', 'ieonascnbie', 'edniuenoniqw', '', 'admin'];",
+									"    passwords = ['passwo','     ', '1123143231312', 'password0', 'password1', 'mdwimedijow', 'wndwiqnzq', ''];",
+									"}",
+									"var username = usernames.shift();",
+									"var password = passwords.shift();",
+									"pm.environment.set(\"username\", username);",
+									"pm.environment.set(\"password\", password);",
+									"pm.environment.set(\"test_usernames\", usernames);",
+									"pm.environment.set(\"test_passwords\", passwords);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "ca3e96a0-60de-4545-b781-8a4ac8003537",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Unsuccessful Status\", function () {",
+									"   pm.expect(pm.response.code).to.be.oneOf([401,400]);",
+									"});",
+									"",
+									"pm.test(\"Response Has a JSON Body\", function () {",
+									"     pm.response.to.be.withBody;",
+									"     pm.response.to.be.json;",
+									"});",
+									"",
+									"if(pm.response.code == 401){",
+									"    pm.test(\"Response body equals invalid credentials\", function () {",
+									"        pm.expect(jsonData.message).to.equal(\"Invalid username or password.\");",
+									"    });",
+									"}",
+									"",
+									"else{",
+									"    pm.expect(jsonData.message).to.equal('An unexpected error has occurred.');",
+									"}",
+									"",
+									"pm.test(\"Response Time Less Than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"",
+									"if(pm.environment.get(\"test_usernames\") && pm.environment.get(\"test_passwords\")){",
+									"    if(pm.environment.get(\"test_usernames\").length>0 && pm.environment.get(\"test_passwords\").length>0){",
+									"        postman.setNextRequest(\"Login - Wrong Inputs\");",
+									"    }",
+									"    else{",
+									"        pm.environment.set(\"test_usernames\", \"null\");",
+									"        pm.environment.set(\"test_passwords\", \"null\");",
+									"    }",
+									"}",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"disableCookies": false
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "{{username}}",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "{{password}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://{{ip}}/admin/auth/login",
+							"protocol": "http",
+							"host": [
+								"{{ip}}"
+							],
+							"path": [
+								"admin",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "12755be7-5769-4335-9767-ac96e1f071a7",
+								"exec": [
+									"console.log(\"Login\");",
+									"pm.environment.set(\"username\", pm.request.body.formdata.get(\"username\"));"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "67ce43de-3d31-4f59-8ccc-f579006cb80d",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"token\", jsonData.access_token);",
+									"var a=pm.environment.get(\"token\");",
+									"let decodedData=jwt_decode(a);",
+									"console.log(new Date(decodedData.exp*1000));",
+									"",
+									"pm.test(\"Successful Status\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response Has a JSON Body\", function () {",
+									"     pm.response.to.be.withBody;",
+									"     pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"Response Body has a Valid Token\", function () {",
+									"     pm.expect(decodedData.iat).not.equal(null);",
+									"     pm.expect(decodedData.nbf).not.equal(null);",
+									"     pm.expect(decodedData.jti).not.equal(null);",
+									"     pm.expect(decodedData.exp).not.equal(null);",
+									"     pm.expect(decodedData.identity).not.equal(null);",
+									"     pm.expect(decodedData.fresh).to.equal(true);",
+									"     pm.expect(decodedData.type).to.equal(\"access\");",
+									"});",
+									"",
+									"pm.test(\"Response Time Less Than 400ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(400);",
+									"});",
+									"",
+									"pm.test(\"Environment Variable Set\", function () {",
+									"    pm.expect(jsonData.access_token).to.equal(pm.variables.get(\"token\"));",
+									"});",
+									"",
+									"pm.test(\"Validate Fresh Token Time Equals 10min\", function () {",
+									"    pm.expect((decodedData.exp - decodedData.iat) / 60).to.equal(10);",
+									"});",
+									"",
+									"pm.test(\"Validate Token Username to be: \"+pm.environment.get(\"username\"), function () {",
+									"    pm.expect(pm.environment.get(\"username\")).to.equal(decodedData.identity);",
+									"});",
+									"",
+									"",
+									"function jwt_decode(a) {",
+									"    var parts = a.split('.'); // header, payload, signature",
+									"    return JSON.parse(atob(parts[1]));",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "yomar.ruiz",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Password0",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://{{ip}}/admin/auth/login",
+							"protocol": "http",
+							"host": [
+								"{{ip}}"
+							],
+							"path": [
+								"admin",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "6cd1d0b8-ccbf-49af-88fe-5241d63ba743",
+								"exec": [
+									"console.log(\"Logout\")"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "27727cb4-2990-4329-a567-32fba180b541",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"var token = pm.environment.get(\"token\");",
+									"let decodedData = jwt_decode(token);",
+									"",
+									"pm.test(\"Successful Status\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response Has a JSON Body\", function () {",
+									"     pm.response.to.be.withBody;",
+									"     pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"Response Body is Logout Successful\", function () {",
+									"    pm.expect(jsonData.message).to.equal(\"Successfully logged out.\");",
+									"});",
+									"",
+									"pm.test(\"Response Time Less Than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"",
+									"pm.test(\"Response Username is equal to Token Identity\", function () {",
+									"     pm.expect(pm.environment.get(\"username\")).to.equal(decodedData.identity);",
+									"});",
+									"",
+									"pm.test(\"Token Revoked\", function () {",
+									"    pm.sendRequest({",
+									"        url: \"http://0.0.0.0/admin/auth/me\",",
+									"        method: 'GET',",
+									"        header: 'Authorization: Bearer '+pm.environment.get(\"token\")",
+									"        ",
+									"    }, function (err, response) {",
+									"        let decodedJson = response.json();",
+									"        pm.expect(decodedJson.msg).to.equal(\"Token has been revoked\");",
+									"    });",
+									"});",
+									"",
+									"",
+									"",
+									"",
+									"function jwt_decode(a) {",
+									"    var parts = a.split('.'); // header, payload, signature",
+									"    return JSON.parse(atob(parts[1]));",
+									"}",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{ip}}/admin/auth/logout",
+							"protocol": "http",
+							"host": [
+								"{{ip}}"
+							],
+							"path": [
+								"admin",
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Me",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9ba15a84-d790-4753-adbb-dd8258e3c46f",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Successful Status\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response Has a JSON Body\", function () {",
+									"     pm.response.to.be.withBody;",
+									"     pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"Response Time Less Than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"",
+									"pm.test(\"Response Body is Admin Username\", function () {",
+									"    pm.expect(jsonData.identity).to.equal(pm.variables.get(\"username\"));",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{ip}}/admin/auth/me",
+							"protocol": "http",
+							"host": [
+								"{{ip}}"
+							],
+							"path": [
+								"admin",
+								"auth",
+								"me"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Access-Requests",
+			"item": [
+				{
+					"name": "Get All",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "fd0b0b98-7640-4d55-ac78-90e18d40f06d",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Successful Status\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response Content type is Json\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"    pm.response.to.be.header(\"Content-Type\", \"application/json\");",
+									"});",
+									"",
+									"pm.test(\"Response Time Less Than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"",
+									"pm.test(\"Response Body is Expected JSON Schema\", function () {",
+									"    tv4.validate(jsonData, pm.environment.get(\"collaborator-schema\"));",
+									"});",
+									"",
+									"pm.test(\"All Requests are Present\", function () {",
+									"    pm.expect(Object.keys(jsonData.requests).length).to.equal(parseInt(pm.environment.get(\"AR-quantity\")));",
+									"});",
+									"",
+									"pm.test(\"All requests are Valid\", function () {",
+									"    for (let step = 0; step < Object.keys(jsonData.requests).length; step++) {",
+									"         pm.expect(jsonData.requests[step].approved).to.equal(false);",
+									"    }",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{ip}}/admin/access-request",
+							"protocol": "http",
+							"host": [
+								"{{ip}}"
+							],
+							"path": [
+								"admin",
+								"access-request"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Approve Access - Wrong Inputs",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b326c5df-e3fb-40d8-8716-509068731201",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"",
+									"pm.test(\"Unsuccessful Status\", function () {",
+									"   pm.expect(pm.response.code).to.be.oneOf([400,404]);",
+									"});",
+									"",
+									"pm.test(\"Response Has a JSON Body\", function () {",
+									"     pm.response.to.be.withBody;",
+									"     pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"Response Time Less Than 200ms\", function() {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"",
+									"if(pm.response.code == 400){",
+									"    pm.test(\"Error: access request ID not valid\", function() {",
+									"        pm.expect(jsonData.message).to.equal(\"The access request ID given is not valid.\");",
+									"    });",
+									"}",
+									"else if(pm.response.code == 404){",
+									"    pm.test(\"Error: access request not found\", function() {",
+									"        pm.expect(jsonData.message).to.equal('The access request ID given was not found.');",
+									"    });",
+									"}",
+									"else{",
+									"    pm.test(\"Error is unknown\", function() {",
+									"        pm.expect(jsonData.message).to.equal('An unexpected error has occurred.');",
+									"    });",
+									"}",
+									"",
+									"",
+									"if(pm.environment.get(\"test_aarID\")){",
+									"    if(pm.environment.get(\"test_aarID\").length>0){",
+									"        postman.setNextRequest(\"Approve Access - Wrong Inputs\");",
+									"    }",
+									"    else{",
+									"        pm.environment.set(\"test_aarID\", \"null\");",
+									"    }",
+									"    ",
+									"}",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "c7ed92bf-0d4d-4a22-bdbd-4f1989d30d79",
+								"exec": [
+									"var arsID = pm.environment.get(\"test_aarID\");",
+									"if(arsID == \"null\"){",
+									"    arsID = ['5e8fa729fd1a14433603aaf2', '5e8fa8268491db6a7a074064', '@dqnd23@..', '', '       ', '12345678765432', '5e8fa85495cf81c201d1467d', '5e8fa8668b972fc325d3afa9', ';/;.!@#@$%^%&%$*^&%$', 'v'];",
+									"}",
+									"var ar = arsID.shift();",
+									"pm.environment.set(\"collabID\", ar);",
+									"pm.environment.set(\"test_aarID\", arsID);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "collabID",
+									"value": "{{collabID}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://{{ip}}/admin/access-request/approve",
+							"protocol": "http",
+							"host": [
+								"{{ip}}"
+							],
+							"path": [
+								"admin",
+								"access-request",
+								"approve"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deny Access - Wrong Inputs",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "65695429-e640-4ec3-91f7-5569e3d08102",
+								"exec": [
+									"var collabsID = pm.environment.get(\"test_darID\");",
+									"if(collabsID == \"null\"){",
+									"    collabsID = ['5e8fa729fd1a14433603aaf2', '5e8fa8268491db6a7a074064', '@dqnd23@..', '', '       ', '12345678765432', '5e8fa85495cf81c201d1467d', '5e8fa8668b972fc325d3afa9', ';/;.!@#@$%^%&%$*^&%$', 'v'];",
+									"}",
+									"var collab = collabsID.shift();",
+									"pm.environment.set(\"collabID\", collab);",
+									"pm.environment.set(\"test_darID\", collabsID);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "08b12fce-1401-4bef-bc33-593af45951d8",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"",
+									"pm.test(\"Unsuccessful Status\", function () {",
+									"   pm.expect(pm.response.code).to.be.oneOf([400,404]);",
+									"});",
+									"",
+									"pm.test(\"Response Has a JSON Body\", function () {",
+									"     pm.response.to.be.withBody;",
+									"     pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"Response Time Less Than 200ms\", function() {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"",
+									"if(pm.response.code == 400){",
+									"    pm.test(\"Error: access request not valid\", function() {",
+									"        pm.expect(jsonData.message).to.equal(\"The access request ID given is not valid.\");",
+									"    });",
+									"}",
+									"else if(pm.response.code == 404){",
+									"    pm.test(\"Error: access request not found\", function() {",
+									"        pm.expect(jsonData.message).to.equal('The access request ID given was not found.');",
+									"    });",
+									"}",
+									"else{",
+									"    pm.test(\"Error is unknown\", function() {",
+									"        pm.expect(jsonData.message).to.equal('An unexpected error has occurred.');",
+									"    });",
+									"}",
+									"",
+									"",
+									"if(pm.environment.get(\"test_darID\")){",
+									"    if(pm.environment.get(\"test_darID\").length>0){",
+									"        postman.setNextRequest(\"Deny Access - Wrong Inputs\");",
+									"    }",
+									"    else{",
+									"        pm.environment.set(\"test_darID\", \"null\");",
+									"    }",
+									"}",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "collabID",
+									"value": "{{collabID}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://{{ip}}/admin/access-request/deny",
+							"protocol": "http",
+							"host": [
+								"{{ip}}"
+							],
+							"path": [
+								"admin",
+								"access-request",
+								"deny"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Approve Access",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "54e2f633-771f-4f9c-bbb8-8938d0780e5a",
+								"exec": [
+									"pm.environment.set(\"collabID\", pm.request.body.formdata.get(\"collabID\"));"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "10efa0c3-669d-42bd-9b46-5b3a5fc628d9",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Successful Status\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.environment.set(\"AR-quantity\", parseInt(pm.environment.get(\"AR-quantity\"))-1);",
+									"});",
+									"",
+									"pm.test(\"Response Time Less Than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"",
+									"pm.test(\"Response Header is Json\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"    pm.response.to.be.header(\"Content-Type\", \"application/json\");",
+									"});",
+									"",
+									"pm.test(\"Response Body is Expected JSON Schema\", function () {",
+									"    tv4.validate(jsonData, pm.environment.get(\"collaborator-schema\"));",
+									"});",
+									"",
+									"pm.test(\"Response Request has expected ObjectID\", function() {",
+									"    pm.expect(pm.environment.get(\"collabID\")).to.equal(jsonData.access_request._id);",
+									"});",
+									"",
+									"pm.test(\"Only one Request is Present\", function () {",
+									"    pm.expect(Object.keys(jsonData).length).to.equal(1);",
+									"});",
+									"",
+									"pm.test(\"Request approved flag is true\", function () {",
+									"         pm.expect(jsonData.access_request.approved).to.equal(true);",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "collabID",
+									"value": "5e89d5bc967dc3fab8d85c9f",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://{{ip}}/admin/access-request/approve",
+							"protocol": "http",
+							"host": [
+								"{{ip}}"
+							],
+							"path": [
+								"admin",
+								"access-request",
+								"approve"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deny Access",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "5d2b5cb1-0954-45f3-a068-554fab2c0f8c",
+								"exec": [
+									"pm.environment.set(\"collabID\", pm.request.body.formdata.get(\"collabID\"));"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "5a8d33c0-a4bd-4c71-846e-d9c950e6b995",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Successful Status\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.environment.set(\"AR-quantity\", parseInt(pm.environment.get(\"AR-quantity\"))-1);",
+									"});",
+									"",
+									"pm.test(\"Response Time Less Than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"",
+									"pm.test(\"Response Header is Json\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"    pm.response.to.be.header(\"Content-Type\", \"application/json\");",
+									"});",
+									"",
+									"pm.test(\"Response Body is Expected JSON Schema\", function () {",
+									"    tv4.validate(jsonData, pm.environment.get(\"collaborator-schema\"));",
+									"});",
+									"",
+									"pm.test(\"Response Request has expected ObjectID\", function() {",
+									"    pm.expect(pm.variables.get(\"collabID\")).to.equal(jsonData.access_request._id);",
+									"});",
+									"",
+									"pm.test(\"Only one Request is Present\", function () {",
+									"    pm.expect(Object.keys(jsonData).length).to.equal(1);",
+									"});",
+									"",
+									"pm.test(\"Request approved flag is true\", function () {",
+									"         pm.expect(jsonData.access_request.approved).to.equal(false);",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "collabID",
+									"value": "5e89d5c4c1f6abd06ac4a10d",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://{{ip}}/admin/access-request/deny",
+							"protocol": "http",
+							"host": [
+								"{{ip}}"
+							],
+							"path": [
+								"admin",
+								"access-request",
+								"deny"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Tags",
+			"item": [
+				{
+					"name": "Get All",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "47885e17-6012-4b00-87bb-947cd7252706",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Successful Status\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response Header is Json\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"    pm.response.to.be.header(\"Content-Type\", \"application/json\");",
+									"});",
+									"",
+									"pm.test(\"Response Time Less Than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"",
+									"pm.test(\"Response Body is Expected JSON Schema\", function () {",
+									"    tv4.validate(jsonData, pm.environment.get(\"tag-schema\"));",
+									"});",
+									"",
+									"pm.test(\"All Tags are Present\", function () {",
+									"    pm.expect(Object.keys(jsonData.tags).length).to.equal(parseInt(pm.environment.get(\"tag-quantity\")));",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{ip}}/admin/tags",
+							"protocol": "http",
+							"host": [
+								"{{ip}}"
+							],
+							"path": [
+								"admin",
+								"tags"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove - Wrong Inputs",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "23257514-6418-46ec-a8f4-18f5f3491e99",
+								"exec": [
+									"var tagsID = pm.environment.get(\"test_tagID\");",
+									"if(tagsID == \"null\"){",
+									"    tagsID = ['5e8fa729fd1a14433603aaf2', '5e8fa8268491db6a7a074064', '@dqnd23@..', '', '       ', '12345678765432', '5e8fa85495cf81c201d1467d', '5e8fa8668b972fc325d3afa9', ';/;.!@#@$%^%&%$*^&%$', 'v'];",
+									"}",
+									"var tag = tagsID.shift();",
+									"pm.environment.set(\"tagID\", tag);",
+									"pm.environment.set(\"test_tagID\", tagsID);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "3488ffbc-c62c-4fc8-856f-831c2aa79893",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"",
+									"pm.test(\"Unsuccessful Status\", function () {",
+									"   pm.expect(pm.response.code).to.be.oneOf([400,404]);",
+									"});",
+									"",
+									"pm.test(\"Response Has a JSON Body\", function () {",
+									"     pm.response.to.be.withBody;",
+									"     pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"Response Time Less Than 200ms\", function() {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"",
+									"if(pm.response.code == 400){",
+									"    pm.test(\"Error: tag ID not valid\", function() {",
+									"        pm.expect(jsonData.message).to.equal(\"The tag ID given is not valid.\");",
+									"    });",
+									"}",
+									"else if(pm.response.code == 404){",
+									"    pm.test(\"Error: tag ID not found\", function() {",
+									"        pm.expect(jsonData.message).to.equal(\"The tag ID given was not found.\");",
+									"    });",
+									"}",
+									"else{",
+									"    pm.test(\"Error is unknown\", function() {",
+									"        pm.expect(jsonData.message).to.equal('An unexpected error has occurred.');",
+									"    });",
+									"}",
+									"",
+									"",
+									"if(pm.environment.get(\"test_tagID\")){",
+									"    if(pm.environment.get(\"test_tagID\").length>0){",
+									"        postman.setNextRequest(\"Remove - Wrong Inputs\");",
+									"    }",
+									"    else{",
+									"        pm.environment.set(\"test_tagID\", \"null\");",
+									"    }",
+									"}",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "tagID",
+									"value": "{{tagID}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://{{ip}}/admin/tags/remove",
+							"protocol": "http",
+							"host": [
+								"{{ip}}"
+							],
+							"path": [
+								"admin",
+								"tags",
+								"remove"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "23257514-6418-46ec-a8f4-18f5f3491e99",
+								"exec": [
+									"pm.environment.set(\"tagID\", pm.request.body.formdata.get(\"tagID\"));",
+									"var ip = pm.environment.get(\"ip\");",
+									"ip = \"http://\"+ip+\"/admin/tags\";",
+									"pm.sendRequest({",
+									"    url: ip,",
+									"    method: 'GET',",
+									"    header: 'Authorization: Bearer '+pm.environment.get(\"token\")",
+									"    ",
+									"}, function (err, response) {",
+									"    let decodedJson = response.json();",
+									"    pm.environment.set(\"tag-quantity\",  Object.keys(decodedJson.tags).length);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "3488ffbc-c62c-4fc8-856f-831c2aa79893",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Successful Status\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.environment.set(\"tag-quantity\", pm.environment.get(\"tag-quantity\")-1)",
+									"});",
+									"",
+									"pm.test(\"Response Time Less Than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"",
+									"pm.test(\"Response Header is Json\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"    pm.response.to.be.header(\"Content-Type\", \"application/json\");",
+									"});",
+									"",
+									"pm.test(\"Response Body is Expected JSON Schema\", function () {",
+									"    tv4.validate(jsonData, pm.environment.get(\"tag-schema\"));",
+									"});",
+									"",
+									"pm.test(\"Response Request has expected ObjectID\", function() {",
+									"    pm.expect(pm.environment.get(\"tagID\")).to.equal(jsonData.tag._id);",
+									"});",
+									"",
+									"pm.test(\"Only one Tag is Present\", function () {",
+									"    pm.expect(Object.keys(jsonData).length).to.equal(1);",
+									"});",
+									"",
+									"pm.test(\"Tag has been removed\", function () {",
+									"    var ip = pm.environment.get(\"ip\");",
+									"    ip = \"http://\"+ip+\"/admin/tags\";",
+									"        pm.sendRequest({",
+									"        url: ip,",
+									"        method: 'GET',",
+									"        header: 'Authorization: Bearer '+pm.environment.get(\"token\")",
+									"        ",
+									"    }, function (err, response) {",
+									"        let decodedJson = response.json();",
+									"        pm.expect( Object.keys(decodedJson.tags).length).to.equal(parseInt(pm.environment.get(\"tag-quantity\")));",
+									"    });",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "tagID",
+									"value": "5e89e716e0ad4d8285ff498a",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://{{ip}}/admin/tags/remove",
+							"protocol": "http",
+							"host": [
+								"{{ip}}"
+							],
+							"path": [
+								"admin",
+								"tags",
+								"remove"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Collaborators",
+			"item": [
+				{
+					"name": "Get All",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "eb85788f-0390-4808-b27e-5edfad981e7f",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Successful Status\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response Header is Json\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"    pm.response.to.be.header(\"Content-Type\", \"application/json\");",
+									"});",
+									"",
+									"pm.test(\"Response Time Less Than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"",
+									"pm.test(\"Response Body is Expected JSON Schema\", function () {",
+									"    tv4.validate(jsonData, pm.environment.get(\"collaborator-schema\"));",
+									"});",
+									"",
+									"pm.test(\"All Collaborator are Present\", function () {",
+									"    pm.expect(Object.keys(jsonData.collaborators).length).to.equal(pm.environment.get(\"tag-quantity\"));",
+									"});",
+									"",
+									"pm.test(\"All Collaborators are Valid\", function () {",
+									"    for (let step = 0; step < Object.keys(jsonData.collaborators).length; step++) {",
+									"         pm.expect(jsonData.collaborators[step].approved).to.equal(true);",
+									"    }",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{ip}}/admin/collaborators",
+							"protocol": "http",
+							"host": [
+								"{{ip}}"
+							],
+							"path": [
+								"admin",
+								"collaborators"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ban - Wrong Inputs",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "c3b0bc06-978a-4535-869d-3cafe612ba32",
+								"exec": [
+									"var collabsID = pm.environment.get(\"test_collabID\");",
+									"if(collabsID == \"null\"){",
+									"    collabsID = ['5e8fa729fd1a14433603aaf2', '5e8fa8268491db6a7a074064', '@dqnd23@..', '', '       ', '12345678765432', '5e8fa85495cf81c201d1467d', '5e8fa8668b972fc325d3afa9', ';/;.!@#@$%^%&%$*^&%$', 'v'];",
+									"}",
+									"var collab = collabsID.shift();",
+									"pm.environment.set(\"collabID\", collab);",
+									"pm.environment.set(\"test_collabID\", collabsID);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "5c795b93-2d9c-4e01-9804-900941cf3cda",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"",
+									"pm.test(\"Unsuccessful Status\", function () {",
+									"   pm.expect(pm.response.code).to.be.oneOf([400,404]);",
+									"});",
+									"",
+									"pm.test(\"Response Has a JSON Body\", function () {",
+									"     pm.response.to.be.withBody;",
+									"     pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"Response Time Less Than 200ms\", function() {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"",
+									"if(pm.response.code == 400){",
+									"    pm.test(\"Error: collaborators ID not valid\", function() {",
+									"        pm.expect(jsonData.message).to.equal(\"The collaborators ID given is not valid.\");",
+									"    });",
+									"}",
+									"else if(pm.response.code == 404){",
+									"    pm.test(\"Error: collaborators ID not found\", function() {",
+									"        pm.expect(jsonData.message).to.equal(\"The collaborators ID given was not found.\");",
+									"    });",
+									"}",
+									"else{",
+									"    pm.test(\"Error is unknown\", function() {",
+									"        pm.expect(jsonData.message).to.equal('An unexpected error has occurred.');",
+									"    });",
+									"}",
+									"",
+									"",
+									"if(pm.environment.get(\"test_collabID\")){",
+									"    if(pm.environment.get(\"test_collabID\").length>0){",
+									"        postman.setNextRequest(\"Ban - Wrong Inputs\");",
+									"    }",
+									"    else{",
+									"        pm.environment.set(\"test_collabID\", \"null\");",
+									"    }",
+									"}",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "collabID",
+									"value": "{{collabID}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://{{ip}}/admin/collaborators/ban",
+							"protocol": "http",
+							"host": [
+								"{{ip}}"
+							],
+							"path": [
+								"admin",
+								"collaborators",
+								"ban"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Unban - Wrong Inputs",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "9b55008d-33f4-49d9-9a71-8ebe9d4a5bf7",
+								"exec": [
+									"var collabsID = pm.environment.get(\"test_collabID\");",
+									"if(collabsID == \"null\"){",
+									"    collabsID = ['5e8fa729fd1a14433603aaf2', '5e8fa8268491db6a7a074064', '@dqnd23@..', '', '       ', '12345678765432', '5e8fa85495cf81c201d1467d', '5e8fa8668b972fc325d3afa9', ';/;.!@#@$%^%&%$*^&%$', 'v'];",
+									"}",
+									"var collab = collabsID.shift();",
+									"pm.environment.set(\"collabID\", collab);",
+									"pm.environment.set(\"test_collabID\", collabsID);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "8aa23ebe-44a6-4c97-8f84-7c18510477d3",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"",
+									"pm.test(\"Unsuccessful Status\", function () {",
+									"   pm.expect(pm.response.code).to.be.oneOf([400,404]);",
+									"});",
+									"",
+									"pm.test(\"Response Has a JSON Body\", function () {",
+									"     pm.response.to.be.withBody;",
+									"     pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"Response Time Less Than 200ms\", function() {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"",
+									"if(pm.response.code == 400){",
+									"    pm.test(\"Error: collaborators ID not valid\", function() {",
+									"        pm.expect(jsonData.message).to.equal(\"The collaborators ID given is not valid.\");",
+									"    });",
+									"}",
+									"else if(pm.response.code == 404){",
+									"    pm.test(\"Error: collaborators ID not found\", function() {",
+									"        pm.expect(jsonData.message).to.equal(\"The collaborators ID given was not found.\");",
+									"    });",
+									"}",
+									"else{",
+									"    pm.test(\"Error is unknown\", function() {",
+									"        pm.expect(jsonData.message).to.equal('An unexpected error has occurred.');",
+									"    });",
+									"}",
+									"",
+									"",
+									"if(pm.environment.get(\"test_collabID\")){",
+									"    if(pm.environment.get(\"test_collabID\").length>0){",
+									"        postman.setNextRequest(\"Unban - Wrong Inputs\");",
+									"    }",
+									"    else{",
+									"        pm.environment.set(\"test_collabID\", \"null\");",
+									"    }",
+									"}",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "collabID",
+									"value": "{{collabID}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://{{ip}}/admin/collaborators/unban",
+							"protocol": "http",
+							"host": [
+								"{{ip}}"
+							],
+							"path": [
+								"admin",
+								"collaborators",
+								"unban"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ban",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "c3b0bc06-978a-4535-869d-3cafe612ba32",
+								"exec": [
+									"pm.environment.set(\"collabID\", pm.request.body.formdata.get(\"collabID\"));"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "5c795b93-2d9c-4e01-9804-900941cf3cda",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Successful Status\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response Time Less Than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"",
+									"pm.test(\"Response Header is Json\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"    pm.response.to.be.header(\"Content-Type\", \"application/json\");",
+									"});",
+									"",
+									"pm.test(\"Response Body is Expected JSON Schema\", function () {",
+									"    tv4.validate(jsonData, pm.environment.get(\"collaborator-schema\"));",
+									"});",
+									"",
+									"pm.test(\"Response Collaborator has expected ObjectID\", function() {",
+									"    pm.expect(pm.environment.get(\"collabID\")).to.equal(jsonData.collaborator._id);",
+									"});",
+									"",
+									"pm.test(\"Only one Collaborator is Present\", function () {",
+									"    pm.expect(Object.keys(jsonData).length).to.equal(1);",
+									"});",
+									"",
+									"pm.test(\"Collaborator approved flag is true\", function () {",
+									"         pm.expect(jsonData.collaborator.approved).to.equal(true);",
+									"});",
+									"",
+									"pm.test(\"Collaborator banned flag is true\", function () {",
+									"         pm.expect(jsonData.collaborator.banned).to.equal(true);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "collabID",
+									"value": "5e89d57b3e1e4ef361ce68ef",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://{{ip}}/admin/collaborators/ban",
+							"protocol": "http",
+							"host": [
+								"{{ip}}"
+							],
+							"path": [
+								"admin",
+								"collaborators",
+								"ban"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Unban",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "9b55008d-33f4-49d9-9a71-8ebe9d4a5bf7",
+								"exec": [
+									"pm.environment.set(\"collabID\", pm.request.body.formdata.get(\"collabID\"));"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "8aa23ebe-44a6-4c97-8f84-7c18510477d3",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Successful Status\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response Time Less Than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"",
+									"pm.test(\"Response Header is Json\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"    pm.response.to.be.header(\"Content-Type\", \"application/json\");",
+									"});",
+									"",
+									"pm.test(\"Response Body is Expected JSON Schema\", function () {",
+									"    tv4.validate(jsonData, pm.environment.get(\"collaborator-schema\"));",
+									"});",
+									"",
+									"pm.test(\"Response Collaborator has expected ObjectID\", function() {",
+									"    pm.expect(pm.environment.get(\"collabID\")).to.equal(jsonData.collaborator._id);",
+									"});",
+									"",
+									"pm.test(\"Only one Collaborator is Present\", function () {",
+									"    pm.expect(Object.keys(jsonData).length).to.equal(1);",
+									"});",
+									"",
+									"pm.test(\"Collaborator approved flag is true\", function () {",
+									"         pm.expect(jsonData.collaborator.approved).to.equal(true);",
+									"});",
+									"",
+									"pm.test(\"Collaborator banned flag is false\", function () {",
+									"         pm.expect(jsonData.collaborator.banned).to.equal(false);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "collabID",
+									"value": "5e89d57b3e1e4ef361ce68ef",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://{{ip}}/admin/collaborators/unban",
+							"protocol": "http",
+							"host": [
+								"{{ip}}"
+							],
+							"path": [
+								"admin",
+								"collaborators",
+								"unban"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Documents",
+			"item": [
+				{
+					"name": "Get All",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "19a0f9aa-46e2-4902-bd44-ab264ec49698",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Successful Status\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response Header is Json\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"    pm.response.to.be.header(\"Content-Type\", \"application/json\");",
+									"});",
+									"",
+									"pm.test(\"Response Time Less Than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"",
+									"pm.test(\"Response Body is Expected JSON Schema\", function () {",
+									"    tv4.validate(jsonData, pm.environment.get(\"document-schema\"));",
+									"});",
+									"",
+									"pm.test(\"All Documents are Present\", function () {",
+									"    pm.expect(Object.keys(jsonData.documents).length).to.equal(7);",
+									"});",
+									"",
+									"pm.test(\"All Documents are published\", function () {",
+									"    for (let step = 0; step < Object.keys(jsonData.documents).length; step++) {",
+									"         pm.expect(jsonData.documents[step].published).to.equal(true);",
+									"    }",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{ip}}/admin/documents",
+							"protocol": "http",
+							"host": [
+								"{{ip}}"
+							],
+							"path": [
+								"admin",
+								"documents"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View Document - Wrong Inputs",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "b6b9a8f3-cb22-4e93-ba32-d54df63b84bc",
+								"exec": [
+									"var docsID = pm.environment.get(\"test_docID\");",
+									"if(docsID == \"null\"){",
+									"    docsID = ['5e8fa729fd1a14433603aaf2', '5e8fa8268491db6a7a074064', '@dqnd23@..', '', '       ', '12345678765432', '5e8fa85495cf81c201d1467d', '5e8fa8668b972fc325d3afa9', 'v'];",
+									"}",
+									"var docID = docsID.shift();",
+									"pm.environment.set(\"docID\", docID);",
+									"pm.environment.set(\"test_docID\", docsID);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "f418febd-c149-4fa8-9f2a-aeaba0b8e1c4",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"",
+									"pm.test(\"Unsuccessful Status\", function () {",
+									"   pm.expect(pm.response.code).to.be.oneOf([400,404]);",
+									"});",
+									"",
+									"pm.test(\"Response Has a JSON Body\", function () {",
+									"     pm.response.to.be.withBody;",
+									"     pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"Response Time Less Than 200ms\", function() {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"",
+									"if(pm.response.code == 400){",
+									"    pm.test(\"Error: documents ID not valid\", function() {",
+									"        pm.expect(jsonData.message).to.equal(\"The documents ID given is not valid.\");",
+									"    });",
+									"}",
+									"else if(pm.response.code == 404){",
+									"    pm.test(\"Error: documents ID not found\", function() {",
+									"        pm.expect(jsonData.message).to.equal(\"The documents ID given was not found.\");",
+									"    });",
+									"}",
+									"else{",
+									"    pm.test(\"Error is unknown\", function() {",
+									"        pm.expect(jsonData.message).to.equal('An unexpected error has occurred.');",
+									"    });",
+									"}",
+									"",
+									"",
+									"if(pm.environment.get(\"test_docID\")){",
+									"    if(pm.environment.get(\"test_docID\").length>0){",
+									"        postman.setNextRequest(\"View Document - Wrong Inputs\");",
+									"    }",
+									"    else{",
+									"        pm.environment.set(\"test_docID\", \"null\");",
+									"    }",
+									"}",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{ip}}/admin/documents/view/{{docID}}",
+							"protocol": "http",
+							"host": [
+								"{{ip}}"
+							],
+							"path": [
+								"admin",
+								"documents",
+								"view",
+								"{{docID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Publish Document - Wrong Inputs",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "efee686e-4937-453d-9e38-0117759ec709",
+								"exec": [
+									"var docsID = pm.environment.get(\"test_docID\");",
+									"if(docsID == \"null\"){",
+									"    docsID = ['5e8fa729fd1a14433603aaf2', '5e8fa8268491db6a7a074064', '@dqnd23@..', '', '       ', '12345678765432', '5e8fa85495cf81c201d1467d', '5e8fa8668b972fc325d3afa9', ';/;.!@#@$%^%&%$*^&%$', 'v'];",
+									"}",
+									"var docID = docsID.shift();",
+									"pm.environment.set(\"docID\", docID);",
+									"pm.environment.set(\"test_docID\", docsID);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "ac79bd31-d495-4649-b774-d33a2e7ec984",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"",
+									"pm.test(\"Unsuccessful Status\", function () {",
+									"   pm.expect(pm.response.code).to.be.oneOf([400,404]);",
+									"});",
+									"",
+									"pm.test(\"Response Has a JSON Body\", function () {",
+									"     pm.response.to.be.withBody;",
+									"     pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"Response Time Less Than 200ms\", function() {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"",
+									"if(pm.response.code == 400){",
+									"    pm.test(\"Error: documents ID not valid\", function() {",
+									"        pm.expect(jsonData.message).to.equal(\"The documents ID given is not valid.\");",
+									"    });",
+									"}",
+									"else if(pm.response.code == 404){",
+									"    pm.test(\"Error: documents ID not found\", function() {",
+									"        pm.expect(jsonData.message).to.equal(\"The documents ID given was not found.\");",
+									"    });",
+									"}",
+									"else{",
+									"    pm.test(\"Error is unknown\", function() {",
+									"        pm.expect(jsonData.message).to.equal('An unexpected error has occurred.');",
+									"    });",
+									"}",
+									"",
+									"",
+									"if(pm.environment.get(\"test_docID\")){",
+									"    if(pm.environment.get(\"test_docID\").length>0){",
+									"        postman.setNextRequest(\"Publish Document - Wrong Inputs\");",
+									"    }",
+									"    else{",
+									"        pm.environment.set(\"test_docID\", \"null\");",
+									"    }",
+									"}",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "docID",
+									"value": "{{docID}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://{{ip}}/admin/documents/publish",
+							"protocol": "http",
+							"host": [
+								"{{ip}}"
+							],
+							"path": [
+								"admin",
+								"documents",
+								"publish"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Unpublish Document - Wrong Inputs",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "09895865-b373-4c25-88da-6257fb818939",
+								"exec": [
+									"var docsID = pm.environment.get(\"test_docID\");",
+									"if(docsID == \"null\"){",
+									"    docsID = ['5e8fa729fd1a14433603aaf2', '5e8fa8268491db6a7a074064', '@dqnd23@..', '', '       ', '12345678765432', '5e8fa85495cf81c201d1467d', '5e8fa8668b972fc325d3afa9', ';/;.!@#@$%^%&%$*^&%$', 'v'];",
+									"}",
+									"var docID = docsID.shift();",
+									"pm.environment.set(\"docID\", docID);",
+									"pm.environment.set(\"test_docID\", docsID);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "562a3f37-c4cc-4161-a3b0-d9bb00ba31ee",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"",
+									"pm.test(\"Unsuccessful Status\", function () {",
+									"   pm.expect(pm.response.code).to.be.oneOf([400,404]);",
+									"});",
+									"",
+									"pm.test(\"Response Has a JSON Body\", function () {",
+									"     pm.response.to.be.withBody;",
+									"     pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"Response Time Less Than 200ms\", function() {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"",
+									"if(pm.response.code == 400){",
+									"    pm.test(\"Error: documents ID not valid\", function() {",
+									"        pm.expect(jsonData.message).to.equal(\"The documents ID given is not valid.\");",
+									"    });",
+									"}",
+									"else if(pm.response.code == 404){",
+									"    pm.test(\"Error: documents ID not found\", function() {",
+									"        pm.expect(jsonData.message).to.equal(\"The documents ID given was not found.\");",
+									"    });",
+									"}",
+									"else{",
+									"    pm.test(\"Error is unknown\", function() {",
+									"        pm.expect(jsonData.message).to.equal('An unexpected error has occurred.');",
+									"    });",
+									"}",
+									"",
+									"",
+									"if(pm.environment.get(\"test_docID\")){",
+									"    if(pm.environment.get(\"test_docID\").length>0){",
+									"        postman.setNextRequest(\"Unpublish Document - Wrong Inputs\");",
+									"    }",
+									"    else{",
+									"        pm.environment.set(\"test_docID\", \"null\");",
+									"    }",
+									"}",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "docID",
+									"value": "{{docID}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://{{ip}}/admin/documents/unpublish",
+							"protocol": "http",
+							"host": [
+								"{{ip}}"
+							],
+							"path": [
+								"admin",
+								"documents",
+								"unpublish"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View Document",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "b6b9a8f3-cb22-4e93-ba32-d54df63b84bc",
+								"exec": [
+									"pm.environment.set(\"docID\", pm.request.url.variables.get(\"docID\"));"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "f418febd-c149-4fa8-9f2a-aeaba0b8e1c4",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Successful Status\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response Time Less Than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"",
+									"pm.test(\"Response Header is Json\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"    pm.response.to.be.header(\"Content-Type\", \"application/json\");",
+									"});",
+									"",
+									"pm.test(\"Response Body is Expected JSON Schema\", function () {",
+									"    tv4.validate(jsonData, pm.environment.get(\"document-schema\"));",
+									"});",
+									"",
+									"pm.test(\"Response Request has expected ObjectID\", function() {",
+									"    pm.expect(pm.environment.get(\"docID\")).to.equal(jsonData.document._id);",
+									"});",
+									"",
+									"pm.test(\"Only one Document is Present\", function () {",
+									"    pm.expect(Object.keys(jsonData).length).to.equal(1);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{ip}}/admin/documents/view/:docID",
+							"protocol": "http",
+							"host": [
+								"{{ip}}"
+							],
+							"path": [
+								"admin",
+								"documents",
+								"view",
+								":docID"
+							],
+							"variable": [
+								{
+									"key": "docID",
+									"value": "5e89dd1077c9a2c523f90179"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Publish Document",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "efee686e-4937-453d-9e38-0117759ec709",
+								"exec": [
+									"pm.environment.set(\"docID\", pm.request.body.formdata.get(\"docID\"));"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "ac79bd31-d495-4649-b774-d33a2e7ec984",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Successful Status\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response Time Less Than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"",
+									"pm.test(\"Response Header is Json\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"    pm.response.to.be.header(\"Content-Type\", \"application/json\");",
+									"});",
+									"",
+									"pm.test(\"Response Body is Expected JSON Schema\", function () {",
+									"    tv4.validate(jsonData, pm.environment.get(\"document-schema\"));",
+									"});",
+									"",
+									"pm.test(\"Response Document has expected ObjectID\", function() {",
+									"    pm.expect(pm.environment.get(\"docID\")).to.equal(jsonData.document._id);",
+									"});",
+									"",
+									"pm.test(\"Only one Document is Present\", function () {",
+									"    pm.expect(Object.keys(jsonData).length).to.equal(1);",
+									"});",
+									"pm.test(\"Document published flag is true\", function () {",
+									"         pm.expect(jsonData.document.published).to.equal(true);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "docID",
+									"value": "5e89dd1077c9a2c523f90179",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://{{ip}}/admin/documents/publish",
+							"protocol": "http",
+							"host": [
+								"{{ip}}"
+							],
+							"path": [
+								"admin",
+								"documents",
+								"publish"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Unpublish Document",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "09895865-b373-4c25-88da-6257fb818939",
+								"exec": [
+									"pm.environment.set(\"docID\", pm.request.body.formdata.get(\"docID\"));"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "562a3f37-c4cc-4161-a3b0-d9bb00ba31ee",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Successful Status\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response Time Less Than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"",
+									"pm.test(\"Response Header is Json\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"    pm.response.to.be.header(\"Content-Type\", \"application/json\");",
+									"});",
+									"",
+									"pm.test(\"Response Body is Expected JSON Schema\", function () {",
+									"    tv4.validate(jsonData, pm.environment.get(\"document-schema\"));",
+									"});",
+									"",
+									"pm.test(\"Response Document has expected ObjectID\", function() {",
+									"    pm.expect(pm.environment.get(\"docID\")).to.equal(jsonData.document._id);",
+									"});",
+									"",
+									"pm.test(\"Only one Document is Present\", function () {",
+									"    pm.expect(Object.keys(jsonData).length).to.equal(1);",
+									"});",
+									"pm.test(\"Document published flag is false\", function () {",
+									"         pm.expect(jsonData.document.published).to.equal(false);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "docID",
+									"value": "5e89dd1077c9a2c523f90179",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://{{ip}}/admin/documents/unpublish",
+							"protocol": "http",
+							"host": [
+								"{{ip}}"
+							],
+							"path": [
+								"admin",
+								"documents",
+								"unpublish"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "48edbac0-66ad-4e77-837b-7499f24689cc",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "17f9da86-547b-4a16-b11c-0b46f9ad2963",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
