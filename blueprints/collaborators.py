@@ -1,104 +1,109 @@
+"""
+collaborators.py
+====================================
+Every route regarding collaborators, including but not limited to banning or unbanning a collaborator and seeing all of current collaborators in the systen can be found here.
+"""
 from flask import Blueprint, Response, request
 from utils.responses import ApiResult, ApiException
 from exceptions.handler import AdminServerApiError, AdminServerAuthError
 from flask_jwt_extended import get_jwt_identity, fresh_jwt_required
+from daos.collaborators_dao import CollaboratorsDAO
+from utils.validators import objectId_is_valid
 
 blueprint = Blueprint('collaborators', __name__, url_prefix='/admin/collaborators')
-
+dao =  CollaboratorsDAO()
 @blueprint.route('/', methods=['GET'])
 @fresh_jwt_required
 def collaborators():
     """
-    Return all the collaborators with their respective first name, last name, collabID and email.
+    Retrieve a list of collaborators from the database.
+
+    Returns
+    -------
+    Collaborator[]
+        List of collaborators currently in the system.
     """
-    # TODO: Use DAOs to retrieve the necessary information.
+    collaborators = dao.get_collaborators()
     return ApiResult(
-        message='Valid Data'
+        body={'collaborators':collaborators}
     )
 
 @blueprint.route('/ban', methods=['PUT'])
 @fresh_jwt_required
 def collaborators_ban():
     """
-    Ban a collaborator from the system
+    Ban a collaborator. 
+    
+    Parameters
+    ----------
+    collabID : ObjectId
+        12-byte MongoDB compliant Object id of the collaborator to be banned.
+    
+    Returns
+    -------
+    Collaborator
+        Collaborator that has been banned.
+    
+    Raises
+    ------
+    AdminServerApiError
+        If the collaborators id is not valid or if a collaborator with the given id was not found.
+
     """
     collab_id  = request.form.get('collabID')
-    #valid_collab_id = ObjectID().is_valid(collab_id)
-    valid_collab_id = True
+    valid_collab_id = objectId_is_valid(collab_id)
     if not valid_collab_id:
         raise AdminServerApiError(
-            msg='The collaborators ID given was not validated.',
+            msg='The collaborators ID given is not valid.',
             status=400
         )
-    collab_id_exist = True
-    # TODO: Check if collab id exist
-    if not collab_id_exist:
+    collaborator = dao.ban_collaborator(collab_id)
+    if collaborator is None:
         raise AdminServerApiError(
             msg='The collaborators ID given was not found.',
             status=404
         )
 
-
-    # TODO: Use DAOs to ban collaborator.
-    # TODO: Unpublish all collaborators documents.
-    return ApiResult(
-        message='Valid Collaborator Ban',
-        collabID = collab_id 
+    # TODO: Use DAOs to retrieve the necessary information.
+    return ApiResult(body = 
+        {'collaborator': collaborator}
     )
 
 @blueprint.route('/unban', methods=['PUT'])
 @fresh_jwt_required
 def collaborators_unban():
     """
-    UnBan a collaborator from the system
+    Unban a collaborator. 
+    
+    Parameters
+    ----------
+    collabID : ObjectId
+        12-byte MongoDB compliant Object id of the collaborator to be unbanned.
+    
+    Returns
+    -------
+    Collaborator
+        Collaborator that has been unbanned.
+    
+    Raises
+    ------
+    AdminServerApiError
+        If the collaborators id is not valid or if a collaborator with the given id was not found.
+
     """
     collab_id  = request.form.get('collabID')
-    #valid_collab_id = ObjectID().is_valid(collab_id)
-    valid_collab_id = True
+    valid_collab_id = objectId_is_valid(collab_id)
     if not valid_collab_id:
         raise AdminServerApiError(
-            msg='The collaborators ID given was not validated.',
+            msg='The collaborators ID given is not valid.',
             status=400
         )
-    collab_id_exist = True
-    # TODO: Check if collab id exist
-    if not collab_id_exist:
+    collaborator = dao.unban_collaborator(collab_id)
+    if collaborator is None:
         raise AdminServerApiError(
             msg='The collaborators ID given was not found.',
             status=404
         )
-    # TODO: Use DAOs to unban collaborator.
-    # TODO: Publish all collaborators documents.
-    return ApiResult(
-        message='Valid Collaborator Ban',
-        collabID = collab_id
-    )
-
-
-@blueprint.route('/remove', methods=['DELETE'])
-@fresh_jwt_required
-def collaborators_remove():
-    """
-    UnBan a collaborator from the system
-    """
-    collab_id  = request.form.get('collabID')
-    #valid_collab_id = ObjectID().is_valid(collab_id)
-    valid_collab_id = True
-    if not valid_collab_id:
-        raise AdminServerApiError(
-            msg='The collaborators ID given was not validated.',
-            status=400
-        )
-    collab_id_exist = True
-    # TODO: Check if collab id exist
-    if not collab_id_exist:
-        raise AdminServerApiError(
-            msg='The collaborators ID given was not found.',
-            status=404
-        )
-    # TODO: Use DAOs to unban collaborator.
-    # TODO: Publish all collaborators documents.
-    return ApiResult(
-        message='Valid Collaborator Removal',
-        collabID = collab_id
+    return ApiResult(body = 
+        {'collaborator': collaborator}
     )

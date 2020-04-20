@@ -1,19 +1,36 @@
+"""
+create_app.py
+====================================
+File that contains all the initializations needed for the program to work.
+"""
 from werkzeug.utils import find_modules, import_string
 from flask import Flask, request, current_app, redirect
 from utils.responses import ApiException, ApiResult
 from exceptions.handler import AdminServerApiError, AdminServerAuthError, AdminServerError, AdminServerRequestError
-#from utils import validator
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, unset_jwt_cookies
 import os
 
 class ApiFlask(Flask):
     """
-    Overrides the make response method to add
-    ApiResult and ApiException support  
+    Overrides the make response method to add ApiResult and ApiException support.
     """
 
     def make_response(self, rv):
+        """
+        Returns whether or not the password given is in a valid format.
+        
+        Parameters
+        ----------
+            rv : object
+                Result object to be getting the response from.
+        
+        Returns
+        -------
+        object
+            Flask http reponse object
+
+        """
         if isinstance(rv, ApiResult):
             return rv.to_response()
         if isinstance(rv, ApiException):
@@ -21,13 +38,19 @@ class ApiFlask(Flask):
         return Flask.make_response(self, rv)
 
 def create_app(config=None):
-    """Creates and returns a Flask app instance.
+    """
+    Returns whether or not the password given is in a valid format.
+    
+    Parameters
+    ----------
+        config : string
+            String with the path to the config file
+    
+    Returns
+    -------
+    ApiFlask
+        Application instance with all the initializations performed
 
-    Keyword Arguments:
-        config {string} --  (default: {None})
-
-    Returns:
-        [flask_application] -- instance of a flask app
     """
     app = ApiFlask(__name__)
     with app.app_context():
@@ -59,11 +82,14 @@ def create_app(config=None):
         return app
 
 def register_blueprints(app):
-    """Register all blueprints under the {.blueprint} module
-    in the passed application instance.
+    """
+    Register all blueprints under the {.blueprint} module in the passed application instance.
+    
+    Parameters
+    ----------
+        app : ApiFlask
+            Application instance
 
-    Arguments:
-        app {flask application} -- application instance
     """
     for name in find_modules('blueprints'):
         mod = import_string(name)
@@ -73,10 +99,18 @@ def register_blueprints(app):
 
 
 def register_base_url(app):
+    """
+    Register the base url for the application instance.
+    
+    Parameters
+    ----------
+        app : ApiFlask
+            Application instance
+    """
     @app.route('/')
-    @app.route('/admin/api/')
+    @app.route('/admin/')
     def api():
-        return ApiResult(
+        return ApiResult(body = 
             {
                 'message': 'You have reach the IReNE Administrative API. Please refer to the documentation.'
             }
@@ -85,7 +119,12 @@ def register_base_url(app):
 
 def register_cors(app: Flask):
     """
-        Setup CORS , cross-origin-resource-sharing settings
+    Method to setup CORS, cross-origin-resource-sharing settings
+    
+    Parameters
+    ----------
+        app : Flask
+            Application instance
     """
 
     origins_list = '*'
@@ -110,19 +149,22 @@ def register_cors(app: Flask):
     
     CORS(
         app=app,
-        resources={r"/admin/api/*": {"origins": origins_list}},
+        resources={r"/admin/*": {"origins": origins_list}},
         methods=methods_list,
         allowed_headers=allowed_headers_list,
         supports_credentials=True
     )
 
 def register_error_handlers(app):
-    """Register error daos to flask application instance.
-
-    Arguments:
-        app {flask application} -- application instance
     """
-    if True:#app.config['DEBUG']:
+    Registers the error handler for the flask application instance.
+    
+    Parameters
+    ----------
+        app : Flask
+            Application instance
+    """
+    if False:#app.config['DEBUG']:
         # If debug true, then return the whole stack
         @app.errorhandler(AdminServerError)
         def handle_error(error):
@@ -168,13 +210,24 @@ def register_error_handlers(app):
                 message='An unexpected error has occurred.',
                 status=500
             )
-        jwt = app["jwt"]
+        jwt = app.jwt
         @jwt.invalid_token_loader
         def invalid_token_callback(callback):
             # Invalid Fresh/Non-Fresh Access token in auth header
-            resp = app.make_response(redirect('/admin/api/auth/login'))
-            unset_jwt_cookies(resp)
-            return resp, 302 
+            return ApiException(
+                error_type='AdminServerRequestError',
+                message='Invalid Authentication Token.',
+                status=400
+            )
+
+        @jwt.needs_fresh_token_loader
+        def nonfresh_token_callback(callback):
+            # Invalid Non-Fresh Access token in auth header
+            return ApiException(
+                error_type='AdminServerRequestError',
+                message='Invalid Authentication Token - Not Fresh.',
+                status=400
+            )
 
     app.register_error_handler(
         400,
