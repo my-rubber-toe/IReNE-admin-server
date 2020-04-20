@@ -68,6 +68,11 @@ Once these steps are performed, go to the arrow inside the Admin-Server-API and 
 Press Run Admin-Server-API collection and all the requests will be sent to the server and the tests will be performed. 
 **Important Note: The environment should be reset and the application server should be restarted in order to performed tests consecutively.** 
 
+## Documentation
+In order to generate the documentation, run the following command on the root directory.
+```
+make html
+```
 
 ## Built With
 
