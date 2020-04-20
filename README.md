@@ -21,17 +21,17 @@ To have this project up and running on your local machine, follow the next serie
 
 In the directory of the repository, create a virtual environment with Python
 ```
-python3 -m venv .
+python3 -m venv ./venv
 ```
 
 Activate the virtual environment.
 ```
-source ./<venv>/bin/activate
+source ./venv/bin/activate
 ```
 
 Now install all the neccessary requirements for the application server to run with the following command:
 ```
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 
 ### Running the application
@@ -68,6 +68,11 @@ Once these steps are performed, go to the arrow inside the Admin-Server-API and 
 Press Run Admin-Server-API collection and all the requests will be sent to the server and the tests will be performed. 
 **Important Note: The environment should be reset and the application server should be restarted in order to performed tests consecutively.** 
 
+## Documentation
+In order to generate the documentation, run the following command on the root directory.
+```
+make html
+```
 
 ## Built With
 
