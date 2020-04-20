@@ -40,7 +40,7 @@ def check_if_token_in_blacklist(decrypted_token):
     return entry
 
 
-@blueprint.route('/login')
+@blueprint.route('/login', methods = ['POST'])
 def login():
     """
     Generate a new access token for the user. User must have valid credentials in the databse to get a valid token.
@@ -104,7 +104,7 @@ def me():
     )
 
 
-@blueprint.route("/logout")
+@blueprint.route("/logout", methods = ['GET'])
 @fresh_jwt_required
 def logout():
     """
