@@ -5,6 +5,7 @@ Data access object file for the collaborators.
 """
 
 from daos.dummy_data.collaborator import collaborators
+from daos.dummy_data.document import documents
 
 class CollaboratorsDAO:
     """
@@ -31,7 +32,7 @@ class CollaboratorsDAO:
 
     def ban_collaborator(self, collabID):
         """
-        Bans a collaborator found in the database.
+        Bans a collaborator found in the database and unpublishes all the documents pertaining to said collaborator.
         
         Parameters
         ----------
@@ -44,15 +45,21 @@ class CollaboratorsDAO:
             Returns a dictionary as the collaborator banned or None if the collaborator was not found.
 
         """
+        temp_collab = None
         for collab in self.collaboratorList:
             if(collab.get('_id')==collabID and collab.get('approved') == True):
                 collab['banned'] = True
-                return collab
-        return None
+                temp_collab = collab
+                break
+        if(temp_collab is not None):
+            for document in documents:
+                if(document['_id'] in temp_collab['documentsID']):
+                    document['published'] = False
+        return temp_collab
 
     def unban_collaborator(self, collabID):
         """
-        Unbans a collaborator found in the database.
+        Unbans a collaborator found in the database and publishes all the documents pertaining to said collaborator.
         
         Parameters
         ----------
@@ -65,8 +72,14 @@ class CollaboratorsDAO:
             Returns a dictionary as the collaborator unbanned or None if the collaborator was not found.
 
         """
+        temp_collab = None
         for collab in self.collaboratorList:
             if(collab.get('_id')==collabID and collab.get('approved') == True):
                 collab['banned'] = False
-                return collab
-        return None
+                temp_collab = collab
+                break
+        if(temp_collab is not None):
+            for document in documents:
+                if(document['_id'] in temp_collab['documentsID']):
+                    document['published'] = True
+        return temp_collab
