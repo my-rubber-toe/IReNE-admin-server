@@ -74,13 +74,13 @@ def published_doc(docid):
     """
         DAO that publishes a document
     """
-    DocumentCase.objects(id = docid).update_one(set__published = True)
+    DocumentCase.objects(id = docid).update(set__published = True)
 
 def unpublished_doc(docid):
     """
         DAO that unpublishes a document
     """
-    DocumentCase.objects(id = docid).update_one(set__published = False)
+    DocumentCase.objects(id = docid).update(set__published = False)
 
 def remove_tag(tag):
     """
