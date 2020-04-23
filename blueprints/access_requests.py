@@ -11,6 +11,7 @@ from utils.responses import ApiResult, ApiException
 from utils.validators import objectId_is_valid
 from exceptions.handler import AdminServerApiError, AdminServerAuthError
 from daos.access_requests_dao import AccessRequestsDAO
+import json
 
 blueprint = Blueprint('access-requests', __name__, url_prefix='/admin/access-request')
 dao = AccessRequestsDAO()
@@ -29,7 +30,7 @@ def access_requests():
     # TODO: Use DAOs to retrieve the necessary information.
     requests = dao.get_access_requests()
     return ApiResult(
-        body={'requests':requests}
+        body={'requests': json.loads(requests.to_json())}
     )
 
 @blueprint.route('/approve', methods=['PUT'])

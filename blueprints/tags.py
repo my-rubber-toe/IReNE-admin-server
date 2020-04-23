@@ -9,6 +9,7 @@ from exceptions.handler import AdminServerApiError, AdminServerAuthError
 from flask_jwt_extended import get_jwt_identity, fresh_jwt_required
 from utils.validators import objectId_is_valid
 from daos.tags_dao import TagsDAO
+import json
 
 blueprint = Blueprint('tags', __name__, url_prefix='/admin/tags')
 dao = TagsDAO()
@@ -22,9 +23,9 @@ def tags():
     Tag[]
         List of tags currently in the system.
     """
-    # TODO: Use DAOs to retrieve all the tags.
+    tags = dao.get_tags()
     return ApiResult( body = 
-        {'tags': dao.get_tags()}
+        {'tags': json.loads(tags.to_json())}
     )
 
 @blueprint.route('/remove', methods=['PUT'])

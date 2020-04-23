@@ -3,17 +3,18 @@ access_requests_dao.py
 ====================================
 Data access object file for the access requests item. Important; Access Request objects are in truth Collaborators object in the databse whose 'approved' flag is false.
 """
-from daos.dummy_data.access_request import requests
+
+from mongoengine import *
+from database.schema_DB import Collaborator
+import datetime
+import json
 
 class AccessRequestsDAO:
     """
     Data access object for the Access Requests.
     """
-    requestList = []
     def __init__(self):
-        for ar in requests:
-            if(ar['approved'] == False):
-                self.requestList.append(ar)
+        pass
     
     def get_access_requests(self):
         """
@@ -25,7 +26,8 @@ class AccessRequestsDAO:
             List of dictionaries representing the Access Requests in the database.
 
         """
-        return self.requestList
+        access_req = Collaborator.objects.filter(approved = False)
+        return access_req
 
     def accept_access_request(self, arID):
         """
@@ -42,18 +44,15 @@ class AccessRequestsDAO:
             Returns a dictionary of the access request accepted or None if the access request was not found.
 
         """
-        ar_temp = None
-        for ar in self.requestList:
-            if(ar.get('_id')==arID and ar.get('approved') == False):
-                ar['approved'] = True
-                ar_temp = ar
-        if(ar_temp is not None):
-            self.requestList[:] = [ar for ar in self.requestList if ar.get('_id') != arID ]
-        return ar_temp
+        try:
+            collab = Collaborator.objects(id = arID).update_one(set__approved = True)
+        except DoesNotExist:
+            return None
+        return collab
 
     def deny_access_request(self, arID):
         """
-        Denies an access request found in the database.
+        Denies an access request found in the database by removing it.
         
         Parameters
         ----------
@@ -66,10 +65,8 @@ class AccessRequestsDAO:
             Returns a dictionary of the access request denied or None if the access request was not found.
 
         """
-        ar_temp = None
-        for ar in self.requestList:
-            if(ar.get('_id')==arID and ar.get('approved') == False):
-                ar_temp = ar
-        if(ar_temp is not None):
-            self.requestList[:] = [ar for ar in self.requestList if ar.get('_id') != arID ]
-        return ar_temp
+        try:
+            ar = Collaborator.objects(id = arID, approved = False).delete()
+        except DoesNotExist:
+            return None
+        return ar

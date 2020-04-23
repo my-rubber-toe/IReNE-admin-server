@@ -4,18 +4,18 @@ collaborators_dao.py
 Data access object file for the collaborators.
 """
 
-from daos.dummy_data.collaborator import collaborators
+from mongoengine import *
+from database.schema_DB import Collaborator
+import datetime
+import json
 
 class CollaboratorsDAO:
     """
     Data access object for the Collaborators.
     """
 
-    collaboratorList = []
     def __init__(self):
-        for collab in collaborators:
-            if(collab['approved'] == True):
-                self.collaboratorList.append(collab)
+        pass
     
     def get_collaborators(self):
         """
@@ -27,7 +27,8 @@ class CollaboratorsDAO:
             List of dictionaries representing collaborators.
 
         """
-        return self.collaboratorList
+        collabs = Collaborator.objects.filter(approved = True)
+        return collabs
 
     def ban_collaborator(self, collabID):
         """
@@ -44,11 +45,11 @@ class CollaboratorsDAO:
             Returns a dictionary as the collaborator banned or None if the collaborator was not found.
 
         """
-        for collab in self.collaboratorList:
-            if(collab.get('_id')==collabID and collab.get('approved') == True):
-                collab['banned'] = True
-                return collab
-        return None
+        try:
+            collab = Collaborator.objects(id = collabID).update_one(set__banned = True)
+        except DoesNotExist:
+            return None
+        return collab
 
     def unban_collaborator(self, collabID):
         """
@@ -65,8 +66,8 @@ class CollaboratorsDAO:
             Returns a dictionary as the collaborator unbanned or None if the collaborator was not found.
 
         """
-        for collab in self.collaboratorList:
-            if(collab.get('_id')==collabID and collab.get('approved') == True):
-                collab['banned'] = False
-                return collab
-        return None
+        try:
+            collab = Collaborator.objects(id = collabID).update_one(set__banned = False)
+        except DoesNotExist:
+            return None
+        return collab

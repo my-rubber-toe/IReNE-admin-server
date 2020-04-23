@@ -9,6 +9,7 @@ from exceptions.handler import AdminServerApiError, AdminServerAuthError
 from flask_jwt_extended import get_jwt_identity, fresh_jwt_required
 from daos.documents_dao import DocumentsDAO
 from utils.validators import objectId_is_valid
+import json
 
 blueprint = Blueprint('documents', __name__, url_prefix='/admin/documents')
 dao = DocumentsDAO()
@@ -23,8 +24,9 @@ def documents():
     Document[]
         List of collaborators currently in the system.
     """
+    documents = dao.get_all_documents()
     return ApiResult(
-        body={'documents':dao.get_all_documents()}
+        body={'documents': json.loads(documents.to_json())}
     )
 
 @blueprint.route('/view/<docID>', methods=['GET'])

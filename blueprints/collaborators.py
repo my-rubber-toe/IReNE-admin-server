@@ -9,6 +9,7 @@ from exceptions.handler import AdminServerApiError, AdminServerAuthError
 from flask_jwt_extended import get_jwt_identity, fresh_jwt_required
 from daos.collaborators_dao import CollaboratorsDAO
 from utils.validators import objectId_is_valid
+import json
 
 blueprint = Blueprint('collaborators', __name__, url_prefix='/admin/collaborators')
 dao =  CollaboratorsDAO()
@@ -25,7 +26,7 @@ def collaborators():
     """
     collaborators = dao.get_collaborators()
     return ApiResult(
-        body={'collaborators':collaborators}
+        body={'collaborators': json.loads(collaborators.to_json())}
     )
 
 @blueprint.route('/ban', methods=['PUT'])

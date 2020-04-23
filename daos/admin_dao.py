@@ -3,18 +3,20 @@ admin_dao.py
 ====================================
 Data access object file for the admin accounts.
 """
-from daos.dummy_data.admin import admins
 from flask_bcrypt import Bcrypt
+from mongoengine import *
+from database.schema_DB import Admin
+import datetime
+import json
 
 bcrypt = Bcrypt()
 class AdminDAO:
     """
     Data access object for the Admin accounts.
     """
-    adminList = []
 
     def __init__(self):
-        self.adminList = admins
+        pass
     
     def get_admin(self, username):
         """
@@ -31,9 +33,11 @@ class AdminDAO:
             Dictionary of the admin account and its values in the database or None if no account was found.
 
         """
-        for admin in self.adminList:
-            if (admin.get('username') == username):
-                return admin
+        try:
+            admin = Admin.objects.get(username = username)
+        except DoesNotExist:
+            return None
+        return admin
     
     def check_password(self, password_hash, password):
         """

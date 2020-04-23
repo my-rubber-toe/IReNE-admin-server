@@ -1,7 +1,7 @@
 from mongoengine import *
 import datetime
 import regex
-#Connection to the Database
+
 connect('IReNEdb')
 #connec the db for testing purposes
 #connect('IReNEdb', host='mongomock://localhost', alias='IReNEdb')
@@ -11,12 +11,12 @@ class Collaborator(Document):
     documentsID =  ListField(StringField(required=False))
     first_name = StringField(min_length=1, max_length=30, required=True)
     last_name = StringField(min_length=1, max_length=30, required=True)
-    email = EmailField(required=True,max_length=50, unique=True, regex='(.*)\.(.*)@upr\.edu')
+    email = EmailField(required=True,max_length=50, unique=True, regex=r'(.*)\.(.*)@upr\.edu')
     banned = BooleanField(default=False,required=True)
     approved = BooleanField(default=False,required=True)
 
 class Admin(Document):
-    username = StringField(min_length=8,max_length=20, required=True, unique=True, regex='[a-zA-Z0-9]')
+    username = StringField(min_length=8,max_length=20, required=True, unique=True, regex=r'[a-zA-Z0-9]')
     password = StringField(min_length=8, required=True)
 
 class Tag(Document):
@@ -31,7 +31,7 @@ class Damage(Document):
 class Author(EmbeddedDocument):
     author_FN = StringField(min_length=1,max_length=30, required=True)
     author_LN = StringField(min_length=1,max_length=30, required=True)
-    author_email = EmailField(min_length=1,max_length=50, required=True, regex='(.*)\.(.*)@upr\.edu')
+    author_email = EmailField(min_length=1,max_length=50, required=True, regex=r'(.*)\.(.*)@upr\.edu')
     author_faculty = StringField(min_length=1,max_length=30, required=True)
 
 class Actor(EmbeddedDocument):
@@ -65,6 +65,3 @@ class DocumentCase(Document):
     actor = ListField(EmbeddedDocumentField(Actor))
     section = ListField(EmbeddedDocumentField(Section))
     timeline = ListField(EmbeddedDocumentField(Timeline))
-
-
-

@@ -4,16 +4,19 @@ tags_dao.py
 Data access object file for the admin accounts.
 """
 
-from daos.dummy_data.tag import tags
+from mongoengine import *
+from database.schema_DB import Tag, DocumentCase
+import datetime
+import json
+
 
 class TagsDAO:
     """
     Data access object for the Admin accounts.
     """
-    tagList = []
     
     def __init__(self):
-        self.tagList = tags
+        pass
 
     def get_tags(self):
         """
@@ -25,7 +28,8 @@ class TagsDAO:
             List of dictionaries representing the tags in the database.
 
         """
-        return self.tagList
+        tag_objects = Tag.objects()
+        return json.loads(tag_objects.to_json())
     
     def remove_tag(self, tagID):
         """
@@ -42,10 +46,9 @@ class TagsDAO:
             Dictionary of the tag removed None if no tag was found.
 
         """
-        tag_temp = None
-        for tag in self.tagList:
-            if(tag.get('_id')==tagID):             
-                tag_temp =  tag
-        if(tag_temp is not None):
-            self.tagList[:] = [tag for tag in self.tagList if tag.get('_id') != tagID ]
-        return tag_temp
+        try:
+            Tag.objects(tagItem = tagID).delete()
+            DocumentCase.objects().update(pull__tagsDoc= tag)
+            return tagID
+        except DoesNotExist:
+            return None

@@ -4,16 +4,19 @@ documents_dao.py
 Data access object file for the admin accounts.
 """
 
-from daos.dummy_data.document import documents
+from mongoengine import *
+from database.schema_DB import DocumentCase
+import datetime
+import json
+
 
 class DocumentsDAO:
     """
     Data access object for the Collaborators.
     """
-    documentList = []
 
     def __init__(self):
-        self.documentList = documents
+        pass
 
     def get_all_documents(self):
         """
@@ -25,7 +28,8 @@ class DocumentsDAO:
             List of documents found in the database.
 
         """      
-        return self.documentList
+        docs = DocumentCase.objects()
+        return docs
 
     def get_document(self, documentID):
         """
@@ -42,10 +46,11 @@ class DocumentsDAO:
             Returns a dictionary as the document or None if the document was not found.
 
         """
-        for document in self.documentList:
-            if (document['_id']==documentID):
-                return document
-        return None
+        try:
+            get_doc = DocumentCase.objects.get(id = documentID)
+        except DoesNotExist:
+            return None
+        return json.loads(get_doc.to_json())
 
     def publish_document(self, documentID):
         """
@@ -62,11 +67,11 @@ class DocumentsDAO:
             Returns a dictionary as the document published or None if the document was not found.
 
         """
-        for document in self.documentList:
-            if(document.get('_id')==documentID):
-                document['published'] = True
-                return document
-        return None
+        try:
+            doc = DocumentCase.objects(id = documentID).update_one(set__published = True)
+        except DoesNotExist:
+            return None
+        return doc
     
     def unpublish_document(self, documentID):
         """
@@ -83,8 +88,8 @@ class DocumentsDAO:
             Returns a dictionary as the document unpublished or None if the document was not found.
 
         """
-        for document in self.documentList:
-            if(document.get('_id')==documentID):
-                document['published'] = False
-                return document
-        return None
+        try:
+            doc = DocumentCase.objects(id = documentID).update_one(set__published = False)
+        except DoesNotExist:
+            return None
+        return doc
