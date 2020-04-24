@@ -63,7 +63,7 @@ def login():
         If the username or password fields are empty or are invalid. 
 
     """
-    username = request.form.get("username")
+    username = request.form.get("username").lower()
     password = request.form.get("password")
     if not username_isvalid(username) or not password_isvalid(password):
         raise AdminServerAuthError(
@@ -104,7 +104,7 @@ def me():
     )
 
 
-@blueprint.route("/logout")
+@blueprint.route("/logout", methods = ['GET'])
 @fresh_jwt_required
 def logout():
     """

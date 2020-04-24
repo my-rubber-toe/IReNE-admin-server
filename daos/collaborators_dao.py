@@ -32,7 +32,7 @@ class CollaboratorsDAO:
 
     def ban_collaborator(self, collabID):
         """
-        Bans a collaborator found in the database.
+        Bans a collaborator found in the database and unpublishes all the documents pertaining to said collaborator.
         
         Parameters
         ----------
@@ -53,7 +53,7 @@ class CollaboratorsDAO:
 
     def unban_collaborator(self, collabID):
         """
-        Unbans a collaborator found in the database.
+        Unbans a collaborator found in the database and publishes all the documents pertaining to said collaborator.
         
         Parameters
         ----------
