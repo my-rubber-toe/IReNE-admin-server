@@ -8,12 +8,13 @@ from utils.responses import ApiResult, ApiException
 from exceptions.handler import AdminServerApiError, AdminServerAuthError
 from flask_jwt_extended import get_jwt_identity, fresh_jwt_required
 from daos.documents_dao import DocumentsDAO
+from daos.collaborators_dao import CollaboratorsDAO
 from utils.validators import objectId_is_valid
 import json
 
 blueprint = Blueprint('documents', __name__, url_prefix='/admin/documents')
 dao = DocumentsDAO()
-
+daoCollab = CollaboratorsDAO()
 @blueprint.route('/', methods=['GET'])
 @fresh_jwt_required
 def documents():
@@ -25,8 +26,19 @@ def documents():
         List of collaborators currently in the system.
     """
     documents = dao.get_all_documents()
+    body = []
+    for doc in documents:
+        collab = daoCollab.get_collab(str(doc.creatoriD))
+        name = collab.first_name + " " +collab.last_name
+        body.append({
+            "_id": str(doc.id),
+            "title": doc.title,
+            "creator": name,
+            "published": doc.published
+            })
+    body = json.dumps(body)
     return ApiResult(
-        body={'documents': json.loads(documents.to_json())}
+        body={'documents': json.loads(body)}
     )
 
 @blueprint.route('/view/<docID>', methods=['GET'])
@@ -87,7 +99,7 @@ def documents_publish():
             status=404
         )
     return ApiResult( body =
-        {'document': document}
+        {'document': doc_id}
     )
 
 @blueprint.route('/unpublish', methods=['PUT'])
@@ -126,5 +138,5 @@ def documents_unpublish():
             status=404
         )
     return ApiResult( body =
-        {'document': document}
+        {'document': doc_id}
     )

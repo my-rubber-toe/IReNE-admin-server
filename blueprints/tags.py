@@ -24,8 +24,15 @@ def tags():
         List of tags currently in the system.
     """
     tags = dao.get_tags()
+    body = []
+    for tag in tags:
+        body.append({
+            '_id': str(tag['_id']['$oid']),
+            'tagItem': tag['tagItem']
+        })
+    body = json.dumps(body)
     return ApiResult( body = 
-        {'tags': json.loads(tags.to_json())}
+        {'tags': json.loads(body)}
     )
 
 @blueprint.route('/remove', methods=['PUT'])
@@ -48,5 +55,5 @@ def tags_remove():
             status=404
         )
     return ApiResult(body = 
-        {'tag': tag}
+        {'tag': tagID}
     )

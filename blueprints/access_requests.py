@@ -27,10 +27,20 @@ def access_requests():
     Collaborator[]
         List of access request currently in the system.
     """
-    # TODO: Use DAOs to retrieve the necessary information.
     requests = dao.get_access_requests()
+    body = []
+    for req in requests:
+       body.append({
+        "_id": str(req.id),
+        "first_name": req.first_name,
+        "last_name": req.last_name,
+        "email": req.email,
+        "banned": req.banned,
+        "approved": req.approved
+        })
+    body = json.dumps(body)
     return ApiResult(
-        body={'requests': json.loads(requests.to_json())}
+        body={'requests': json.loads(body)}
     )
 
 @blueprint.route('/approve', methods=['PUT'])
@@ -68,10 +78,8 @@ def access_requests_approve():
             msg='The access request ID given was not found.',
             status=404
         )
-
-    # TODO: Use DAOs to retrieve the necessary information.
     return ApiResult(body = 
-        {'access_request': access_request}
+        {'access_request': collab_id}
     )
 
 @blueprint.route('/deny', methods=['PUT'])
@@ -112,5 +120,5 @@ def access_requests_deny():
 
     # TODO: Use DAOs to retrieve the necessary information.
     return ApiResult(
-        body = {'access_request': access_request}
+        body = {'access_request': collab_id}
     )

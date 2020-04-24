@@ -11,7 +11,7 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager, unset_jwt_cookies
 from mongoengine import connect
 import os
-from database import init_db, schema_DB, mock_data
+from database import schema_DB, mock_data
 
 class ApiFlask(Flask):
     """
@@ -71,8 +71,6 @@ def create_app(config=None):
 
         # Setup Flask blueprints to establish app endpoints
         register_blueprints(app)
-
-        
 
 
         # Register the error handlers
@@ -166,7 +164,7 @@ def register_error_handlers(app):
         app : Flask
             Application instance
     """
-    if False:#app.config['DEBUG']:
+    if True:#app.config['DEBUG']:
         # If debug true, then return the whole stack
         @app.errorhandler(AdminServerError)
         def handle_error(error):

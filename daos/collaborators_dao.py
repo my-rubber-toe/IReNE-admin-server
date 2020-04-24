@@ -71,3 +71,23 @@ class CollaboratorsDAO:
         except DoesNotExist:
             return None
         return collab
+
+    def get_collab(self, collabID):
+        """
+        DAO that returns the collaborator of the id given
+
+        Parameters
+        ----------
+        collabID : string
+            ID of the collaborator to be returned.
+        
+        Returns
+        -------
+        Dictionary
+            Returns a dictionary as the collaborator or None if the collaborator was not found.
+        """
+        try:
+            collab = Collaborator.objects.filter(id=collabID).first()
+        except DoesNotExist:
+            return None
+        return collab

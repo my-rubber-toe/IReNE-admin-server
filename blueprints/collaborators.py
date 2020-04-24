@@ -25,8 +25,19 @@ def collaborators():
         List of collaborators currently in the system.
     """
     collaborators = dao.get_collaborators()
+    body = []
+    for collab in collaborators:
+       body.append({
+        "_id": str(collab.id),
+        "first_name": collab.first_name,
+        "last_name": collab.last_name,
+        "email": collab.email,
+        "banned": collab.banned,
+        "approved": collab.approved
+        })
+    body = json.dumps(body)
     return ApiResult(
-        body={'collaborators': json.loads(collaborators.to_json())}
+        body={'collaborators': json.loads(body)}
     )
 
 @blueprint.route('/ban', methods=['PUT'])
@@ -65,9 +76,8 @@ def collaborators_ban():
             status=404
         )
 
-    # TODO: Use DAOs to retrieve the necessary information.
     return ApiResult(body = 
-        {'collaborator': collaborator}
+        {'collaborator': collab_id}
     )
 
 @blueprint.route('/unban', methods=['PUT'])
@@ -106,5 +116,5 @@ def collaborators_unban():
             status=404
         )
     return ApiResult(body = 
-        {'collaborator': collaborator}
+        {'collaborator': collab_id}
     )

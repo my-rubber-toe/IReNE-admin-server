@@ -22,7 +22,7 @@ dao = AdminDAO()
 token_blacklist = TTLCache(maxsize=10000, ttl=600)
 
 
-#@current_app.jwt.token_in_blacklist_loader
+@current_app.jwt.token_in_blacklist_loader
 def check_if_token_in_blacklist(decrypted_token):
     """
     Verifies if a token has been blacklisted.
@@ -40,7 +40,7 @@ def check_if_token_in_blacklist(decrypted_token):
     return entry
 
 
-@blueprint.route('/login')
+@blueprint.route('/login', methods = ['POST'])
 def login():
     """
     Generate a new access token for the user. User must have valid credentials in the databse to get a valid token.
@@ -76,7 +76,7 @@ def login():
             msg= 'Invalid username or password.', 
             status = 401
             )
-    authorized = dao.check_password(admin['password_hash'], password)
+    authorized = dao.check_password(admin['password'], password)
     if not authorized:
         raise AdminServerAuthError(
             msg= 'Invalid username or password.', 
