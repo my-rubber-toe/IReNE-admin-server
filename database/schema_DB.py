@@ -182,3 +182,13 @@ class DocumentCase(Document):
     actor = ListField(EmbeddedDocumentField(Actor))
     section = ListField(EmbeddedDocumentField(Section))
     timeline = ListField(EmbeddedDocumentField(Timeline))
+
+
+class Revision(DynamicEmbeddedDocument):
+    revDate = StringField(min_length=1, required=True, regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
+    revType = StringField(required=True)
+
+class DocumentCaseRevision(Document):
+    creatorId = StringField(min_length=1, required=True)
+    docId =  StringField(min_length=1, required=True)
+    revisions = ListField(EmbeddedDocumentField(Revision))

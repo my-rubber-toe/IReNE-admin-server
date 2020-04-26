@@ -13,7 +13,7 @@ from exceptions.handler import AdminServerApiError, AdminServerAuthError
 from daos.access_requests_dao import AccessRequestsDAO
 import json
 
-blueprint = Blueprint('access-requests', __name__, url_prefix='/admin/access-request')
+blueprint = Blueprint('access-requests', __name__, url_prefix='/admin/access-requests')
 dao = AccessRequestsDAO()
 
 @blueprint.route('/', methods=['GET'])

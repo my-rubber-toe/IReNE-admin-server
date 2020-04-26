@@ -5,12 +5,12 @@ Data access object file for the admin accounts.
 """
 
 from mongoengine import *
-from database.schema_DB import DocumentCase
-import datetime
+from database.schema_DB import DocumentCaseRevision, Revision
+from datetime import datetime
 import json
 
 
-class DocumentsDAO:
+class RevDocumentsDAO:
     """
     Data access object for the Collaborators.
     """
@@ -18,7 +18,7 @@ class DocumentsDAO:
     def __init__(self):
         pass
 
-    def get_all_documents(self):
+    def get_all_documents_rev(self):
         """
         Returns all the documents found in the database.
         
@@ -28,10 +28,10 @@ class DocumentsDAO:
             List of documents found in the database.
 
         """      
-        docs = DocumentCase.objects()
-        return docs
+        revDocs = DocumentCaseRevision.objects()
+        return revDocs
 
-    def get_document(self, documentID):
+    def get_document_rev(self, documentID):
         """
         Gets the document with the given ID from the database.
         
@@ -47,12 +47,12 @@ class DocumentsDAO:
 
         """
         try:
-            doc = DocumentCase.objects.get(id = documentID)
+            revDoc = DocumentCaseRevision.objects.get(id = documentID)
         except DoesNotExist:
             return None
-        return doc
+        return revDoc
 
-    def publish_document(self, documentID):
+    def update_rev_history(self, documentID, revType, **kwargs):
         """
         Publishes the document with the given ID in the database.
         
@@ -68,12 +68,17 @@ class DocumentsDAO:
 
         """
         try:
-            doc = DocumentCase.objects(id = documentID).update_one(set__published = True)
+            revDoc = self.get_document_rev(documentID)
+            revision = Revision(**kwargs)
+            revision.revType = revType
+            revision.revDate = datetime.today().strftime('%Y-%m-%d')
+            revDoc.revisions.append(revision)
+            revDoc.save()
         except DoesNotExist:
             return None
-        return doc
+        return revDoc
     
-    def unpublish_document(self, documentID):
+    def get_doc_revisions_by_type(self, documentID, revType):
         """
         Unpublished the document with the given ID in the database.
         
@@ -89,7 +94,7 @@ class DocumentsDAO:
 
         """
         try:
-            doc = DocumentCase.objects(id = documentID).update_one(set__published = False)
+            revisions = DocumentCaseRevision.objects.get(docId = documentID).revisions.filter(revType = revType)
         except DoesNotExist:
             return None
-        return doc
+        return revisions
