@@ -184,9 +184,10 @@ class DocumentCase(Document):
     timeline = ListField(EmbeddedDocumentField(Timeline))
 
 
-class Revision(DynamicEmbeddedDocument):
+class Revision(EmbeddedDocument):
     revDate = StringField(min_length=1, required=True, regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
     revType = StringField(required=True)
+    fields = DictField(required=True)
 
 class DocumentCaseRevision(Document):
     creatorId = StringField(min_length=1, required=True)

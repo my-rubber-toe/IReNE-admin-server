@@ -31,7 +31,7 @@ class RevDocumentsDAO:
         revDocs = DocumentCaseRevision.objects()
         return revDocs
 
-    def get_document_rev(self, documentID):
+    def get_document(self, documentID,):
         """
         Gets the document with the given ID from the database.
         
@@ -52,6 +52,28 @@ class RevDocumentsDAO:
             return None
         return revDoc
 
+    def get_document_rev(self, documentID, revisionIndex):
+        """
+        Gets the document with the given ID from the database.
+        
+        Parameters
+        ----------
+        documentID : string
+            ID of the document to be returned.
+        
+        Returns
+        -------
+        Dictionary
+            Returns a dictionary as the document or None if the document was not found.
+
+        """
+        try:
+            revDoc = DocumentCaseRevision.objects.get(id = documentID)
+        except DoesNotExist:
+            return None
+        revision = revDoc.revisions[revisionIndex]
+        return revision
+
     def update_rev_history(self, documentID, revType, **kwargs):
         """
         Publishes the document with the given ID in the database.
@@ -68,7 +90,7 @@ class RevDocumentsDAO:
 
         """
         try:
-            revDoc = self.get_document_rev(documentID)
+            revDoc = self.get_document(documentID)
             revision = Revision(**kwargs)
             revision.revType = revType
             revision.revDate = datetime.today().strftime('%Y-%m-%d')
