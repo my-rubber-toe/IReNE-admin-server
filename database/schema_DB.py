@@ -1,10 +1,11 @@
   
 from mongoengine import *
 import datetime
-import regex
+# import regex
 #Connection to the Database
 connect('IReNEdb')
 #connec the db for testing purposes
+
 #connect('IReNEdb', host='mongomock://localhost:27017')
 
 

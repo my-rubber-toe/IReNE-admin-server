@@ -8,10 +8,8 @@ from flask import Flask, request, current_app, redirect
 from utils.responses import ApiException, ApiResult
 from exceptions.handler import AdminServerApiError, AdminServerAuthError, AdminServerError, AdminServerRequestError
 from flask_cors import CORS
-from flask_jwt_extended import JWTManager, unset_jwt_cookies
-from mongoengine import connect
+from flask_jwt_extended import JWTManager
 import os
-from database import schema_DB#, mock_data
 
 class ApiFlask(Flask):
     """
@@ -39,6 +37,7 @@ class ApiFlask(Flask):
             return rv.to_result()
         return Flask.make_response(self, rv)
 
+
 def create_app(config=None):
     """
     Returns whether or not the password given is in a valid format.
@@ -59,7 +58,7 @@ def create_app(config=None):
         app.config.from_object(config or {})
 
         # Setup Flask Secret Key
-        app.secret_key = os.urandom(24)
+        app.secret_key = "Iamthedatabasekey_Icannotberandom"
 
         # Setup JWTManager to the app context on the attribute "jwt"
         app.config['JWT_BLACKLIST_ENABLED'] = True
@@ -72,7 +71,6 @@ def create_app(config=None):
         # Setup Flask blueprints to establish app endpoints
         register_blueprints(app)
 
-
         # Register the error handlers
         register_error_handlers(app)
 
@@ -80,6 +78,7 @@ def create_app(config=None):
         register_base_url(app)
 
         return app
+
 
 def register_blueprints(app):
     """
@@ -107,13 +106,14 @@ def register_base_url(app):
         app : ApiFlask
             Application instance
     """
+
     @app.route('/')
     @app.route('/admin/')
     def api():
-        return ApiResult(body = 
-            {
-                'message': 'You have reach the IReNE Administrative API. Please refer to the documentation.'
-            }
+        return ApiResult(body=
+        {
+            'message': 'You have reach the IReNE Administrative API. Please refer to the documentation.'
+        }
         )
 
 
@@ -129,12 +129,12 @@ def register_cors(app: Flask):
 
     origins_list = '*'
 
-    methods_list= ['GET', 'POST', 'PUT', 'PATCH', 'OPTIONS']
+    methods_list = ['GET', 'POST', 'PUT', 'PATCH', 'OPTIONS']
 
     allowed_headers_list = [
         'Access-Control-Allow-Credentials',
         'Access-Control-Allow-Headers',
-        'Access-Control-Allow-Methods', 
+        'Access-Control-Allow-Methods',
         'Access-Control-Allow-Origin',
         'Content-Type',
         'Authorization',
@@ -146,7 +146,7 @@ def register_cors(app: Flask):
         'X-Content-Type-Options',
         'X-Permitted-Cross-Domain-Policies'
     ]
-    
+
     CORS(
         app=app,
         resources={r"/admin/*": {"origins": origins_list}},
@@ -154,6 +154,7 @@ def register_cors(app: Flask):
         allowed_headers=allowed_headers_list,
         supports_credentials=True
     )
+
 
 def register_error_handlers(app):
     """
@@ -164,7 +165,7 @@ def register_error_handlers(app):
         app : Flask
             Application instance
     """
-    if True:#app.config['DEBUG']:
+    if True:  # app.config['DEBUG']:
         # If debug true, then return the whole stack
         @app.errorhandler(AdminServerError)
         def handle_error(error):
@@ -210,7 +211,9 @@ def register_error_handlers(app):
                 message='An unexpected error has occurred.',
                 status=500
             )
+
         jwt = app.jwt
+
         @jwt.invalid_token_loader
         def invalid_token_callback(callback):
             # Invalid Fresh/Non-Fresh Access token in auth header

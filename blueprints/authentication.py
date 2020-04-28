@@ -6,7 +6,7 @@ Every route regarding authentication, including but not limited to login, logout
 from flask import current_app, jsonify
 from flask import Blueprint, Flask, request
 from flask_jwt_extended import create_access_token, get_jwt_identity, fresh_jwt_required, \
-     get_raw_jwt, unset_jwt_cookies
+     get_raw_jwt
 from utils.responses import ApiResult, ApiException
 from exceptions.handler import AdminServerAuthError
 from cachetools import TTLCache
@@ -33,7 +33,7 @@ def check_if_token_in_blacklist(decrypted_token):
         Blaclisted token or None if the token is not found.
     """
     """"""
-    jti = decrypted_token['jti'] 
+    jti = decrypted_token['jti']
     if token_blacklist.currsize == 0:
         return False
     entry = token_blacklist.get(jti)  #search for the jti on the blacklist#
@@ -63,23 +63,24 @@ def login():
         If the username or password fields are empty or are invalid. 
 
     """
-    username = request.form.get("username").lower()
+
+    username = request.form.get("username")
     password = request.form.get("password")
     if not username_isvalid(username) or not password_isvalid(password):
         raise AdminServerAuthError(
-            msg= 'Invalid username or password.', 
+            msg= 'Invalid username or password.',
             status = 401
             )
     admin = dao.get_admin(username)
     if not admin:
         raise AdminServerAuthError(
-            msg= 'Invalid username or password.', 
+            msg= 'Invalid username or password.',
             status = 401
             )
     authorized = dao.check_password(admin['password'], password)
     if not authorized:
         raise AdminServerAuthError(
-            msg= 'Invalid username or password.', 
+            msg= 'Invalid username or password.',
             status = 401
             )
     # Use the username as the token identity
@@ -99,7 +100,7 @@ def me():
         Username of admin.
 
     """
-    return ApiResult(body = 
+    return ApiResult(body =
     {'identity':get_jwt_identity()}
     )
 
@@ -120,7 +121,7 @@ def logout():
     # Blacklist jwt tokens
     jti = get_raw_jwt()['jti']
     token_blacklist[jti] = True   # Add the jti to the cache with value true #
-    return ApiResult(body = 
+    return ApiResult(body =
         {'message':"Successfully logged out.",
         'username': get_jwt_identity()}
     )

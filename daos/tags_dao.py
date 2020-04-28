@@ -14,7 +14,7 @@ class TagsDAO:
     """
     Data access object for the Admin accounts.
     """
-    
+
     def __init__(self):
         pass
 
@@ -30,7 +30,7 @@ class TagsDAO:
         """
         tag_objects = Tag.objects()
         return json.loads(tag_objects.to_json())
-    
+
     def remove_tag(self, tagID):
         """
         Removes a Tag from the database.
@@ -47,8 +47,8 @@ class TagsDAO:
 
         """
         try:
-            Tag.objects(tagItem = tagID).delete()
-            DocumentCase.objects().update(pull__tagsDoc= tag)
+            Tag.objects(tagItem=tagID).delete()
+            DocumentCase.objects().update(pull__tagsDoc=tagID)
             return tagID
         except DoesNotExist:
             return None
