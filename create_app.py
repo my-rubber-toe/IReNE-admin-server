@@ -11,7 +11,7 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager, unset_jwt_cookies
 from mongoengine import connect
 import os
-from database import schema_DB, mock_data
+from database import schema_DB#, mock_data
 
 class ApiFlask(Flask):
     """
