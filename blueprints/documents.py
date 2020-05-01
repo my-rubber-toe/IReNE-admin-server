@@ -126,7 +126,7 @@ def documents_publish():
             status=404
         )
     return ApiResult( body =
-        {'document': doc_id}
+        {'docID': doc_id}
     )
 
 @blueprint.route('/unpublish', methods=['PUT'])
@@ -165,5 +165,5 @@ def documents_unpublish():
             status=404
         )
     return ApiResult( body =
-        {'document': doc_id}
+        {'docID': doc_id}
     )
