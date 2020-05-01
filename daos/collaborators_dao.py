@@ -5,7 +5,7 @@ Data access object file for the collaborators.
 """
 
 from mongoengine import *
-from database.schema_DB import Collaborator
+from database.schema_DB import Collaborator, DocumentCase
 import datetime
 import json
 
@@ -47,6 +47,10 @@ class CollaboratorsDAO:
         """
         try:
             collab = Collaborator.objects(id = collabID).update_one(set__banned = True)
+            collaborator = Collaborator.objects.get(id = collabID)
+            print(collaborator.documentsID)
+            check = DocumentCase.objects(id__in = collaborator.documentsID).update(set__published = False, full_result = True)
+            print(check.raw_result)
         except DoesNotExist:
             return None
         return collab
@@ -67,7 +71,9 @@ class CollaboratorsDAO:
 
         """
         try:
-            collab = Collaborator.objects(id = collabID).update_one(set__banned = False)
+            collab = Collaborator.objects(id = collabID).update_one(set__banned = False, full_result = True)
+            collaborator = Collaborator.objects.get(id = collabID)
+            DocumentCase.objects(id__in = collaborator.documentsID).update(set__published = True)
         except DoesNotExist:
             return None
         return collab

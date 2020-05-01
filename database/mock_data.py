@@ -32,6 +32,8 @@ infrasDocList= ["Structure", "Water"],
 damageDocList= ['Flooding'],
 author = [authorDoc1], actor = [actorDoc1],section = [sectionDoc1],timeline = [timelineDoc1], language="English")
 doc1.save()
+get_collab1.documentsID.append(str(doc1.id))
+get_collab1.save()
 
 
 # doc = DocumentCaseRevision(creatorId = str(collab1.id), docId = str(doc1.id))
