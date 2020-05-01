@@ -59,8 +59,35 @@ def documents_view(docID):
             msg='The documents ID given was not found.',
             status=404
         )
+    collab = daoCollab.get_collab(str(document.creatoriD))
+    actors = []
+    authors = []
+    sections = []
+    for author in document.author:
+        authors.append(json.loads(author.to_json()))
+    for actor in document.actor:
+        actors.append(json.loads(actor.to_json()))
+    for section in document.section:
+        sections.append(json.loads(section.to_json()))
+    body = {
+        '_id': str(document.id),
+        'title': document.title,
+        'description': document.description,
+        'creatorFullName': collab.first_name + " " + collab.last_name,
+        'creatorEmail': collab.email,
+        'creationDate': document.creationDate,
+        'lastModificationDate': document.lastModificationDate,
+        'incidentDate': document.incidentDate,
+        'tagsDoc': document.tagsDoc,
+        'infrasDocList': document.infrasDocList,
+        'damageDocList': document.damageDocList,
+        'author': actors,
+        'actor': authors,
+        'section': sections
+    }
+    body = json.dumps(body)
     return ApiResult( body = 
-        {'document': document}
+        {'document': json.loads(body)}
     )
 
 @blueprint.route('/publish', methods=['PUT'])
