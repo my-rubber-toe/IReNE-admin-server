@@ -32,32 +32,38 @@ infrasDocList= ["Structure", "Water"],
 damageDocList= ['Flooding'],
 author = [authorDoc1], actor = [actorDoc1],section = [sectionDoc1],timeline = [timelineDoc1], language="English")
 doc1.save()
+get_collab1.documentsID.append(str(doc1.id))
+get_collab1.save()
 
 
-# doc = DocumentCaseRevision(creatorId = str(collab1.id), docId = str(doc1.id))
-# rev = Revision()
-# rev.revType = 'Tags'
-# rev.revDate = datetime.today().strftime('%Y-%m-%d')
-# doc.revisions.append(rev)
-# rev = Revision()
-# rev.revType = 'Author'
-# rev.revDate = datetime.today().strftime('%Y-%m-%d')
-# doc.revisions.append(rev)
-# rev = Revision()
-# rev.revType = 'Incident Date'
-# rev.revDate = datetime.today().strftime('%Y-%m-%d')
-# doc.revisions.append(rev)
-# rev = Revision()
-# rev.revType = 'Actors'
-# rev.revDate = datetime.today().strftime('%Y-%m-%d')
-# doc.revisions.append(rev)
-# doc.save()
-# doc = DocumentCaseRevision(creatorId = str(collab2.id), docId = str(doc1.id))
-# doc.save()
-# doc = DocumentCaseRevision(creatorId = str(collab3.id), docId = str(doc1.id))
-# doc.save()
-# doc = DocumentCaseRevision(creatorId = str(collab4.id), docId = str(doc1.id))
-# doc.save()
+doc = DocumentCaseRevision(creatorId = str(collab1.id), docId = str(doc1.id))
+rev = Revision()
+rev.revType = 'Tags'
+rev.revDate = datetime.today().strftime('%Y-%m-%d')
+rev.fields = {'test':'hello',"test2": "world"}
+doc.revisions.append(rev)
+rev = Revision()
+rev.revType = 'Author'
+rev.revDate = datetime.today().strftime('%Y-%m-%d')
+rev.fields = {'test':'hola',"test2":"yo soy"}
+doc.revisions.append(rev)
+rev = Revision()
+rev.revType = 'Incident Date'
+rev.revDate = datetime.today().strftime('%Y-%m-%d')
+rev.fields = {'test':'hello',"test2":"world2"}
+doc.revisions.append(rev)
+rev = Revision()
+rev.revType = 'Actors'
+rev.revDate = datetime.today().strftime('%Y-%m-%d')
+rev.fields = {'test':'hello',"test2":"world1"}
+doc.revisions.append(rev)
+doc.save()
+doc = DocumentCaseRevision(creatorId = str(collab2.id), docId = str(doc1.id))
+doc.save()
+doc = DocumentCaseRevision(creatorId = str(collab3.id), docId = str(doc1.id))
+doc.save()
+doc = DocumentCaseRevision(creatorId = str(collab4.id), docId = str(doc1.id))
+doc.save()
 
 admin1 = Admin(username="yomar.ruiz", password='$2y$12$F8JpE/vVYHW5CGHerUfy3er15s7ApqT7ziRkc9lTGpnVuw9X8jZ4W') #Password0
 admin1.save()

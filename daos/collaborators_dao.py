@@ -5,10 +5,9 @@ Data access object file for the collaborators.
 """
 
 from mongoengine import *
-from database.schema_DB import Collaborator
+from database.schema_DB import Collaborator, DocumentCase
 import datetime
 import json
-
 
 class CollaboratorsDAO:
     """
@@ -17,7 +16,7 @@ class CollaboratorsDAO:
 
     def __init__(self):
         pass
-
+    
     def get_collaborators(self):
         """
         Returns all the collaborators in the database. 
@@ -28,8 +27,8 @@ class CollaboratorsDAO:
             List of dictionaries representing collaborators.
 
         """
-        collabs = Collaborator.objects.filter(approved=True).only('id', 'first_name', 'last_name', 'email', 'banned')
-        return collabs.to_json()
+        collabs = Collaborator.objects.filter(approved = True)
+        return collabs
 
     def ban_collaborator(self, collabID):
         """
@@ -47,7 +46,11 @@ class CollaboratorsDAO:
 
         """
         try:
-            collab = Collaborator.objects(id=collabID).update_one(set__banned=True)
+            collab = Collaborator.objects(id = collabID).update_one(set__banned = True)
+            collaborator = Collaborator.objects.get(id = collabID)
+            print(collaborator.documentsID)
+            check = DocumentCase.objects(id__in = collaborator.documentsID).update(set__published = False, full_result = True)
+            print(check.raw_result)
         except DoesNotExist:
             return None
         return collab
@@ -68,7 +71,9 @@ class CollaboratorsDAO:
 
         """
         try:
-            collab = Collaborator.objects(id=collabID).update_one(set__banned=False)
+            collab = Collaborator.objects(id = collabID).update_one(set__banned = False, full_result = True)
+            collaborator = Collaborator.objects.get(id = collabID)
+            DocumentCase.objects(id__in = collaborator.documentsID).update(set__published = True)
         except DoesNotExist:
             return None
         return collab

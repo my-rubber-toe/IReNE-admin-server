@@ -31,6 +31,27 @@ class RevDocumentsDAO:
         revDocs = DocumentCaseRevision.objects()
         return revDocs
 
+    # def get_documents_revisions(sortField, sortOrder, filter, pageNumber, pageSize):
+    #     documents_rev = self.get_all_documents_rev()
+    #     body = []
+    #     for revDoc in documents_rev:
+    #         collab = daoCollaborators.get_collab(str(revDoc.creatorId))
+    #         document = daoDocuments.get_document(str(revDoc.docId))
+    #         name = collab.first_name + " " +collab.last_name
+    #         title = document.title
+    #         index = 0
+    #         for revision in revDoc.revisions:
+    #             body.append({
+    #                 "_id": str(revDoc.id),
+    #                 "date": revision.revDate,
+    #                 "title": title,
+    #                 "creator": name,
+    #                 'revType': revision.revType,
+    #                 'index': index,
+    #                 'email': collab.email
+    #                 })
+    #             index +=1
+        
     def get_document(self, documentID,):
         """
         Gets the document with the given ID from the database.
