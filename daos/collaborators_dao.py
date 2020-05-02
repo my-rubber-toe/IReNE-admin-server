@@ -9,6 +9,7 @@ from database.schema_DB import Collaborator, DocumentCase
 import datetime
 import json
 
+
 class CollaboratorsDAO:
     """
     Data access object for the Collaborators.
@@ -16,7 +17,7 @@ class CollaboratorsDAO:
 
     def __init__(self):
         pass
-    
+
     def get_collaborators(self):
         """
         Returns all the collaborators in the database. 
@@ -27,8 +28,8 @@ class CollaboratorsDAO:
             List of dictionaries representing collaborators.
 
         """
-        collabs = Collaborator.objects.filter(approved = True)
-        return collabs
+        collabs = Collaborator.objects.filter(approved=True)
+        return collabs.to_json()
 
     def ban_collaborator(self, collabID):
         """
@@ -46,10 +47,10 @@ class CollaboratorsDAO:
 
         """
         try:
-            collab = Collaborator.objects(id = collabID).update_one(set__banned = True)
-            collaborator = Collaborator.objects.get(id = collabID)
+            collab = Collaborator.objects(id=collabID).update_one(set__banned=True)
+            collaborator = Collaborator.objects.get(id=collabID)
             print(collaborator.documentsID)
-            check = DocumentCase.objects(id__in = collaborator.documentsID).update(set__published = False, full_result = True)
+            check = DocumentCase.objects(id__in=collaborator.documentsID).update(set__published=False, full_result=True)
             print(check.raw_result)
         except DoesNotExist:
             return None
@@ -71,9 +72,9 @@ class CollaboratorsDAO:
 
         """
         try:
-            collab = Collaborator.objects(id = collabID).update_one(set__banned = False, full_result = True)
-            collaborator = Collaborator.objects.get(id = collabID)
-            DocumentCase.objects(id__in = collaborator.documentsID).update(set__published = True)
+            collab = Collaborator.objects(id=collabID).update_one(set__banned=False, full_result=True)
+            collaborator = Collaborator.objects.get(id=collabID)
+            DocumentCase.objects(id__in=collaborator.documentsID).update(set__published=True)
         except DoesNotExist:
             return None
         return collab

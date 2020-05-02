@@ -9,8 +9,7 @@ from utils.responses import ApiException, ApiResult
 from exceptions.handler import AdminServerApiError, AdminServerAuthError, AdminServerError, AdminServerRequestError
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
-import os
-from database import mock_data
+
 class ApiFlask(Flask):
     """
     Overrides the make response method to add ApiResult and ApiException support.

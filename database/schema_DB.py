@@ -3,9 +3,9 @@ from mongoengine import *
 import datetime
 # import regex
 #Connection to the Database
-#connect('IReNEdb')
+connect('IReNEdb')
 #connec the db for testing purposes
-connect('IReNEdb', host='mongomock://localhost:27017')
+# connect('IReNEdb', host='mongomock://localhost:27017')
 
 # connect('IReNEdb', host="mongodb://testuser:testpassword@irene-db:27017/?authSource=admin")
 

@@ -45,8 +45,14 @@ class DocumentsDAO:
                     'title': True,
                     'published': True,
                     'creator': {
-                        'first_name': True,
-                        'last_name': True
+                        '$let': {
+                            'vars': {
+                                'tmp': {'$arrayElemAt': ["$creator", 0]}
+                            },
+                            'in': {
+                                '$concat': ['$$tmp.first_name', ' ', '$$tmp.last_name']
+                            }
+                        }
                     }
                 }
             }
