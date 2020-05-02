@@ -41,7 +41,7 @@ class DocumentsDAO:
             },
             {
                 '$project': {
-                    'id': True,
+                    '_id': {'$toString': '$_id'},
                     'title': True,
                     'published': True,
                     'creator': {
