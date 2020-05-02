@@ -9,6 +9,7 @@ from database.schema_DB import Collaborator
 import datetime
 import json
 
+
 class CollaboratorsDAO:
     """
     Data access object for the Collaborators.
@@ -16,7 +17,7 @@ class CollaboratorsDAO:
 
     def __init__(self):
         pass
-    
+
     def get_collaborators(self):
         """
         Returns all the collaborators in the database. 
@@ -27,8 +28,8 @@ class CollaboratorsDAO:
             List of dictionaries representing collaborators.
 
         """
-        collabs = Collaborator.objects.filter(approved = True)
-        return collabs
+        collabs = Collaborator.objects.filter(approved=True).only('id', 'first_name', 'last_name', 'email', 'banned')
+        return collabs.to_json()
 
     def ban_collaborator(self, collabID):
         """
@@ -46,7 +47,7 @@ class CollaboratorsDAO:
 
         """
         try:
-            collab = Collaborator.objects(id = collabID).update_one(set__banned = True)
+            collab = Collaborator.objects(id=collabID).update_one(set__banned=True)
         except DoesNotExist:
             return None
         return collab
@@ -67,7 +68,7 @@ class CollaboratorsDAO:
 
         """
         try:
-            collab = Collaborator.objects(id = collabID).update_one(set__banned = False)
+            collab = Collaborator.objects(id=collabID).update_one(set__banned=False)
         except DoesNotExist:
             return None
         return collab

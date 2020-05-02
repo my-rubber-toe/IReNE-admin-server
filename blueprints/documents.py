@@ -3,12 +3,13 @@ documents.py
 ====================================
 Every route regarding documents, including publishing or unpublishing a document and seeing all of current documents in the systen can be found here.
 """
-from flask import Blueprint, Response, request
+from flask import Blueprint,  request
 from utils.responses import ApiResult, ApiException
 from exceptions.handler import AdminServerApiError, AdminServerAuthError
 from flask_jwt_extended import get_jwt_identity, fresh_jwt_required
 from daos.documents_dao import DocumentsDAO
 from daos.collaborators_dao import CollaboratorsDAO
+from database.schema_DB import *
 from utils.validators import objectId_is_valid
 import json
 
@@ -26,19 +27,8 @@ def documents():
         List of collaborators currently in the system.
     """
     documents = dao.get_all_documents()
-    body = []
-    for doc in documents:
-        collab = daoCollab.get_collab(str(doc.creatoriD))
-        name = collab.first_name + " " +collab.last_name
-        body.append({
-            "_id": str(doc.id),
-            "title": doc.title,
-            "creator": name,
-            "published": doc.published
-            })
-    body = json.dumps(body)
     return ApiResult(
-        body={'documents': json.loads(body)}
+        body={'documents': json.loads(documents)}
     )
 
 @blueprint.route('/view/<docID>', methods=['GET'])

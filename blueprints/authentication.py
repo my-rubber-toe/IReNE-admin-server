@@ -104,7 +104,6 @@ def me():
     {'identity':get_jwt_identity()}
     )
 
-
 @blueprint.route("/logout", methods = ['GET'])
 @fresh_jwt_required
 def logout():

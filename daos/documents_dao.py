@@ -5,9 +5,10 @@ Data access object file for the admin accounts.
 """
 
 from mongoengine import *
-from database.schema_DB import DocumentCase
+from database.schema_DB import DocumentCase, Collaborator
 import datetime
 import json
+from bson.json_util import dumps
 
 
 class DocumentsDAO:
@@ -27,9 +28,30 @@ class DocumentsDAO:
         Dictionary[]
             List of documents found in the database.
 
-        """      
-        docs = DocumentCase.objects()
-        return docs
+        """
+
+        docs = DocumentCase.objects.aggregate(*[
+            {
+                '$lookup': {
+                    'from': Collaborator._get_collection_name(),
+                    'localField': 'creatoriD',
+                    'foreignField': '_id',
+                    'as': 'creator'
+                }
+            },
+            {
+                '$project': {
+                    'id': True,
+                    'title': True,
+                    'published': True,
+                    'creator': {
+                        'first_name': True,
+                        'last_name': True
+                    }
+                }
+            }
+        ])
+        return dumps(docs)
 
     def get_document(self, documentID):
         """
@@ -47,7 +69,7 @@ class DocumentsDAO:
 
         """
         try:
-            doc = DocumentCase.objects.get(id = documentID)
+            doc = DocumentCase.objects.get(id=documentID)
         except DoesNotExist:
             return None
         return doc
@@ -68,11 +90,11 @@ class DocumentsDAO:
 
         """
         try:
-            doc = DocumentCase.objects(id = documentID).update_one(set__published = True)
+            doc = DocumentCase.objects(id=documentID).update_one(set__published=True)
         except DoesNotExist:
             return None
         return doc
-    
+
     def unpublish_document(self, documentID):
         """
         Unpublished the document with the given ID in the database.
@@ -89,7 +111,7 @@ class DocumentsDAO:
 
         """
         try:
-            doc = DocumentCase.objects(id = documentID).update_one(set__published = False)
+            doc = DocumentCase.objects(id=documentID).update_one(set__published=False)
         except DoesNotExist:
             return None
         return doc

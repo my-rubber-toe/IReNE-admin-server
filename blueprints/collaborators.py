@@ -17,7 +17,7 @@ dao =  CollaboratorsDAO()
 @fresh_jwt_required
 def collaborators():
     """
-    Retrieve a list of collaborators from the database.
+    Retrieve a list of approved collaborators from the database.
 
     Returns
     -------
@@ -25,19 +25,8 @@ def collaborators():
         List of collaborators currently in the system.
     """
     collaborators = dao.get_collaborators()
-    body = []
-    for collab in collaborators:
-       body.append({
-        "_id": str(collab.id),
-        "first_name": collab.first_name,
-        "last_name": collab.last_name,
-        "email": collab.email,
-        "banned": collab.banned,
-        "approved": collab.approved
-        })
-    body = json.dumps(body)
     return ApiResult(
-        body={'collaborators': json.loads(body)}
+        body={'collaborators': json.loads(collaborators)}
     )
 
 @blueprint.route('/ban', methods=['PUT'])
