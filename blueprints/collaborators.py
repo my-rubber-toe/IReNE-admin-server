@@ -11,6 +11,7 @@ from daos.collaborators_dao import CollaboratorsDAO
 from utils.validators import objectId_is_valid
 import json
 
+
 blueprint = Blueprint('collaborators', __name__, url_prefix='/admin/collaborators')
 dao =  CollaboratorsDAO()
 @blueprint.route('/', methods=['GET'])
