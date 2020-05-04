@@ -5,7 +5,7 @@ import datetime
 #Connection to the Database
 connect('IReNEdb')
 #connec the db for testing purposes
-# connect('IReNEdb', host='mongomock://localhost:27017')
+#connect('IReNEdb', host='mongomock://localhost:27017')
 
 # connect('IReNEdb', host="mongodb://testuser:testpassword@irene-db:27017/?authSource=admin")
 
@@ -169,7 +169,7 @@ class DocumentCase(Document):
             - timeline: List<Timeline> of timeline objects, this will consist of the events that happened within the case study.
                 
     """
-    creatoriD = StringField(min_length=1, required=True)
+    creatoriD = ReferenceField('Collaborator')
     title = StringField(min_length=10, max_length = 250, required=True, unique=True)
     language = StringField(min_length=1, required=False)
     location = ListField(StringField(min_length=1,required=False))

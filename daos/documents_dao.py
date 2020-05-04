@@ -36,7 +36,7 @@ class DocumentsDAO:
                     'from': Collaborator._get_collection_name(),
                     'localField': 'creatoriD',
                     'foreignField': '_id',
-                    'as': 'creator'
+                    'as': 'creatorName'
                 }
             },
             {
@@ -47,7 +47,7 @@ class DocumentsDAO:
                     'creator': {
                         '$let': {
                             'vars': {
-                                'tmp': {'$arrayElemAt': ["$creator", 0]}
+                                'tmp': {'$arrayElemAt': ["$creatorName", 0]}
                             },
                             'in': {
                                 '$concat': ['$$tmp.first_name', ' ', '$$tmp.last_name']

@@ -15,14 +15,14 @@ collab4.save()
 collab5 = Collaborator(first_name="Yomar", last_name="Ruiz", email="yomar.ruiz@upr.edu")
 collab5.save()
 
-get_collab1 = Collaborator.objects.get(first_name= "Jainel")
-authorDoc1 = Author(author_FN = get_collab1.first_name, author_LN = get_collab1.last_name, 
-author_email = get_collab1.email, author_faculty="ICOM")
+collab1 = Collaborator.objects.get(first_name= "Jainel")
+authorDoc1 = Author(author_FN = collab1.first_name, author_LN = collab1.last_name, 
+author_email = collab1.email, author_faculty="ICOM")
 actorDoc1 = Actor(actor_FN = "Victoria", actor_LN = "Black", role = "Mayor")
 timelineDoc1 = Timeline(event = "The rain has started", 
 eventStartDate = "2017-09-17", eventEndDate = "2017-09-19")
 sectionDoc1 = Section(secTitle = "Introduction", content = "It was raining a lot")
-doc1 = DocumentCase(creatoriD = str(get_collab1.id), title = ("The Great Rain"), location=["Coamo, PR"], 
+doc1 = DocumentCase(creatoriD = str(collab1.id), title = ("The Great Rain"), location=["Coamo, PR"], 
 description = "It was a cold and stormy night...", published= True,
 incidentDate = "2017-09-17", 
 creationDate= "2018-03-20",
@@ -32,8 +32,8 @@ infrasDocList= ["Structure", "Water"],
 damageDocList= ['Flooding'],
 author = [authorDoc1], actor = [actorDoc1],section = [sectionDoc1],timeline = [timelineDoc1], language="English")
 doc1.save()
-get_collab1.documentsID.append(str(doc1.id))
-get_collab1.save()
+collab1.documentsID.append(str(doc1.id))
+collab1.save()
 
 
 doc = DocumentCaseRevision(creatorId = str(collab1.id), docId = str(doc1.id))

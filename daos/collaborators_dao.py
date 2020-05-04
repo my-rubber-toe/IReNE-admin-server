@@ -58,7 +58,7 @@ class CollaboratorsDAO:
         try:
             collab = Collaborator.objects(id=collabID).update_one(set__banned=True)
             collaborator = Collaborator.objects.get(id=collabID)
-            DocumentCase.objects(creatoriD=collaborator.id).update(set__published=False, full_result=True)
+            DocumentCase.objects(creatoriD=collabID).update(set__published=False, full_result=True)
         except DoesNotExist:
             return None
         return collab
@@ -81,7 +81,7 @@ class CollaboratorsDAO:
         try:
             collab = Collaborator.objects(id=collabID).update_one(set__banned=False, full_result=True)
             collaborator = Collaborator.objects.get(id=collabID)
-            DocumentCase.objects(creatoriD=collaborator.id).update(set__published=True, full_result=True)
+            DocumentCase.objects(creatoriD=collabID).update(set__published=True, full_result=True)
         except DoesNotExist:
             return None
         return collab
