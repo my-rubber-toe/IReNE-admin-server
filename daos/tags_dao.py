@@ -47,7 +47,7 @@ class TagsDAO:
 
         """
         try:
-            Tag.objects(tagItem=tagID).delete()
+            Tag.objects(id=tagID).delete()
             DocumentCase.objects().update(pull__tagsDoc=tagID)
             return tagID
         except DoesNotExist:

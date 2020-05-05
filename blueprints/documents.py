@@ -29,6 +29,7 @@ def documents():
         List of collaborators currently in the system.
     """
     documents = dao.get_all_documents()
+    print(json.loads(documents))
     return ApiResult(
         body={'documents': json.loads(documents)}
     )
@@ -47,7 +48,7 @@ def documents_view(docID):
             msg='The documents ID given was not found.',
             status=404
         )
-    collab = daoCollab.get_collab(str(document.creatoriD))
+    collab = document.creatoriD
     actors = []
     authors = []
     sections = []
