@@ -6,9 +6,8 @@ Data access object file for the admin accounts.
 
 from mongoengine import *
 from database.schema_DB import DocumentCase, Collaborator
-import datetime
-import json
 from bson.json_util import dumps
+from utils.email_manager import EmailManager
 
 
 class DocumentsDAO:
@@ -17,7 +16,7 @@ class DocumentsDAO:
     """
 
     def __init__(self):
-        pass
+        self.email_manager = EmailManager()
 
     def get_all_documents(self):
         """
@@ -29,7 +28,7 @@ class DocumentsDAO:
             List of documents found in the database.
 
         """
-
+        # Object list cotains: _id, title, published, creator
         docs = DocumentCase.objects.aggregate(*[
             {
                 '$lookup': {
@@ -42,8 +41,8 @@ class DocumentsDAO:
             {
                 '$project': {
                     '_id': {'$toString': '$_id'},
-                    'title': True,
-                    'published': True,
+                    'title': 1,
+                    'published': 1,
                     'creator': {
                         '$let': {
                             'vars': {
@@ -95,29 +94,37 @@ class DocumentsDAO:
             Returns a dictionary as the document published or None if the document was not found.
 
         """
-        try:
-            doc = DocumentCase.objects(id=documentID).update_one(set__published=True)
-        except DoesNotExist:
-            return None
+        DocumentCase.objects(id=documentID).update_one(set__published=True, full_result=True)
+        doc: DocumentCase = DocumentCase.objects.get(id=documentID)
+
+        # Automatically fetches collaborator since its a reference field
+        collab: Collaborator = doc.creatoriD
+
+        self.email_manager.email_collaborator(doc_title=doc.title, email=collab.email, email_type='publish')
+
         return doc
 
     def unpublish_document(self, documentID):
         """
         Unpublished the document with the given ID in the database.
-        
+
         Parameters
         ----------
         documentID : string
             ID of the document to be unpublished.
-        
+
         Returns
         -------
         Dictionary
             Returns a dictionary as the document unpublished or None if the document was not found.
 
         """
-        try:
-            doc = DocumentCase.objects(id=documentID).update_one(set__published=False)
-        except DoesNotExist:
-            return None
+
+        DocumentCase.objects(id=documentID).update_one(set__published=False, full_result=True)
+        doc: DocumentCase = DocumentCase.objects.get(id=documentID)
+        # Automatically fetches collaborator since its a reference field
+        collab: Collaborator = doc.creatoriD
+
+        self.email_manager.email_collaborator(doc_title=doc.title, email=collab.email, email_type='unpublish')
+
         return doc

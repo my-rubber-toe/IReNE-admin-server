@@ -7,6 +7,7 @@ Data access object file for the collaborators.
 from mongoengine import *
 from database.schema_DB import Collaborator, DocumentCase
 from bson.json_util import dumps
+from utils.email_manager import EmailManager
 
 
 class CollaboratorsDAO:
@@ -15,7 +16,7 @@ class CollaboratorsDAO:
     """
 
     def __init__(self):
-        pass
+        self.email_manager = EmailManager()
 
     def get_collaborators(self):
         """
@@ -56,9 +57,10 @@ class CollaboratorsDAO:
 
         """
         try:
-            collab = Collaborator.objects(id=collabID).update_one(set__banned=True)
-            collaborator = Collaborator.objects.get(id=collabID)
-            DocumentCase.objects(creatoriD=collaborator.id).update(set__published=False, full_result=True)
+            Collaborator.objects(id=collabID).update_one(set__banned=True, full_result=True)
+            collab = Collaborator.objects.get(id=collabID)
+            DocumentCase.objects(creatoriD=collab.id).update(set__published=False, full_result=True)
+            self.email_manager.email_collaborator(email=collab.email, email_type='ban')
         except DoesNotExist:
             return None
         return collab
@@ -79,9 +81,10 @@ class CollaboratorsDAO:
 
         """
         try:
-            collab = Collaborator.objects(id=collabID).update_one(set__banned=False, full_result=True)
-            collaborator = Collaborator.objects.get(id=collabID)
-            DocumentCase.objects(creatoriD=collaborator.id).update(set__published=True, full_result=True)
+            Collaborator.objects(id=collabID).update_one(set__banned=False, full_result=True)
+            collab = Collaborator.objects.get(id=collabID)
+            DocumentCase.objects(creatoriD=collab.id).update(set__published=True, full_result=True)
+            self.email_manager.email_collaborator(email=collab.email, email_type='unban')
         except DoesNotExist:
             return None
         return collab
