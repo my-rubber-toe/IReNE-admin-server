@@ -4,12 +4,12 @@ create_app.py
 File that contains all the initializations needed for the program to work.
 """
 from werkzeug.utils import find_modules, import_string
-from flask import Flask
+from flask import Flask, g
 from utils.responses import ApiException, ApiResult
 from exceptions.handler import AdminServerApiError, AdminServerAuthError, AdminServerError, AdminServerRequestError
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
-from database import schema_DB 
+from database import schema_DB
 
 
 class ApiFlask(Flask):
@@ -64,8 +64,8 @@ def create_app(config=None):
         # Setup JWTManager to the app context on the attribute "jwt"
         app.config['JWT_BLACKLIST_ENABLED'] = True
         app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
-        app.__setattr__("jwt", JWTManager(app))
 
+        app.__setattr__("jwt", JWTManager(app))
         # Setup CORS for all endpoints
         register_cors(app)
 

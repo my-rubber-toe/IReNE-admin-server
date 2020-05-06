@@ -3,13 +3,12 @@ documents.py
 ====================================
 Every route regarding documents, including publishing or unpublishing a document and seeing all of current documents in the systen can be found here.
 """
-from flask import Blueprint, request
+from flask import Blueprint, request, current_app
 from utils.responses import ApiResult, ApiException
 from exceptions.handler import AdminServerApiError, AdminServerAuthError
 from flask_jwt_extended import get_jwt_identity, fresh_jwt_required
 from daos.documents_dao import DocumentsDAO
 from daos.collaborators_dao import CollaboratorsDAO
-from database.schema_DB import *
 from utils.validators import objectId_is_valid
 import json
 
@@ -70,8 +69,8 @@ def documents_view(docID):
         'tagsDoc': document.tagsDoc,
         'infrasDocList': document.infrasDocList,
         'damageDocList': document.damageDocList,
-        'author': actors,
-        'actor': authors,
+        'author': authors,
+        'actor': actors,
         'section': sections
     }
     body = json.dumps(body)
@@ -156,3 +155,9 @@ def documents_unpublish():
     return ApiResult(body=
                      {'docID': doc_id}
                      )
+
+
+@blueprint.before_app_request
+def verify_identity():
+    if current_app.config['ADMIN_IDENTITY']:
+       raise AdminServerAuthError('AuthError', msg='Another administrator is already performing operations')

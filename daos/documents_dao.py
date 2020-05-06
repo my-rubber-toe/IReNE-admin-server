@@ -73,11 +73,7 @@ class DocumentsDAO:
             Returns a dictionary as the document or None if the document was not found.
 
         """
-        try:
-            doc = DocumentCase.objects.get(id=documentID)
-        except DoesNotExist:
-            return None
-        return doc
+        return DocumentCase.objects.get(id=documentID)
 
     def publish_document(self, documentID):
         """
