@@ -18,40 +18,33 @@ dao = RevDocumentsDAO()
 daoDocuments = DocumentsDAO()
 daoCollaborators = CollaboratorsDAO()
 
-@blueprint.route('/', methods=['GET'])
+@blueprint.route('/', methods=['POST'])
 @fresh_jwt_required
-def documents_rev():
-    """
-    Retrieve a list of all the documents in the database.
-    Returns
-    -------
-    Document[]
-        List of collaborators currently in the system.
-    """
-    documents_rev = dao.get_all_documents_rev()
+def get_revision_with_params():
+    sortField  = request.form.get('sortField')
+    sortOrder  = request.form.get('sortOrder')
+    filterVal  = request.form.get('filterVal')
+    pageNumber  = request.form.get('pageNumber')
+    pageSize  = request.form.get('pageSize')
+    revisionHistory, length = dao.get_documents_revisions(sortField, sortOrder, filterVal, int(pageNumber), int(pageSize))
     body = []
-    for revDoc in documents_rev:
-        collab = daoCollaborators.get_collab(str(revDoc.creatorId))
-        document = daoDocuments.get_document(str(revDoc.docId))
-        name = collab.first_name + " " +collab.last_name
-        title = document.title
-        index = 0
-        for revision in revDoc.revisions:
+    for revision in revisionHistory:
             body.append({
-                "_id": str(revDoc.id),
-                "date": revision.revDate,
-                "title": title,
-                "creator": name,
-                'revType': revision.revType,
-                'index': index,
-                'email': collab.email
+                "_id": str(revision.id),
+                "revision_date": revision.revision_date,
+                "document_title": revision.document_title,
+                "creator_name": revision.creator_name,
+                'revision_type': revision.revision_type,
+                'revision_number': revision.revision_number,
+                'creator_email': revision.creator_email
                 })
-            index +=1
     body = json.dumps(body)
     return ApiResult(
-        body={'revision-history': json.loads(body)}
+        body={'revision-history': json.loads(body),
+        'revision-history-length': length}
     )
-@blueprint.route('/revision', methods=['GET'])
+
+@blueprint.route('/revision', methods=['POST'])
 @fresh_jwt_required
 def get_revision():
     """
@@ -61,15 +54,17 @@ def get_revision():
     Document[]
         List of collaborators currently in the system.
     """
-    revisionIndex = request.form.get('index')
     revDocId = request.form.get('revDocId')
-    revision = dao.get_document_rev(revDocId, revisionIndex)
+    revision = dao.get_document_rev(revDocId)
     if revision is None:
         raise AdminServerApiError(
             msg='The revision document ID given was not found.',
             status=404
         )
-    body = json.dumps(revision.to_json())
+    
+    body = {'new': revision.field_changed.new.to_json(),
+            'old': revision.field_changed.old.to_json()}
+    print(body)
     return ApiResult(
-        body={'revision': json.loads(body)}
+        body={'revision': body}
     )

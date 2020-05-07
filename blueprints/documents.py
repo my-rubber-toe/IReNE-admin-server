@@ -9,6 +9,7 @@ from exceptions.handler import AdminServerApiError, AdminServerAuthError
 from flask_jwt_extended import get_jwt_identity, fresh_jwt_required
 from daos.documents_dao import DocumentsDAO
 from daos.collaborators_dao import CollaboratorsDAO
+from daos.admin_dao import AdminDAO
 from database.schema_DB import *
 from utils.validators import objectId_is_valid
 import json
@@ -16,6 +17,9 @@ import json
 blueprint = Blueprint('documents', __name__, url_prefix='/admin/documents')
 dao = DocumentsDAO()
 daoCollab = CollaboratorsDAO()
+daoAdmin = AdminDAO()
+
+
 @blueprint.route('/', methods=['GET'])
 @fresh_jwt_required
 def documents():
@@ -104,11 +108,17 @@ def documents_publish():
 
     """
     doc_id  = request.form.get('docID')
+    password = request.form.get('password')
     valid_doc_id = objectId_is_valid(doc_id)
     if not valid_doc_id:
         raise AdminServerApiError(
             msg='The documents ID given is not valid.',
             status=400
+        )
+    if not daoAdmin.check_password(daoAdmin.get_admin(get_jwt_identity()).password, password):
+        raise AdminServerApiError(
+            msg='The password given was does not match our records.',
+            status=403
         )
     document = dao.publish_document(doc_id)
     if not document:
@@ -143,11 +153,17 @@ def documents_unpublish():
 
     """
     doc_id  = request.form.get('docID')
+    password = request.form.get('password')
     valid_doc_id = objectId_is_valid(doc_id)
     if not valid_doc_id:
         raise AdminServerApiError(
             msg='The documents ID given is not valid.',
             status=400
+        )
+    if not daoAdmin.check_password(daoAdmin.get_admin(get_jwt_identity()).password, password):
+        raise AdminServerApiError(
+            msg='The password given was does not match our records.',
+            status=403
         )
     document = dao.unpublish_document(doc_id)
     if not document:

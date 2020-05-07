@@ -9,10 +9,13 @@ from exceptions.handler import AdminServerApiError, AdminServerAuthError
 from flask_jwt_extended import get_jwt_identity, fresh_jwt_required
 from utils.validators import objectId_is_valid
 from daos.tags_dao import TagsDAO
+from daos.admin_dao import AdminDAO
 import json
 
 blueprint = Blueprint('tags', __name__, url_prefix='/admin/tags')
 dao = TagsDAO()
+daoAdmin = AdminDAO()
+
 @blueprint.route('/', methods=['GET'])
 @fresh_jwt_required
 def tags():
@@ -42,12 +45,17 @@ def tags_remove():
     Remove a tag from all documents and the system tags colleciton.
     """
     tagID  = request.form.get('tagID')
+    password = request.form.get('password')
     if not objectId_is_valid(tagID):
         raise AdminServerApiError(
             msg='The tag ID given is not valid.',
             status=400
         )
-
+    if not daoAdmin.check_password(daoAdmin.get_admin(get_jwt_identity()).password, password):
+        raise AdminServerApiError(
+            msg='The password given was does not match our records.',
+            status=403
+        )
     tag = dao.remove_tag(tagID)
     if tag is None:
         raise AdminServerApiError(

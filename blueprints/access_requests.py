@@ -11,10 +11,12 @@ from utils.responses import ApiResult, ApiException
 from utils.validators import objectId_is_valid
 from exceptions.handler import AdminServerApiError, AdminServerAuthError
 from daos.access_requests_dao import AccessRequestsDAO
+from daos.admin_dao import AdminDAO
 import json
 
 blueprint = Blueprint('access-requests', __name__, url_prefix='/admin/access-requests')
 dao = AccessRequestsDAO()
+daoAdmin = AdminDAO()
 
 @blueprint.route('/', methods=['GET'])
 @fresh_jwt_required
@@ -66,11 +68,17 @@ def access_requests_approve():
 
     """
     collab_id  = request.form.get('collabID')
+    password = request.form.get('password')
     valid_collab_id = objectId_is_valid(collab_id)
     if not valid_collab_id:
         raise AdminServerApiError(
             msg='The access request ID given is not valid.',
             status=400
+        )
+    if not daoAdmin.check_password(daoAdmin.get_admin(get_jwt_identity()).password, password):
+        raise AdminServerApiError(
+            msg='The password given was does not match our records.',
+            status=403
         )
     access_request = dao.accept_access_request(collab_id)
     if access_request is None:
@@ -105,11 +113,17 @@ def access_requests_deny():
 
     """
     collab_id  = request.form.get('collabID')
+    password = request.form.get('password')
     valid_collab_id = objectId_is_valid(collab_id)
     if not valid_collab_id:
         raise AdminServerApiError(
             msg='The access request ID given is not valid.',
             status=400
+        )
+    if not daoAdmin.check_password(daoAdmin.get_admin(get_jwt_identity()).password, password):
+        raise AdminServerApiError(
+            msg='The password given was does not match our records.',
+            status=403
         )
     access_request = dao.deny_access_request(collab_id)
     if access_request is None:
