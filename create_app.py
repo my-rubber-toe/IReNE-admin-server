@@ -4,12 +4,13 @@ create_app.py
 File that contains all the initializations needed for the program to work.
 """
 from werkzeug.utils import find_modules, import_string
-from flask import Flask, request, current_app, redirect
+from flask import Flask, g
 from utils.responses import ApiException, ApiResult
 from exceptions.handler import AdminServerApiError, AdminServerAuthError, AdminServerError, AdminServerRequestError
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
-from database import schema_DB 
+from database import schema_DB
+
 
 class ApiFlask(Flask):
     """
@@ -63,8 +64,8 @@ def create_app(config=None):
         # Setup JWTManager to the app context on the attribute "jwt"
         app.config['JWT_BLACKLIST_ENABLED'] = True
         app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
-        app.__setattr__("jwt", JWTManager(app))
 
+        app.__setattr__("jwt", JWTManager(app))
         # Setup CORS for all endpoints
         register_cors(app)
 
@@ -165,87 +166,76 @@ def register_error_handlers(app):
         app : Flask
             Application instance
     """
-    if True:  # app.config['DEBUG']:
-        # If debug true, then return the whole stack
-        @app.errorhandler(AdminServerError)
-        def handle_error(error):
-            return ApiException(
-                error_type=error.__class__.__name__,
-                message=error.error_stack,
-                status=error.status
-            )
-    else:
-        @app.errorhandler(AdminServerApiError)
-        def handle_error(error):
-            return ApiException(
-                error_type=error.__class__.__name__,
-                message=error.msg,
-                status=error.status
-            )
-
-        @app.errorhandler(AdminServerAuthError)
-        def handle_auth_error(error):
-            return ApiException(
-                error_type=error.__class__.__name__,
-                message=error.msg,
-                status=error.status
-            )
-
-        @app.errorhandler(AdminServerRequestError)
-        def handle_request_error(error):
-            return ApiException(
-                error_type=error.__class__.__name__,
-                message=error.msg,
-                status=error.status
-            )
-
-        @app.errorhandler(Exception)
-        def handle_unexpected_error(error):
-            AdminServerError(
-                err=error,
-                msg='An unexpected error has occurred.',
-                status=500
-            ).log()
-            return ApiException(
-                error_type='UnexpectedException',
-                message='An unexpected error has occurred.',
-                status=500
-            )
-
-        jwt = app.jwt
-
-        @jwt.invalid_token_loader
-        def invalid_token_callback(callback):
-            # Invalid Fresh/Non-Fresh Access token in auth header
-            return ApiException(
-                error_type='AdminServerRequestError',
-                message='Invalid Authentication Token.',
-                status=400
-            )
-
-        @jwt.needs_fresh_token_loader
-        def nonfresh_token_callback(callback):
-            # Invalid Non-Fresh Access token in auth header
-            return ApiException(
-                error_type='AdminServerRequestError',
-                message='Invalid Authentication Token - Not Fresh.',
-                status=400
-            )
-
-    app.register_error_handler(
-        400,
-        lambda err: ApiException(message=str(
-            err), status=400, error_type='Bad request')
-    )
-
-    app.register_error_handler(
-        404,
-        lambda err: ApiException(message=str(
-            err), status=404, error_type='Not found')
-    )
-
-    app.register_error_handler(
-        405,
-        lambda err: ApiException(message=str(
-            err), status=405, error_type='Request method')
-    )
+    pass
+    # @app.errorhandler(AdminServerApiError)
+    # def handle_error(error):
+    #     return ApiException(
+    #         error_type=error.__class__.__name__,
+    #         message=error.msg,
+    #         status=error.status
+    #     )
+    #
+    # @app.errorhandler(AdminServerAuthError)
+    # def handle_auth_error(error):
+    #     return ApiException(
+    #         error_type=error.__class__.__name__,
+    #         message=error.msg,
+    #         status=error.status
+    #     )
+    #
+    # @app.errorhandler(AdminServerRequestError)
+    # def handle_request_error(error):
+    #     return ApiException(
+    #         error_type=error.__class__.__name__,
+    #         message=error.msg,
+    #         status=error.status
+    #     )
+    #
+    # @app.errorhandler(Exception)
+    # def handle_unexpected_error(error):
+    #     AdminServerError(
+    #         err=error,
+    #         msg='An unexpected error has occurred.',
+    #         status=500
+    #     ).log()
+    #     return ApiException(
+    #         error_type='UnexpectedException',
+    #         message='An unexpected error has occurred.',
+    #         status=500
+    #     )
+    #
+    # jwt = app.jwt
+    #
+    # @jwt.invalid_token_loader
+    # def invalid_token_callback(callback):
+    #     # Invalid Fresh/Non-Fresh Access token in auth header
+    #     return ApiException(
+    #         error_type='AdminServerRequestError',
+    #         message='Invalid Authentication Token.',
+    #         status=400
+    #     )
+    #
+    # @jwt.needs_fresh_token_loader
+    # def nonfresh_token_callback(callback):
+    #     # Invalid Non-Fresh Access token in auth header
+    #     return ApiException(
+    #         error_type='AdminServerRequestError',
+    #         message='Invalid Authentication Token - Not Fresh.',
+    #         status=400
+    #     )
+    #
+    # @app.errorhandler(ValueError)
+    # def request_value_error(error):
+    #     return ApiException(
+    #         error_type='ValidationError',
+    #         message=error.messages,
+    #         status=400
+    #     )
+    #
+    # @app.errorhandler(Exception)
+    # def handle_unexpected_error(error):
+    #     return ApiException(
+    #         error_type='UnexpectedError',
+    #         message=str(error),
+    #         status=500
+    #     )

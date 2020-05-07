@@ -18,6 +18,7 @@ blueprint = Blueprint('access-requests', __name__, url_prefix='/admin/access-req
 dao = AccessRequestsDAO()
 daoAdmin = AdminDAO()
 
+
 @blueprint.route('/', methods=['GET'])
 @fresh_jwt_required
 def access_requests():
@@ -32,18 +33,19 @@ def access_requests():
     requests = dao.get_access_requests()
     body = []
     for req in requests:
-       body.append({
-        "_id": str(req.id),
-        "first_name": req.first_name,
-        "last_name": req.last_name,
-        "email": req.email,
-        "banned": req.banned,
-        "approved": req.approved
+        body.append({
+            "_id": str(req.id),
+            "first_name": req.first_name,
+            "last_name": req.last_name,
+            "email": req.email,
+            "banned": req.banned,
+            "approved": req.approved
         })
     body = json.dumps(body)
     return ApiResult(
         body={'requests': json.loads(body)}
     )
+
 
 @blueprint.route('/approve', methods=['PUT'])
 @fresh_jwt_required
@@ -86,9 +88,10 @@ def access_requests_approve():
             msg='The access request ID given was not found.',
             status=404
         )
-    return ApiResult(body = 
-        {'access_request': collab_id}
-    )
+    return ApiResult(body=
+                     {'access_request': collab_id}
+                     )
+
 
 @blueprint.route('/deny', methods=['PUT'])
 @fresh_jwt_required
@@ -134,5 +137,5 @@ def access_requests_deny():
 
     # TODO: Use DAOs to retrieve the necessary information.
     return ApiResult(
-        body = {'access_request': collab_id}
+        body={'access_request': collab_id}
     )

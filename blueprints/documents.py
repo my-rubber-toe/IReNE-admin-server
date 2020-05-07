@@ -3,7 +3,7 @@ documents.py
 ====================================
 Every route regarding documents, including publishing or unpublishing a document and seeing all of current documents in the systen can be found here.
 """
-from flask import Blueprint,  request
+from flask import Blueprint, request, current_app
 from utils.responses import ApiResult, ApiException
 from exceptions.handler import AdminServerApiError, AdminServerAuthError
 from flask_jwt_extended import get_jwt_identity, fresh_jwt_required
@@ -31,10 +31,10 @@ def documents():
         List of collaborators currently in the system.
     """
     documents = dao.get_all_documents()
-    print(json.loads(documents))
     return ApiResult(
         body={'documents': json.loads(documents)}
     )
+
 
 @blueprint.route('/view/<docID>', methods=['GET'])
 @fresh_jwt_required
@@ -42,12 +42,7 @@ def documents_view(docID):
     """
     Retrieve a list of metadata of all the documents in the database.
     """
-    valid_doc_id = objectId_is_valid(docID)
-    if not valid_doc_id:
-        raise AdminServerApiError(
-            msg='The documents ID given is not valid.',
-            status=400
-        )
+
     document = dao.get_document(docID)
     if not document:
         raise AdminServerApiError(
@@ -76,14 +71,15 @@ def documents_view(docID):
         'tagsDoc': document.tagsDoc,
         'infrasDocList': document.infrasDocList,
         'damageDocList': document.damageDocList,
-        'author': actors,
-        'actor': authors,
+        'author': authors,
+        'actor': actors,
         'section': sections
     }
     body = json.dumps(body)
-    return ApiResult( body = 
-        {'document': json.loads(body)}
-    )
+    return ApiResult(body=
+                     {'document': json.loads(body)}
+                     )
+
 
 @blueprint.route('/publish', methods=['PUT'])
 @fresh_jwt_required
@@ -126,9 +122,8 @@ def documents_publish():
             msg='The documents ID given was not found.',
             status=404
         )
-    return ApiResult( body =
-        {'docID': doc_id}
-    )
+    return ApiResult(body={'docID': doc_id})
+
 
 @blueprint.route('/unpublish', methods=['PUT'])
 @fresh_jwt_required
@@ -171,6 +166,6 @@ def documents_unpublish():
             msg='The documents ID given was not found.',
             status=404
         )
-    return ApiResult( body =
-        {'docID': doc_id}
-    )
+    return ApiResult(body=
+                     {'docID': doc_id}
+                     )
