@@ -28,7 +28,6 @@ def documents():
         List of collaborators currently in the system.
     """
     documents = dao.get_all_documents()
-    print(json.loads(documents))
     return ApiResult(
         body={'documents': json.loads(documents)}
     )
@@ -155,9 +154,3 @@ def documents_unpublish():
     return ApiResult(body=
                      {'docID': doc_id}
                      )
-
-
-@blueprint.before_app_request
-def verify_identity():
-    if current_app.config['ADMIN_IDENTITY']:
-       raise AdminServerAuthError('AuthError', msg='Another administrator is already performing operations')

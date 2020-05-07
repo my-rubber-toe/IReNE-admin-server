@@ -166,76 +166,76 @@ def register_error_handlers(app):
         app : Flask
             Application instance
     """
-
-    @app.errorhandler(AdminServerApiError)
-    def handle_error(error):
-        return ApiException(
-            error_type=error.__class__.__name__,
-            message=error.msg,
-            status=error.status
-        )
-
-    @app.errorhandler(AdminServerAuthError)
-    def handle_auth_error(error):
-        return ApiException(
-            error_type=error.__class__.__name__,
-            message=error.msg,
-            status=error.status
-        )
-
-    @app.errorhandler(AdminServerRequestError)
-    def handle_request_error(error):
-        return ApiException(
-            error_type=error.__class__.__name__,
-            message=error.msg,
-            status=error.status
-        )
-
-    @app.errorhandler(Exception)
-    def handle_unexpected_error(error):
-        AdminServerError(
-            err=error,
-            msg='An unexpected error has occurred.',
-            status=500
-        ).log()
-        return ApiException(
-            error_type='UnexpectedException',
-            message='An unexpected error has occurred.',
-            status=500
-        )
-
-    jwt = app.jwt
-
-    @jwt.invalid_token_loader
-    def invalid_token_callback(callback):
-        # Invalid Fresh/Non-Fresh Access token in auth header
-        return ApiException(
-            error_type='AdminServerRequestError',
-            message='Invalid Authentication Token.',
-            status=400
-        )
-
-    @jwt.needs_fresh_token_loader
-    def nonfresh_token_callback(callback):
-        # Invalid Non-Fresh Access token in auth header
-        return ApiException(
-            error_type='AdminServerRequestError',
-            message='Invalid Authentication Token - Not Fresh.',
-            status=400
-        )
-
-    @app.errorhandler(ValueError)
-    def request_value_error(error):
-        return ApiException(
-            error_type='ValidationError',
-            message=error.messages,
-            status=400
-        )
-
-    @app.errorhandler(Exception)
-    def handle_unexpected_error(error):
-        return ApiException(
-            error_type='UnexpectedError',
-            message=str(error),
-            status=500
-        )
+    pass
+    # @app.errorhandler(AdminServerApiError)
+    # def handle_error(error):
+    #     return ApiException(
+    #         error_type=error.__class__.__name__,
+    #         message=error.msg,
+    #         status=error.status
+    #     )
+    #
+    # @app.errorhandler(AdminServerAuthError)
+    # def handle_auth_error(error):
+    #     return ApiException(
+    #         error_type=error.__class__.__name__,
+    #         message=error.msg,
+    #         status=error.status
+    #     )
+    #
+    # @app.errorhandler(AdminServerRequestError)
+    # def handle_request_error(error):
+    #     return ApiException(
+    #         error_type=error.__class__.__name__,
+    #         message=error.msg,
+    #         status=error.status
+    #     )
+    #
+    # @app.errorhandler(Exception)
+    # def handle_unexpected_error(error):
+    #     AdminServerError(
+    #         err=error,
+    #         msg='An unexpected error has occurred.',
+    #         status=500
+    #     ).log()
+    #     return ApiException(
+    #         error_type='UnexpectedException',
+    #         message='An unexpected error has occurred.',
+    #         status=500
+    #     )
+    #
+    # jwt = app.jwt
+    #
+    # @jwt.invalid_token_loader
+    # def invalid_token_callback(callback):
+    #     # Invalid Fresh/Non-Fresh Access token in auth header
+    #     return ApiException(
+    #         error_type='AdminServerRequestError',
+    #         message='Invalid Authentication Token.',
+    #         status=400
+    #     )
+    #
+    # @jwt.needs_fresh_token_loader
+    # def nonfresh_token_callback(callback):
+    #     # Invalid Non-Fresh Access token in auth header
+    #     return ApiException(
+    #         error_type='AdminServerRequestError',
+    #         message='Invalid Authentication Token - Not Fresh.',
+    #         status=400
+    #     )
+    #
+    # @app.errorhandler(ValueError)
+    # def request_value_error(error):
+    #     return ApiException(
+    #         error_type='ValidationError',
+    #         message=error.messages,
+    #         status=400
+    #     )
+    #
+    # @app.errorhandler(Exception)
+    # def handle_unexpected_error(error):
+    #     return ApiException(
+    #         error_type='UnexpectedError',
+    #         message=str(error),
+    #         status=500
+    #     )

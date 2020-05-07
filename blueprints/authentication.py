@@ -82,8 +82,6 @@ def login():
             status=401
         )
 
-    # Use the username as the token identity
-    # current_app.config['ADMIN_IDENTITY'] = username
     return ApiResult(body=
                      {'access_token': create_access_token(identity=username, fresh=True,
                                                           expires_delta=timedelta(minutes=10))}
@@ -123,7 +121,6 @@ def logout():
     jti = get_raw_jwt()['jti']
     token_blacklist[jti] = True  # Add the jti to the cache with value true #
 
-    # current_app.config['ADMIN_IDENTITY'] = None
     return ApiResult(body=
                      {'message': "Successfully logged out.",
                       'username': get_jwt_identity()}

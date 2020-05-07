@@ -18,7 +18,8 @@ dao = RevDocumentsDAO()
 daoDocuments = DocumentsDAO()
 daoCollaborators = CollaboratorsDAO()
 
-@blueprint.route('/', methods=['GET'])
+
+@blueprint.route('/', methods=['GET', 'POST'])
 @fresh_jwt_required
 def documents_rev():
     """
@@ -33,7 +34,7 @@ def documents_rev():
     for revDoc in documents_rev:
         collab = daoCollaborators.get_collab(str(revDoc.creatorId))
         document = daoDocuments.get_document(str(revDoc.docId))
-        name = collab.first_name + " " +collab.last_name
+        name = collab.first_name + " " + collab.last_name
         title = document.title
         index = 0
         for revision in revDoc.revisions:
@@ -45,12 +46,14 @@ def documents_rev():
                 'revType': revision.revType,
                 'index': index,
                 'email': collab.email
-                })
-            index +=1
+            })
+            index += 1
     body = json.dumps(body)
     return ApiResult(
         body={'revision-history': json.loads(body)}
     )
+
+
 @blueprint.route('/revision', methods=['GET'])
 @fresh_jwt_required
 def get_revision():
@@ -73,4 +76,3 @@ def get_revision():
     return ApiResult(
         body={'revision': json.loads(body)}
     )
-

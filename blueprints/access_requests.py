@@ -16,6 +16,7 @@ import json
 blueprint = Blueprint('access-requests', __name__, url_prefix='/admin/access-requests')
 dao = AccessRequestsDAO()
 
+
 @blueprint.route('/', methods=['GET'])
 @fresh_jwt_required
 def access_requests():
@@ -30,18 +31,19 @@ def access_requests():
     requests = dao.get_access_requests()
     body = []
     for req in requests:
-       body.append({
-        "_id": str(req.id),
-        "first_name": req.first_name,
-        "last_name": req.last_name,
-        "email": req.email,
-        "banned": req.banned,
-        "approved": req.approved
+        body.append({
+            "_id": str(req.id),
+            "first_name": req.first_name,
+            "last_name": req.last_name,
+            "email": req.email,
+            "banned": req.banned,
+            "approved": req.approved
         })
     body = json.dumps(body)
     return ApiResult(
         body={'requests': json.loads(body)}
     )
+
 
 @blueprint.route('/approve', methods=['PUT'])
 @fresh_jwt_required
@@ -65,7 +67,7 @@ def access_requests_approve():
         If the access request id is not valid or if an access request with the given id was not found.
 
     """
-    collab_id  = request.form.get('collabID')
+    collab_id = request.form.get('collabID')
     valid_collab_id = objectId_is_valid(collab_id)
     if not valid_collab_id:
         raise AdminServerApiError(
@@ -78,9 +80,10 @@ def access_requests_approve():
             msg='The access request ID given was not found.',
             status=404
         )
-    return ApiResult(body = 
-        {'access_request': collab_id}
-    )
+    return ApiResult(body=
+                     {'access_request': collab_id}
+                     )
+
 
 @blueprint.route('/deny', methods=['PUT'])
 @fresh_jwt_required
@@ -104,7 +107,7 @@ def access_requests_deny():
         If the access request id is not valid or if an access request with the given id was not found.
 
     """
-    collab_id  = request.form.get('collabID')
+    collab_id = request.form.get('collabID')
     valid_collab_id = objectId_is_valid(collab_id)
     if not valid_collab_id:
         raise AdminServerApiError(
@@ -120,5 +123,5 @@ def access_requests_deny():
 
     # TODO: Use DAOs to retrieve the necessary information.
     return ApiResult(
-        body = {'access_request': collab_id}
+        body={'access_request': collab_id}
     )
