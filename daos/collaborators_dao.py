@@ -52,8 +52,8 @@ class CollaboratorsDAO:
         
         Returns
         -------
-        Dictionary
-            Returns a dictionary as the collaborator banned or None if the collaborator was not found.
+        Collaborator
+            Collaborator object of the item that matched the ID or None if the collaborator was not found.
 
         """
         try:
@@ -76,9 +76,8 @@ class CollaboratorsDAO:
         
         Returns
         -------
-        Dictionary
-            Returns a dictionary as the collaborator unbanned or None if the collaborator was not found.
-
+        Collaborator
+            Collaborator object of the item that matched the ID or None if the collaborator was not found.
         """
         try:
             Collaborator.objects(id=collabID).update_one(set__banned=False, full_result=True)
@@ -100,8 +99,8 @@ class CollaboratorsDAO:
         
         Returns
         -------
-        Dictionary
-            Returns a dictionary as the collaborator or None if the collaborator was not found.
+        Collaborator
+            Collaborator object of the item that matched the ID or None if the collaborator was not found.
         """
         try:
             collab = Collaborator.objects.filter(id=collabID).first()

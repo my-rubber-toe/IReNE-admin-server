@@ -40,7 +40,7 @@ def build_doc_rev(revision_type):
         creator_email = collab.email,
         document_title = doc.title,
         revision_date = random.choice(random_dates),
-        revision_number = str(DocumentCaseRevision.objects(creatorId = collab.id, docId =doc.id).count()),
+        revision_number = DocumentCaseRevision.objects(creatorId = collab.id, docId =doc.id).count(),
         revision_type = revision_type)
 
 random_dates = []
@@ -68,7 +68,6 @@ for i in range(0,100):
 
 for i in range(0,100):
     rev = build_doc_rev('Actor')
-    print(rev.revision_date)
     rev.field_changed = FieldsEmbedded(new = ActorEmbedded(actor = random.choices(actors, k = random.randint(0,5))),
                                         old = ActorEmbedded(actor = random.choices(actors, k = random.randint(0,5))))
     rev.save()

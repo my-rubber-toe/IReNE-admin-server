@@ -20,6 +20,14 @@ daoCollaborators = CollaboratorsDAO()
 @blueprint.route('/', methods=['POST'])
 @fresh_jwt_required
 def get_revision_with_params():
+    """
+    Retrieve a list of revision history based on the parameters given.
+
+    Returns
+    -------
+    DocumentCaseRevision[]
+        List of DocumentCaseRevision that matched the given specifications.
+    """
     sortField  = request.form.get('sortField')
     sortOrder  = request.form.get('sortOrder')
     filterVal  = request.form.get('filterVal')
@@ -47,11 +55,16 @@ def get_revision_with_params():
 @fresh_jwt_required
 def get_revision():
     """
-    Retrieve a list of all the documents in the database.
+    Retrieve a DocumentCaseRevision to be viewd.
+
     Returns
     -------
-    Document[]
-        List of collaborators currently in the system.
+    DocumentCaseRevision[]
+        DocumentCaseRevision that matched the given Id.
+
+    ApiException
+        Exception if the revision ID given was not fount.
+    
     """
     revDocId = request.form.get('revDocId')
     revision = dao.get_document_rev(revDocId)
@@ -64,7 +77,6 @@ def get_revision():
     
     body = {'new': revision.field_changed.new.to_json(),
             'old': revision.field_changed.old.to_json()}
-    print(body)
     return ApiResult(
         body={'revision': body}
     )

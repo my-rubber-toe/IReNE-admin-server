@@ -60,11 +60,9 @@ def access_requests_approve():
     
     Returns
     -------
-    Collaborator
-        Access request item that has been accepted.
-    
-    returns
-    ------
+    ObjectID
+        ObjectID of the access request that was approved.
+
     ApiException
         If the access request id is not valid or if an access request with the given id was not found.
 
@@ -109,14 +107,11 @@ def access_requests_deny():
     
     Returns
     -------
-    Collaborator
-        Access request item that has been denied.
-    
-    returns
-    ------
+    ObjectID
+        ObjectID of the access request that was denied.
+
     ApiException
         If the access request id is not valid or if an access request with the given id was not found.
-
     """
     collab_id  = request.form.get('collabID')
     password = request.form.get('password')

@@ -1,3 +1,8 @@
+"""
+environment.py
+====================================
+Configuration file with all the environment variables found in the server.
+"""
 import os
 
 FLASK_APP = os.getenv("FLASK_APP")

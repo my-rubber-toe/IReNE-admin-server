@@ -54,8 +54,6 @@ def login():
     string
         JWT token with the username as identity.
     
-    returns
-    ------
     ApiException
         If the username or password fields are empty or are invalid. 
 

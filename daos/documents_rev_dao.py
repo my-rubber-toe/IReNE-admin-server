@@ -1,7 +1,7 @@
 """
-documents_dao.py
+documents_rev_dao.py
 ====================================
-Data access object file for the admin accounts.
+Data access object file for the revision history.
 """
 
 from mongoengine import *
@@ -13,18 +13,44 @@ import json
 
 class RevDocumentsDAO:
     """
-    Data access object for the Collaborators.
+    Data access object for the Revision History.
     """
 
     def __init__(self):
         pass
 
     def get_documents_revisions(self, sortField, sortOrder, filterVal, pageNumber, pageSize):
+        """
+        Gets all the revisions found in the system with the given specifications.
+        
+        Parameters
+        ----------
+        sortField : string
+            Field to be used to sort the output
+        sortOrder : string
+            Asc or Desc, sort order of the output
+        filterVal : string
+            Value to be used to filter the revisions
+        pageNumber :  number
+            Number of pages that the user wants in return
+        pageSize : number
+            Number of revisions per page that the user wants in return
+        
+        Returns
+        -------
+        List
+            List of the objects that follow the given parameters
+
+        """
         sortParam = sortField
+        try:
+            filterValInt = int(filterVal)
+        except:
+            filterValInt = None
         if(sortOrder == 'desc'):
             sortParam = "-" + sortField
         objects = DocumentCaseRevision.objects(Q(revision_date__icontains = filterVal) |
-                                    Q(revision_number__icontains = filterVal) |
+                                    Q(revision_number = filterValInt) |
                                     Q(document_title__icontains = filterVal) |
                                     Q(creator_name__icontains = filterVal) |
                                     Q(revision_type__icontains = filterVal)
@@ -34,17 +60,17 @@ class RevDocumentsDAO:
         
     def get_document_rev(self, documentID):
         """
-        Gets the document with the given ID from the database.
+        Gets the document revision with the given ID from the database.
         
         Parameters
         ----------
         documentID : string
-            ID of the document to be returned.
+            ID of the document revision to be returned.
         
         Returns
         -------
-        Dictionary
-            Returns a dictionary as the document or None if the document was not found.
+        DocumentCaseRevision
+            Returns a DocumentCaseRevision object or None if the document was not found.
 
         """
         try:
@@ -52,24 +78,3 @@ class RevDocumentsDAO:
         except DoesNotExist:
             return None
         return revDoc
-
-    def get_doc_revisions_by_type(self, documentID, revType):
-        """
-        Unpublished the document with the given ID in the database.
-        
-        Parameters
-        ----------
-        documentID : string
-            ID of the document to be unpublished.
-        
-        Returns
-        -------
-        Dictionary
-            Returns a dictionary as the document unpublished or None if the document was not found.
-
-        """
-        try:
-            revisions = DocumentCaseRevision.objects.get(docId = documentID).revisions.filter(revType = revType)
-        except DoesNotExist:
-            return None
-        return revisions

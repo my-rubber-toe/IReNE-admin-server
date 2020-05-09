@@ -39,9 +39,22 @@ def documents():
 @fresh_jwt_required
 def documents_view(docID):
     """
-    Retrieve a list of metadata of all the documents in the database.
-    """
+    Returns a document to view. 
+    
+    Parameters
+    ----------
+    docID : ObjectId
+        12-byte MongoDB compliant Object id of the document to be publish.
+    
+    Returns
+    -------
+    Document
+        Document that is going to be viewed.
+    
+    ApiException
+        If the document id is not valid or if a document with the given id was not found.
 
+    """
     document = dao.get_document(docID)
     if not document:
         return ApiException(
@@ -85,7 +98,7 @@ def documents_view(docID):
 @fresh_jwt_required
 def documents_publish():
     """
-    Pusblish a document. 
+    Publish a document. 
     
     Parameters
     ----------
@@ -94,12 +107,10 @@ def documents_publish():
     
     Returns
     -------
-    Document
-        Document that has been published.
+    ObjectID
+        ObjectID of the document that was published.
     
-    returns
-    ------
-    AdminServerApiError
+    ApiException
         If the document id is not valid or if a document with the given id was not found.
 
     """
@@ -141,12 +152,10 @@ def documents_unpublish():
     
     Returns
     -------
-    Document
-        Document that has been unpublished.
+    ObjectID
+        ObjectID of the document that was unpublished.
     
-    returns
-    ------
-    AdminServerApiError
+    ApiException
         If the document id is not valid or if a document with the given id was not found.
 
     """

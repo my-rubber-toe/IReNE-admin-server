@@ -40,7 +40,6 @@ for index in range(0,100):
     fn = names.get_first_name()
     ln = names.get_last_name()
     emailc = fn.lower() + '.' + ln.lower() + "@upr.edu"
-    print(emailc)
     collab1 = Collaborator(first_name = fn, 
     last_name = ln, 
     approved = random.choice([True, False]),
@@ -95,7 +94,6 @@ for index in range(0,100):
     ad = ["Coamo, PR", "Arecibo, PR", "Santa Isabel, PR", "Camuy, PR", "Salinas, PR", "San Juan, PR", "Mayagüez, PR", "Carolina, PR", "Aguas Buenas, PR", "Isabela, PR", "Quebradillas, PR", "Moca, PR", "Añasco, PR", "Yabucoa, PR", "Caguas, PR", "Lares, PR", "Humacao, PR", "Gurabo, PR", "Vieques, PR", "Maricao, PR", "Patillas, PR", "Arroyo, PR", "Las Piedras, PR", "Cidra, PR", "Maunabo, PR", "Fajardo, PR", "Ceiba, PR", "Juncos, PR", "Orocovis, PR", "Utuado, PR", "Jayuya, PR", "Ciales, PR", "Corozal, PR", "Aibonito, PR", "Sabana Grande, PR", "Guánica, PR", "Cayey, PR", "Vega Baja, PR"]
     j = random.choice(ad)
     l = random.choice(ad)
-    print('j: ', j, " l: ", l)
     citypr = CityPR.objects.get(city = j)
     citypr1 = CityPR.objects.get(city = l)
     loc = Location(address= citypr.city, latitude= citypr.latitude, longitude=citypr.longitude)

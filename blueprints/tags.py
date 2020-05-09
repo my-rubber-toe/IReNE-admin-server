@@ -43,6 +43,11 @@ def tags():
 def tags_remove():
     """
     Remove a tag from all documents and the system tags colleciton.
+    
+    Returns
+    -------
+    ObjectID
+        ObjectID of the tag removed.
     """
     tagID  = request.form.get('tagID')
     password = request.form.get('password')

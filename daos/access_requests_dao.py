@@ -22,8 +22,8 @@ class AccessRequestsDAO:
         
         Returns
         -------
-        Dictionary[]
-            List of dictionaries representing the Access Requests in the database.
+        Collaborator[]
+            List of collaborators representing the Access Requests in the database.
 
         """
         access_req = Collaborator.objects.filter(approved = False)
@@ -40,8 +40,8 @@ class AccessRequestsDAO:
         
         Returns
         -------
-        Dictionary
-            Returns a dictionary of the access request accepted or None if the access request was not found.
+        Collaborator
+            Collaborator object of the item that matched the ID or None if the collaborator was not found.
 
         """
         try:
@@ -61,8 +61,9 @@ class AccessRequestsDAO:
         
         Returns
         -------
-        Dictionary
-            Returns a dictionary of the access request denied or None if the access request was not found.
+        Collaborator
+            Collaborator object of the item that matched the ID or None if the collaborator was not found.
+
 
         """
         try:

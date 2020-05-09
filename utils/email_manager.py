@@ -5,13 +5,36 @@ from config import environment
 
 
 class EmailManager:
+    """
+    Email manager in charge of sending emails when a collaborator is banned, a document is published or unpublished.
+
+    ...
+
+    Methods
+    -------
+    __init__()
+        Constructor of the class
+    email_collaborator(doc_title, email, email_type)
+        Sends the corresponding email to the collaborator
+    """
     def __init__(self):
         self.sender_email = environment.EMAIL_SENDER
         self.password = environment.EMAIL_PASSWD
 
     def email_collaborator(self, doc_title=None, email=None, email_type=None):
         """
-            Send an email to the collaborator based on the email_type
+          Send an email to the collaborator based on the email_type
+          
+          Parameters
+          ----------
+          doc_title : string
+              Title of the document that has been unpublished or published.
+          
+          email : string
+            Email of the collaborator that has been banned or unbanned, or needs to be aware of any changes to his/her documents.
+          
+          email_type : string
+            Type of email to be sent
         """
         if (environment.ENABLE_EMAIL == 1):
 

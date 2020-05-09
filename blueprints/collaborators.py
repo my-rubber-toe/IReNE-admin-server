@@ -46,11 +46,9 @@ def collaborators_ban():
     
     Returns
     -------
-    Collaborator
-        Collaborator that has been banned.
+    ObjectID
+        ObjectID of the collaborator that was banned.
     
-    returns
-    ------
     ApiException
         If the collaborators id is not valid or if a collaborator with the given id was not found.
 
@@ -95,11 +93,9 @@ def collaborators_unban():
     
     Returns
     -------
-    Collaborator
-        Collaborator that has been unbanned.
-    
-    returns
-    ------
+    ObjectID
+        ObjectID of the collaborator that was unbanned.
+
     ApiException
         If the collaborators id is not valid or if a collaborator with the given id was not found.
 

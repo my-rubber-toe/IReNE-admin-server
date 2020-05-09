@@ -1,7 +1,7 @@
 """
 documents_dao.py
 ====================================
-Data access object file for the admin accounts.
+Data access object file for the documents in the system.
 """
 
 from mongoengine import *
@@ -12,7 +12,7 @@ from utils.email_manager import EmailManager
 
 class DocumentsDAO:
     """
-    Data access object for the Collaborators.
+    Data access object for the Documents.
     """
 
     def __init__(self):
@@ -69,8 +69,8 @@ class DocumentsDAO:
         
         Returns
         -------
-        Dictionary
-            Returns a dictionary as the document or None if the document was not found.
+        DocumentCase
+            DocumentCase object of the item that matched the ID or None if the document was not found.
 
         """
         return DocumentCase.objects.get(id=documentID)
@@ -86,8 +86,8 @@ class DocumentsDAO:
         
         Returns
         -------
-        Dictionary
-            Returns a dictionary as the document published or None if the document was not found.
+        DocumentCase
+            DocumentCase object of the item that matched the ID or None if the document was not found.
 
         """
         DocumentCase.objects(id=documentID).update_one(set__published=True, full_result=True)
@@ -111,8 +111,8 @@ class DocumentsDAO:
 
         Returns
         -------
-        Dictionary
-            Returns a dictionary as the document unpublished or None if the document was not found.
+        DocumentCase
+            DocumentCase object of the item that matched the ID or None if the document was not found.
 
         """
 
