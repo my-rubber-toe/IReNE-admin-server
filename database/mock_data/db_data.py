@@ -12,26 +12,26 @@ from faker  import Faker
 """
 fake = Faker() 
 
-infrastructure = ["Streets or Highway", "Bridges", "Airports", "Water Supply", "Waste Water Management",
+infrastructure1 = ["Streets or Highway", "Bridges", "Airports", "Water Supply", "Waste Water Management",
     "Power Generation & Transmission", "Telecommunications" , "Housing", "Building", "Ports",
     "Public Transportation"]
-damage = [ "Earthquake", "Hurricane", "Tsunami", "Flooding", "Landslide", "Fire/smoke", 
+damage1 = [ "Earthquake", "Hurricane", "Tsunami", "Flooding", "Landslide", "Fire/smoke", 
     "Extreme Precipitation", "Water Damage", "Wind Damage", "Tornado"]
-tags = infrastructure + damage
+tags = infrastructure1 + damage1
 
-for i in infrastructure:
-    Infrastructure(infrastructureType = i).save()
+for i in infrastructure1:
+    infrastructure(infrastructureType = i).save()
 
-for i in damage:
-    Damage(damageType = i).save()
+for i in damage1:
+    damage(damageType = i).save()
 
 for i in tags:
-    Tag(tagItem = i).save()
+    tag(tagItem = i).save()
 
-with open('./database/cityPR.json') as f:
+with open('./database/mock_data/cityPR.json') as f:
     data = json.loads(f.read())
     for cities in data['city_PR']:
-        city = CityPR(city= cities['city'], latitude=cities['latitude'], longitude=cities['longitude'])
+        city = city_pr(city= cities['city'], latitude=cities['latitude'], longitude=cities['longitude'])
         city.save()
 
 index = 0
@@ -40,7 +40,7 @@ for index in range(0,100):
     fn = names.get_first_name()
     ln = names.get_last_name()
     emailc = fn.lower() + '.' + ln.lower() + "@upr.edu"
-    collab1 = Collaborator(first_name = fn, 
+    collab1 = collaborator(first_name = fn, 
     last_name = ln, 
     approved = random.choice([True, False]),
     banned = random.choice([True, False]),
@@ -71,11 +71,11 @@ for index in range(0,100):
     #creates doc
     facultyITEM = ['ICOM', 'CIIC', 'INCI', 'INSO', 'INQU', 'INEL', 'MATE', 'QUIM', 'ADEM', 'PSIC']
     roles = ['Mayor', 'President', 'CEO','Owner','Resident','Engineer','Doctor']
-    get_collab = Collaborator.objects.get(email= emailc)
-    authorDoc = Author(author_FN = get_collab.first_name, author_LN = get_collab.last_name, 
+    get_collab = collaborator.objects.get(email= emailc)
+    authorDoc = author(author_FN = get_collab.first_name, author_LN = get_collab.last_name, 
     author_email = get_collab.email, author_faculty = random.choice(facultyITEM))
 
-    actorDoc = Actor(actor_FN = names.get_first_name(), actor_LN = names.get_last_name(), 
+    actorDoc = actor(actor_FN = names.get_first_name(), actor_LN = names.get_last_name(), 
     role = random.choice(roles))
 
     start = random.choice(dates)
@@ -83,21 +83,21 @@ for index in range(0,100):
     while(start > end):
         end = random.choice(dates)
     
-    timelineDoc = Timeline(event = fake.sentence(ext_word_list=my_word_list), 
+    timelineDoc = timeline(event = fake.sentence(ext_word_list=my_word_list), 
     eventStartDate = start, eventEndDate = end)
 
     titles=['Introduction', 'Body', 'Analysis', 'Conclusion', 'Executive Summary', 'Discussion']
-    sectionDoc = Section(secTitle = random.choice(titles), 
+    sectionDoc = section(secTitle = random.choice(titles), 
     content = fake.sentence(ext_word_list=my_word_list))
     languageDoc = ['English', 'Spanish']
 
     ad = ["Coamo, PR", "Arecibo, PR", "Santa Isabel, PR", "Camuy, PR", "Salinas, PR", "San Juan, PR", "Mayagüez, PR", "Carolina, PR", "Aguas Buenas, PR", "Isabela, PR", "Quebradillas, PR", "Moca, PR", "Añasco, PR", "Yabucoa, PR", "Caguas, PR", "Lares, PR", "Humacao, PR", "Gurabo, PR", "Vieques, PR", "Maricao, PR", "Patillas, PR", "Arroyo, PR", "Las Piedras, PR", "Cidra, PR", "Maunabo, PR", "Fajardo, PR", "Ceiba, PR", "Juncos, PR", "Orocovis, PR", "Utuado, PR", "Jayuya, PR", "Ciales, PR", "Corozal, PR", "Aibonito, PR", "Sabana Grande, PR", "Guánica, PR", "Cayey, PR", "Vega Baja, PR"]
     j = random.choice(ad)
     l = random.choice(ad)
-    citypr = CityPR.objects.get(city = j)
-    citypr1 = CityPR.objects.get(city = l)
-    loc = Location(address= citypr.city, latitude= citypr.latitude, longitude=citypr.longitude)
-    loc1 = Location(address= citypr1.city, latitude= citypr1.latitude, longitude=citypr1.longitude)
+    citypr = city_pr.objects.get(city = j)
+    citypr1 = city_pr.objects.get(city = l)
+    loc = location(address= citypr.city, latitude= citypr.latitude, longitude=citypr.longitude)
+    loc1 = location(address= citypr1.city, latitude= citypr1.latitude, longitude=citypr1.longitude)
     inc = random.choice(dates)
     created = random.choice(dates)
     mod = random.choice(dates)
@@ -107,26 +107,26 @@ for index in range(0,100):
     while(created > mod):
         mod = random.choice(dates)
     
-    doc = DocumentCase(creatoriD = str(get_collab.id), title = ("The Great " + namegenerator.gen()), location=[loc,loc1], 
+    doc = document_case(creatoriD = str(get_collab.id), title = ("The Great " + namegenerator.gen()), location=[loc,loc1], 
     description = fake.sentence(ext_word_list=my_word_list), published=random.choice([True, False]),
     incidentDate = inc, 
     creationDate= created,
     lastModificationDate= mod,
     tagsDoc=[random.choice(tags),random.choice(tags)], 
-    infrasDocList= [random.choice(infrastructure), random.choice(infrastructure)],
-    damageDocList= [random.choice(damage), random.choice(damage)],
+    infrasDocList= [random.choice(infrastructure1), random.choice(infrastructure1)],
+    damageDocList= [random.choice(damage1), random.choice(damage1)],
     author = [authorDoc], actor = [actorDoc],section = [sectionDoc],timeline = [timelineDoc], language=random.choice(languageDoc))
     doc.save()
-    doc = DocumentCase.objects.get(creatoriD=str(get_collab.id))
+    doc = document_case.objects.get(creatoriD=str(get_collab.id))
 
 
-admin1 = Admin(username="yomar.ruiz", password='$2y$12$F8JpE/vVYHW5CGHerUfy3er15s7ApqT7ziRkc9lTGpnVuw9X8jZ4W') #Password0
+admin1 = admin(username="yomar.ruiz", password='$2y$12$F8JpE/vVYHW5CGHerUfy3er15s7ApqT7ziRkc9lTGpnVuw9X8jZ4W') #Password0
 admin1.save()
-admin2 = Admin(username="roberto.guzman", password= '$2y$12$XZe.igfbsswNfEIrjcIXvOizWs9Xl4mfgw9Zj04bPajmdrr2Wcj1C') #Password1
+admin2 = admin(username="roberto.guzman", password= '$2y$12$XZe.igfbsswNfEIrjcIXvOizWs9Xl4mfgw9Zj04bPajmdrr2Wcj1C') #Password1
 admin2.save()
-admin3 = Admin(username="alejandro.vasquez", password='$2y$12$XZe.igfbsswNfEIrjcIXvOizWs9Xl4mfgw9Zj04bPajmdrr2Wcj1C') #Password1
+admin3 = admin(username="alejandro.vasquez", password='$2y$12$XZe.igfbsswNfEIrjcIXvOizWs9Xl4mfgw9Zj04bPajmdrr2Wcj1C') #Password1
 admin3.save()
-admin4 = Admin(username="jainel.torres", password='$2y$12$XZe.igfbsswNfEIrjcIXvOizWs9Xl4mfgw9Zj04bPajmdrr2Wcj1C') #Password1
+admin4 = admin(username="jainel.torres", password='$2y$12$XZe.igfbsswNfEIrjcIXvOizWs9Xl4mfgw9Zj04bPajmdrr2Wcj1C') #Password1
 admin4.save()
-admin5 = Admin(username="alberto.canela", password='$2y$12$XZe.igfbsswNfEIrjcIXvOizWs9Xl4mfgw9Zj04bPajmdrr2Wcj1C') #Password1
+admin5 = admin(username="alberto.canela", password='$2y$12$XZe.igfbsswNfEIrjcIXvOizWs9Xl4mfgw9Zj04bPajmdrr2Wcj1C') #Password1
 admin5.save()

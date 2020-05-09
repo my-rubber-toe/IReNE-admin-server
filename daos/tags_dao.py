@@ -5,7 +5,7 @@ Data access object file for the admin accounts.
 """
 
 from mongoengine import *
-from database.schema_DB import Tag, DocumentCase
+from database.schema_DB import tag, document_case
 import datetime
 import json
 
@@ -28,7 +28,7 @@ class TagsDAO:
             List of dictionaries representing the tags in the database.
 
         """
-        tag_objects = Tag.objects()
+        tag_objects = tag.objects()
         return json.loads(tag_objects.to_json())
 
     def remove_tag(self, tagID):
@@ -47,8 +47,8 @@ class TagsDAO:
 
         """
         try:
-            Tag.objects(id=tagID).delete()
-            DocumentCase.objects().update(pull__tagsDoc=tagID)
+            tag.objects(id=tagID).delete()
+            document_case.objects().update(pull__tagsDoc=tagID)
             return tagID
         except DoesNotExist:
             return None

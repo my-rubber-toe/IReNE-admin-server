@@ -5,7 +5,7 @@ Data access object file for the admin accounts.
 """
 from flask_bcrypt import Bcrypt
 from mongoengine import *
-from database.schema_DB import Admin
+from database.schema_DB import admin
 import datetime
 import json
 
@@ -34,10 +34,10 @@ class AdminDAO:
 
         """
         try:
-            admin = Admin.objects.get(username = username)
+            admin_account = admin.objects.get(username = username)
         except DoesNotExist:
             return None
-        return admin
+        return admin_account
     
     def check_password(self, password_hash, password):
         """

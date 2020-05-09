@@ -5,7 +5,7 @@ Data access object file for the documents in the system.
 """
 
 from mongoengine import *
-from database.schema_DB import DocumentCase, Collaborator
+from database.schema_DB import document_case, collaborator
 from bson.json_util import dumps
 from utils.email_manager import EmailManager
 
@@ -29,10 +29,10 @@ class DocumentsDAO:
 
         """
         # Object list cotains: _id, title, published, creator
-        docs = DocumentCase.objects.aggregate(*[
+        docs = document_case.objects.aggregate(*[
             {
                 '$lookup': {
-                    'from': Collaborator._get_collection_name(),
+                    'from': collaborator._get_collection_name(),
                     'localField': 'creatoriD',
                     'foreignField': '_id',
                     'as': 'creatorName'
@@ -73,7 +73,7 @@ class DocumentsDAO:
             DocumentCase object of the item that matched the ID or None if the document was not found.
 
         """
-        return DocumentCase.objects.get(id=documentID)
+        return document_case.objects.get(id=documentID)
 
     def publish_document(self, documentID):
         """
@@ -90,11 +90,11 @@ class DocumentsDAO:
             DocumentCase object of the item that matched the ID or None if the document was not found.
 
         """
-        DocumentCase.objects(id=documentID).update_one(set__published=True, full_result=True)
-        doc: DocumentCase = DocumentCase.objects.get(id=documentID)
+        document_case.objects(id=documentID).update_one(set__published=True, full_result=True)
+        doc: document_case = document_case.objects.get(id=documentID)
 
         # Automatically fetches collaborator since its a reference field
-        collab: Collaborator = doc.creatoriD
+        collab: collaborator = doc.creatoriD
 
         self.email_manager.email_collaborator(doc_title=doc.title, email=collab.email, email_type='publish')
 
@@ -116,10 +116,10 @@ class DocumentsDAO:
 
         """
 
-        DocumentCase.objects(id=documentID).update_one(set__published=False, full_result=True)
-        doc: DocumentCase = DocumentCase.objects.get(id=documentID)
+        document_case.objects(id=documentID).update_one(set__published=False, full_result=True)
+        doc: document_case = document_case.objects.get(id=documentID)
         # Automatically fetches collaborator since its a reference field
-        collab: Collaborator = doc.creatoriD
+        collab: collaborator = doc.creatoriD
 
         self.email_manager.email_collaborator(doc_title=doc.title, email=collab.email, email_type='unpublish')
 

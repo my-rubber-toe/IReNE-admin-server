@@ -5,7 +5,7 @@ Data access object file for the revision history.
 """
 
 from mongoengine import *
-from database.schema_DB import DocumentCaseRevision
+from database.schema_DB import document_case_revision
 from mongoengine.queryset.visitor import Q
 from datetime import datetime
 import json
@@ -49,7 +49,7 @@ class RevDocumentsDAO:
             filterValInt = None
         if(sortOrder == 'desc'):
             sortParam = "-" + sortField
-        objects = DocumentCaseRevision.objects(Q(revision_date__icontains = filterVal) |
+        objects = document_case_revision.objects(Q(revision_date__icontains = filterVal) |
                                     Q(revision_number = filterValInt) |
                                     Q(document_title__icontains = filterVal) |
                                     Q(creator_name__icontains = filterVal) |
@@ -74,7 +74,7 @@ class RevDocumentsDAO:
 
         """
         try:
-            revDoc = DocumentCaseRevision.objects.get(id = documentID)
+            revDoc = document_case_revision.objects.get(id = documentID)
         except DoesNotExist:
             return None
         return revDoc

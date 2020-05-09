@@ -5,7 +5,7 @@ Data access object file for the collaborators.
 """
 
 from mongoengine import *
-from database.schema_DB import Collaborator, DocumentCase
+from database.schema_DB import collaborator, document_case
 from bson.json_util import dumps
 from utils.email_manager import EmailManager
 
@@ -28,7 +28,7 @@ class CollaboratorsDAO:
             List of dictionaries representing collaborators.
 
         """
-        collabs = Collaborator.objects.filter(approved=True).aggregate(*[
+        collabs = collaborator.objects.filter(approved=True).aggregate(*[
             {
                 '$project': {
                     '_id': {'$toString': '$_id'},
@@ -57,9 +57,9 @@ class CollaboratorsDAO:
 
         """
         try:
-            Collaborator.objects(id=collabID).update_one(set__banned=True, full_result=True)
-            collab = Collaborator.objects.get(id=collabID)
-            DocumentCase.objects(creatoriD=collab.id).update(set__published=False, full_result=True)
+            collaborator.objects(id=collabID).update_one(set__banned=True, full_result=True)
+            collab = collaborator.objects.get(id=collabID)
+            document_case.objects(creatoriD=collab.id).update(set__published=False, full_result=True)
             self.email_manager.email_collaborator(email=collab.email, email_type='ban')
         except DoesNotExist:
             return None
@@ -80,9 +80,9 @@ class CollaboratorsDAO:
             Collaborator object of the item that matched the ID or None if the collaborator was not found.
         """
         try:
-            Collaborator.objects(id=collabID).update_one(set__banned=False, full_result=True)
-            collab = Collaborator.objects.get(id=collabID)
-            DocumentCase.objects(creatoriD=collab.id).update(set__published=True, full_result=True)
+            collaborator.objects(id=collabID).update_one(set__banned=False, full_result=True)
+            collab = collaborator.objects.get(id=collabID)
+            document_case.objects(creatoriD=collab.id).update(set__published=True, full_result=True)
             self.email_manager.email_collaborator(email=collab.email, email_type='unban')
         except DoesNotExist:
             return None
@@ -103,7 +103,7 @@ class CollaboratorsDAO:
             Collaborator object of the item that matched the ID or None if the collaborator was not found.
         """
         try:
-            collab = Collaborator.objects.filter(id=collabID).first()
+            collab = collaborator.objects.filter(id=collabID).first()
         except DoesNotExist:
             return None
         return collab

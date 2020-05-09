@@ -31,16 +31,16 @@ fake = Faker()
 #     return date + " "+ time
 
 def build_doc_rev(revision_type):
-    doc = DocumentCase.objects[random.randint(0, docSize-1)]
+    doc = document_case.objects[random.randint(0, docSize-1)]
     collab = doc.creatoriD
-    return DocumentCaseRevision(
+    return document_case_revision(
         creatorId = collab.id,
         docId = doc.id,
         creator_name = collab.first_name +" "+collab.last_name,
         creator_email = collab.email,
         document_title = doc.title,
         revision_date = random.choice(random_dates),
-        revision_number = DocumentCaseRevision.objects(creatorId = collab.id, docId =doc.id).count(),
+        revision_number = document_case_revision.objects(creatorId = collab.id, docId =doc.id).count(),
         revision_type = revision_type)
 
 random_dates = []
@@ -53,13 +53,13 @@ for x in range(5000):
     random_date = start_date + datetime.timedelta(days=random_number_of_days)
     random_dates.append(str(random_date))
 
-docSize = DocumentCase.objects.count()
+docSize = document_case.objects.count()
 
 #___________________ACTORS_____________________________________________
 roles = ['Advisor', 'Contributor', 'Data Manager', 'Investigator', 'Researcher', 'Principal Investigator']
 actors = []
 for i in range(0,100):
-    actors.append(Actor(**{
+    actors.append(actor(**{
                 "actor_FN": names.get_first_name(),
                 "actor_LN": names.get_last_name(),
                 "role": random.choice(roles)
@@ -68,8 +68,8 @@ for i in range(0,100):
 
 for i in range(0,100):
     rev = build_doc_rev('Actor')
-    rev.field_changed = FieldsEmbedded(new = ActorEmbedded(actor = random.choices(actors, k = random.randint(0,5))),
-                                        old = ActorEmbedded(actor = random.choices(actors, k = random.randint(0,5))))
+    rev.field_changed = fields_embedded(new = actor_embedded(actor = random.choices(actors, k = random.randint(0,5))),
+                                        old = actor_embedded(actor = random.choices(actors, k = random.randint(0,5))))
     rev.save()
 
 
@@ -79,15 +79,16 @@ authors = []
 for i in range(0,100):
     first_name =  names.get_first_name()
     last_name = names.get_last_name()
-    authors.append(Author(**{'author_FN': first_name,
+    #print(first_name + "." + last_name + "@upr.edu")
+    authors.append(author(**{'author_FN': first_name,
     'author_LN': last_name,
-    'author_email': first_name + "." + last_name + "@upr.edu",
+    'author_email': first_name.lower() + "." + last_name.lower() + "@upr.edu",
     'author_faculty': random.choice(faculties)}))
 
 for i in range(0,100):
     rev = build_doc_rev('Author')
-    rev.field_changed = FieldsEmbedded(new = AuthorEmbedded(author = random.choices(authors, k = random.randint(0,10))),
-                                        old = AuthorEmbedded(author = random.choices(authors, k = random.randint(0,10))))
+    rev.field_changed = fields_embedded(new = author_embedded(author = random.choices(authors, k = random.randint(0,10))),
+                                        old = author_embedded(author = random.choices(authors, k = random.randint(0,10))))
     rev.save()
 
 
@@ -104,7 +105,7 @@ for i in range(0,100):
     else:
         startDate = date1
         endDate = date2
-    timelines.append(Timeline(event = random.choice(events), eventStartDate = startDate, eventEndDate = endDate))
+    timelines.append(timeline(event = random.choice(events), eventStartDate = startDate, eventEndDate = endDate))
 
 tSize = len(timelines)
 for i in range(0,100):
@@ -116,25 +117,25 @@ for i in range(0,100):
     for i in range(0,random.randint(0,5)):
          time2.append(timelines[random.randint(0, tSize-1)])
 
-    rev.field_changed = FieldsEmbedded(new = TimelineEmbedded(timeline = time1),
-                                        old = TimelineEmbedded(timeline = time2))
+    rev.field_changed = fields_embedded(new = timeline_embedded(timeline = time1),
+                                        old = timeline_embedded(timeline = time2))
     rev.save()
 
 #___________________LOCATIONS_____________________________________________
-citySize = CityPR.objects.count()
+citySize = city_pr.objects.count()
 for i in range(0,100):
     rev = build_doc_rev('Location')
     cities1 = []
     cities2 = []
     for i in range(0,random.randint(0,5)):
-        city = CityPR.objects[random.randint(0, citySize-1)]
-        cities1.append(Location(**{'address':city['city'], 'latitude': city['latitude'], 'longitude': city['longitude']}))
+        city = city_pr.objects[random.randint(0, citySize-1)]
+        cities1.append(location(**{'address':city['city'], 'latitude': city['latitude'], 'longitude': city['longitude']}))
     for i in range(0,random.randint(0,5)):
-        city = CityPR.objects[random.randint(0, citySize-1)]
-        cities2.append(Location(**{'address':city['city'], 'latitude': city['latitude'], 'longitude': city['longitude']}))
+        city = city_pr.objects[random.randint(0, citySize-1)]
+        cities2.append(location(**{'address':city['city'], 'latitude': city['latitude'], 'longitude': city['longitude']}))
 
-    rev.field_changed = FieldsEmbedded(new = LocationEmbedded(location = cities1),
-                                        old = LocationEmbedded(location = cities2))
+    rev.field_changed = fields_embedded(new = location_embedded(location = cities1),
+                                        old = location_embedded(location = cities2))
     rev.save()
 
 #___________________SECTIONS_____________________________________________
@@ -143,13 +144,13 @@ sections = []
 for i in range(0,100):
     content = "<p>"+fake.paragraph(10)+"</p>"
     secTitle = sectionsTitles[i%len(sectionsTitles)]
-    sections.append(Section(**{'secTitle': secTitle,
+    sections.append(section(**{'secTitle': secTitle,
     'content': content}))
 
 for i in range(0,100):
     rev = build_doc_rev('Section')
-    rev.field_changed = FieldsEmbedded(new = SectionEmbedded(section = random.choice(sections)),
-                                        old = SectionEmbedded(section = random.choice(sections)))
+    rev.field_changed = fields_embedded(new = section_embedded(section = random.choice(sections)),
+                                        old = section_embedded(section = random.choice(sections)))
     rev.save()
 
 
@@ -167,8 +168,8 @@ for x in range(100):
 
 for i in range(0,100):
     rev = build_doc_rev('Incident Date')
-    rev.field_changed = FieldsEmbedded(new = IncidentEmbedded(incidentDate = random.choice(incident_dates)),
-                                        old = IncidentEmbedded(incidentDate = random.choice(incident_dates)))
+    rev.field_changed = fields_embedded(new = incident_embedded(incidentDate = random.choice(incident_dates)),
+                                        old = incident_embedded(incidentDate = random.choice(incident_dates)))
     rev.save()
 
 #___________________INFRASTRUCTURE_____________________________________________
@@ -178,8 +179,8 @@ infrastructure = ["Streets or Highway", "Bridges", "Airports", "Water Supply", "
 
 for i in range(0,100):
     rev = build_doc_rev('Infrastructure')
-    rev.field_changed = FieldsEmbedded(new = InfrastructureEmbedded(infrasDocList = random.choices(infrastructure, k=random.randint(0,4))),
-                                        old = InfrastructureEmbedded(infrasDocList = random.choices(infrastructure, k=random.randint(0,4))))
+    rev.field_changed = fields_embedded(new = infrastructure_embedded(infrasDocList = random.choices(infrastructure, k=random.randint(0,4))),
+                                        old = infrastructure_embedded(infrasDocList = random.choices(infrastructure, k=random.randint(0,4))))
     rev.save()
 
 
@@ -189,8 +190,8 @@ damage = [ "Earthquake", "Hurricane", "Tsunami", "Flooding", "Landslide", "Fire/
 
 for i in range(0,100):
     rev = build_doc_rev('Damage')
-    rev.field_changed = FieldsEmbedded(new = DamageEmbedded(damageDocList = random.choices(damage, k=random.randint(0,4))),
-                                        old = DamageEmbedded(damageDocList = random.choices(damage, k=random.randint(0,4))))
+    rev.field_changed = fields_embedded(new = damage_embedded(damageDocList = random.choices(damage, k=random.randint(0,4))),
+                                        old = damage_embedded(damageDocList = random.choices(damage, k=random.randint(0,4))))
     rev.save()
 
 
@@ -198,16 +199,16 @@ for i in range(0,100):
 tags = infrastructure + damage
 for i in range(0,100):
     rev = build_doc_rev('Tag')
-    rev.field_changed = FieldsEmbedded(new = TagEmbedded(tagsDoc = random.choices(tags, k=random.randint(0,4))),
-                                        old = TagEmbedded(tagsDoc = random.choices(tags, k=random.randint(0,4))))
+    rev.field_changed = fields_embedded(new = tag_embedded(tagsDoc = random.choices(tags, k=random.randint(0,4))),
+                                        old = tag_embedded(tagsDoc = random.choices(tags, k=random.randint(0,4))))
     rev.save()
 
 
 #___________________DESCRIPTION_____________________________________________
 for i in range(0,100):
     rev = build_doc_rev('Description')
-    rev.field_changed = FieldsEmbedded(new = DescriptionEmbedded(description = fake.paragraph(5)),
-                                        old = DescriptionEmbedded(description = fake.paragraph(5)))
+    rev.field_changed = fields_embedded(new = description_embedded(description = fake.paragraph(5)),
+                                        old = description_embedded(description = fake.paragraph(5)))
     rev.save()
 
 
@@ -215,6 +216,6 @@ for i in range(0,100):
 tags = infrastructure + damage
 for i in range(0,100):
     rev = build_doc_rev('Title')
-    rev.field_changed = FieldsEmbedded(new = TitleEmbedded(title = fake.sentence().replace(".","")),
-                                        old = TitleEmbedded(title = fake.sentence().replace(".","")))
+    rev.field_changed = fields_embedded(new = title_embedded(title = fake.sentence().replace(".","")),
+                                        old = title_embedded(title = fake.sentence().replace(".","")))
     rev.save()

@@ -5,7 +5,7 @@ Data access object file for the access requests item. Important; Access Request 
 """
 
 from mongoengine import *
-from database.schema_DB import Collaborator
+from database.schema_DB import collaborator
 import datetime
 import json
 
@@ -26,7 +26,7 @@ class AccessRequestsDAO:
             List of collaborators representing the Access Requests in the database.
 
         """
-        access_req = Collaborator.objects.filter(approved = False)
+        access_req = collaborator.objects.filter(approved = False)
         return access_req
 
     def accept_access_request(self, arID):
@@ -45,7 +45,7 @@ class AccessRequestsDAO:
 
         """
         try:
-            collab = Collaborator.objects(id = arID).update_one(set__approved = True)
+            collab = collaborator.objects(id = arID).update_one(set__approved = True)
         except DoesNotExist:
             return None
         return collab
@@ -67,7 +67,7 @@ class AccessRequestsDAO:
 
         """
         try:
-            ar = Collaborator.objects(id = arID, approved = False).delete()
+            ar = collaborator.objects(id = arID, approved = False).delete()
         except DoesNotExist:
             return None
         return ar
