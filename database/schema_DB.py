@@ -7,13 +7,13 @@ This file contains all the schema objects representative of the entities in the 
 from mongoengine import *
 import json
 
+# Avoid any busy connection port
+disconnect()
 
-# import datetime
 # Connection to the Database
-connect('testdb2')
+connect('testdb2') #test db
 
-
-# connec the db for testing purposes
+# connect the db for testing purposes
 # connect('IReNEdb', host='mongomock://localhost:27017')
 
 

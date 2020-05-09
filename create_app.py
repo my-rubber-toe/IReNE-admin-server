@@ -9,7 +9,7 @@ from utils.responses import ApiException, ApiResult
 from exceptions.handler import AdminServerApiError, AdminServerAuthError, AdminServerError, AdminServerRequestError
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
-from database import data_revisions
+from database import schema_DB
 from config import environment
 
 class ApiFlask(Flask):
