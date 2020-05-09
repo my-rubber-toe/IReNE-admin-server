@@ -47,19 +47,22 @@ def tags_remove():
     tagID  = request.form.get('tagID')
     password = request.form.get('password')
     if not objectId_is_valid(tagID):
-        raise AdminServerApiError(
-            msg='The tag ID given is not valid.',
+        return ApiException(
+            error_type = "Validation Error",
+            message='The tag ID given is not valid.',
             status=400
         )
     if not daoAdmin.check_password(daoAdmin.get_admin(get_jwt_identity()).password, password):
-        raise AdminServerApiError(
-            msg='The password given was does not match our records.',
+        return ApiException(
+            error_type = "Authentication Error",
+            message='The password given was does not match our records.',
             status=403
         )
     tag = dao.remove_tag(tagID)
     if tag is None:
-        raise AdminServerApiError(
-            msg='The tag ID given was not found.',
+        return ApiException(
+            error_type = "Database Error",
+            message='The tag ID given was not found.',
             status=404
         )
     return ApiResult(body = 

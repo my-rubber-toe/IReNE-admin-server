@@ -56,8 +56,9 @@ def get_revision():
     revDocId = request.form.get('revDocId')
     revision = dao.get_document_rev(revDocId)
     if revision is None:
-        raise AdminServerApiError(
-            msg='The revision document ID given was not found.',
+        return ApiException(
+            error_type="Database Error",
+            message='The revision document ID given was not found.',
             status=404
         )
     

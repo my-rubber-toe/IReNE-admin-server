@@ -9,7 +9,7 @@ from flask import Blueprint, Response, request
 from flask_jwt_extended import get_jwt_identity, fresh_jwt_required
 from utils.responses import ApiResult, ApiException
 from utils.validators import objectId_is_valid
-from exceptions.handler import AdminServerApiError, AdminServerAuthError
+from exceptions.handler import AdminServerAuthError
 from daos.access_requests_dao import AccessRequestsDAO
 from daos.admin_dao import AdminDAO
 import json
@@ -63,9 +63,9 @@ def access_requests_approve():
     Collaborator
         Access request item that has been accepted.
     
-    Raises
+    returns
     ------
-    AdminServerApiError
+    ApiException
         If the access request id is not valid or if an access request with the given id was not found.
 
     """
@@ -73,19 +73,22 @@ def access_requests_approve():
     password = request.form.get('password')
     valid_collab_id = objectId_is_valid(collab_id)
     if not valid_collab_id:
-        raise AdminServerApiError(
-            msg='The access request ID given is not valid.',
+        return ApiException(
+            error_type = "Validation Error",
+            message='The access request ID given is not valid.',
             status=400
         )
     if not daoAdmin.check_password(daoAdmin.get_admin(get_jwt_identity()).password, password):
-        raise AdminServerApiError(
-            msg='The password given was does not match our records.',
+        return ApiException(
+            error_type = "Authentication Error",
+            message='The password given does not match our records.',
             status=403
         )
     access_request = dao.accept_access_request(collab_id)
     if access_request is None:
-        raise AdminServerApiError(
-            msg='The access request ID given was not found.',
+        return ApiException(
+            error_type = "Database Error",
+            message='The access request ID given was not found.',
             status=404
         )
     return ApiResult(body=
@@ -109,9 +112,9 @@ def access_requests_deny():
     Collaborator
         Access request item that has been denied.
     
-    Raises
+    returns
     ------
-    AdminServerApiError
+    ApiException
         If the access request id is not valid or if an access request with the given id was not found.
 
     """
@@ -119,19 +122,22 @@ def access_requests_deny():
     password = request.form.get('password')
     valid_collab_id = objectId_is_valid(collab_id)
     if not valid_collab_id:
-        raise AdminServerApiError(
-            msg='The access request ID given is not valid.',
+        return ApiException(
+            error_type = "Validation Error",
+            message='The access request ID given is not valid.',
             status=400
         )
     if not daoAdmin.check_password(daoAdmin.get_admin(get_jwt_identity()).password, password):
-        raise AdminServerApiError(
-            msg='The password given was does not match our records.',
+        return ApiException(
+            error_type = "Authentication Error",
+            message='The password given does not match our records.',
             status=403
         )
     access_request = dao.deny_access_request(collab_id)
     if access_request is None:
-        raise AdminServerApiError(
-            msg='The access request ID given was not found.',
+        return ApiException(
+            error_type = "Database Error",
+            message='The access request ID given was not found.',
             status=404
         )
 

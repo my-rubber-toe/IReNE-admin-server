@@ -10,7 +10,6 @@ from flask_jwt_extended import get_jwt_identity, fresh_jwt_required
 from daos.documents_dao import DocumentsDAO
 from daos.collaborators_dao import CollaboratorsDAO
 from daos.admin_dao import AdminDAO
-from database.schema_DB import *
 from utils.validators import objectId_is_valid
 import json
 
@@ -45,8 +44,9 @@ def documents_view(docID):
 
     document = dao.get_document(docID)
     if not document:
-        raise AdminServerApiError(
-            msg='The documents ID given was not found.',
+        return ApiException(
+            error_type = "Validation Error",
+            message='The documents ID given was not found.',
             status=404
         )
     collab = document.creatoriD
@@ -97,7 +97,7 @@ def documents_publish():
     Document
         Document that has been published.
     
-    Raises
+    returns
     ------
     AdminServerApiError
         If the document id is not valid or if a document with the given id was not found.
@@ -107,19 +107,22 @@ def documents_publish():
     password = request.form.get('password')
     valid_doc_id = objectId_is_valid(doc_id)
     if not valid_doc_id:
-        raise AdminServerApiError(
-            msg='The documents ID given is not valid.',
+        return ApiException(
+            error_type = "Validation Error",
+            message='The documents ID given is not valid.',
             status=400
         )
     if not daoAdmin.check_password(daoAdmin.get_admin(get_jwt_identity()).password, password):
-        raise AdminServerApiError(
-            msg='The password given was does not match our records.',
+        return ApiException(
+            error_type = "Authentication Error",
+            message='The password given was does not match our records.',
             status=403
         )
     document = dao.publish_document(doc_id)
     if not document:
-        raise AdminServerApiError(
-            msg='The documents ID given was not found.',
+        return ApiException(
+            error_type = "Database Error",
+            message='The documents ID given was not found.',
             status=404
         )
     return ApiResult(body={'docID': doc_id})
@@ -141,7 +144,7 @@ def documents_unpublish():
     Document
         Document that has been unpublished.
     
-    Raises
+    returns
     ------
     AdminServerApiError
         If the document id is not valid or if a document with the given id was not found.
@@ -151,19 +154,22 @@ def documents_unpublish():
     password = request.form.get('password')
     valid_doc_id = objectId_is_valid(doc_id)
     if not valid_doc_id:
-        raise AdminServerApiError(
-            msg='The documents ID given is not valid.',
+        return ApiException(
+            error_type = "Validation Error",
+            message='The documents ID given is not valid.',
             status=400
         )
     if not daoAdmin.check_password(daoAdmin.get_admin(get_jwt_identity()).password, password):
-        raise AdminServerApiError(
-            msg='The password given was does not match our records.',
+        return ApiException(
+            error_type = "Authentication Error",
+            message='The password given  does not match our records.',
             status=403
         )
     document = dao.unpublish_document(doc_id)
     if not document:
-        raise AdminServerApiError(
-            msg='The documents ID given was not found.',
+        return ApiException(
+            error_type = "Database Error",
+            message='The documents ID given was not found.',
             status=404
         )
     return ApiResult(body=

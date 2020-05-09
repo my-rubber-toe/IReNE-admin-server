@@ -9,6 +9,27 @@ from faker  import Faker
 
 fake = Faker()
 
+# def get_random_date():
+#     date = random.choice(random_dates)
+#     time = datetime.datetime.today().strftime('%H:%M')
+#     # hour24 = time.split(":")
+#     # hour12 = []
+#     # sufix = ""
+#     # if(int(hour24[0]) >= 12):
+#     #     sufix = "pm"
+#     #     if (int(hour24[0]) !=12):
+#     #         hour12.append(int(hour24[0])-12)
+#     #     else:
+#     #         hour12.append(12)
+#     # else:
+#     #     sufix = "am"
+#     #     if(int(hour24[0]) !=0):
+#     #         hour12.append(int(hour24[0]))
+#     #     else:
+#     #         hour12.append(12)
+#     # hour12.append(int(hour24[1]))
+#     return date + " "+ time
+
 def build_doc_rev(revision_type):
     doc = DocumentCase.objects[random.randint(0, docSize-1)]
     collab = doc.creatoriD
@@ -47,8 +68,9 @@ for i in range(0,100):
 
 for i in range(0,100):
     rev = build_doc_rev('Actor')
-    rev.field_changed = FieldsEmbedded(new = ActorEmbedded(actor = random.choices(actors, k = 2)),
-                                        old = ActorEmbedded(actor = random.choices(actors, k = 2)))
+    print(rev.revision_date)
+    rev.field_changed = FieldsEmbedded(new = ActorEmbedded(actor = random.choices(actors, k = random.randint(0,5))),
+                                        old = ActorEmbedded(actor = random.choices(actors, k = random.randint(0,5))))
     rev.save()
 
 
@@ -65,8 +87,8 @@ for i in range(0,100):
 
 for i in range(0,100):
     rev = build_doc_rev('Author')
-    rev.field_changed = FieldsEmbedded(new = AuthorEmbedded(author = random.choices(authors, k = 2)),
-                                        old = AuthorEmbedded(author = random.choices(authors, k = 2)))
+    rev.field_changed = FieldsEmbedded(new = AuthorEmbedded(author = random.choices(authors, k = random.randint(0,10))),
+                                        old = AuthorEmbedded(author = random.choices(authors, k = random.randint(0,10))))
     rev.save()
 
 
@@ -194,6 +216,6 @@ for i in range(0,100):
 tags = infrastructure + damage
 for i in range(0,100):
     rev = build_doc_rev('Title')
-    rev.field_changed = FieldsEmbedded(new = TitleEmbedded(title = fake.sentence()),
-                                        old = TitleEmbedded(title = fake.sentence()))
+    rev.field_changed = FieldsEmbedded(new = TitleEmbedded(title = fake.sentence().replace(".","")),
+                                        old = TitleEmbedded(title = fake.sentence().replace(".","")))
     rev.save()

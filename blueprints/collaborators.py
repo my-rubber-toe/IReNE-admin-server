@@ -5,7 +5,7 @@ Every route regarding collaborators, including but not limited to banning or unb
 """
 from flask import Blueprint, Response, request
 from utils.responses import ApiResult, ApiException
-from exceptions.handler import AdminServerApiError, AdminServerAuthError
+from exceptions.handler import AdminServerAuthError
 from flask_jwt_extended import get_jwt_identity, fresh_jwt_required
 from daos.collaborators_dao import CollaboratorsDAO
 from daos.admin_dao import AdminDAO
@@ -49,9 +49,9 @@ def collaborators_ban():
     Collaborator
         Collaborator that has been banned.
     
-    Raises
+    returns
     ------
-    AdminServerApiError
+    ApiException
         If the collaborators id is not valid or if a collaborator with the given id was not found.
 
     """
@@ -59,19 +59,22 @@ def collaborators_ban():
     password = request.form.get('password')
     valid_collab_id = objectId_is_valid(collab_id)
     if not valid_collab_id:
-        raise AdminServerApiError(
-            msg='The collaborators ID given is not valid.',
+        return ApiException(
+            error_type = "Validation Error",
+            message='The collaborators ID given is not valid.',
             status=400
         )
     if not daoAdmin.check_password(daoAdmin.get_admin(get_jwt_identity()).password, password):
-        raise AdminServerApiError(
-            msg='The password given was does not match our records.',
+        return ApiException(
+            error_type = "Authentication Error",
+            message='The password given does not match our records.',
             status=403
         )
     collaborator = dao.ban_collaborator(collab_id)
     if collaborator is None:
-        raise AdminServerApiError(
-            msg='The collaborators ID given was not found.',
+        return ApiException(
+            error_type = "Database Error",
+            message='The collaborators ID given was not found.',
             status=404
         )
 
@@ -95,9 +98,9 @@ def collaborators_unban():
     Collaborator
         Collaborator that has been unbanned.
     
-    Raises
+    returns
     ------
-    AdminServerApiError
+    ApiException
         If the collaborators id is not valid or if a collaborator with the given id was not found.
 
     """
@@ -105,19 +108,22 @@ def collaborators_unban():
     password = request.form.get('password')
     valid_collab_id = objectId_is_valid(collab_id)
     if not valid_collab_id:
-        raise AdminServerApiError(
-            msg='The collaborators ID given is not valid.',
+        return ApiException(
+            error_type = "Validation Error",
+            message='The collaborators ID given is not valid.',
             status=400
         )
     if not daoAdmin.check_password(daoAdmin.get_admin(get_jwt_identity()).password, password):
-        raise AdminServerApiError(
-            msg='The password given was does not match our records.',
+        return ApiException(
+            error_type = "Authentication Error",
+            message='The password given does not match our records.',
             status=403
         )
     collaborator = dao.unban_collaborator(collab_id)
     if collaborator is None:
-        raise AdminServerApiError(
-            msg='The collaborators ID given was not found.',
+        return ApiException(
+            error_type = "Database Error",
+            message='The collaborators ID given was not found.',
             status=404
         )
     return ApiResult(body = 

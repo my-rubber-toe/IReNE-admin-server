@@ -8,7 +8,6 @@ from flask import Blueprint, Flask, request, g
 from flask_jwt_extended import create_access_token, get_jwt_identity, fresh_jwt_required, \
     get_raw_jwt
 from utils.responses import ApiResult, ApiException
-from exceptions.handler import AdminServerAuthError
 from cachetools import TTLCache
 from datetime import timedelta
 from daos.admin_dao import AdminDAO
@@ -55,9 +54,9 @@ def login():
     string
         JWT token with the username as identity.
     
-    Raises
+    returns
     ------
-    AdminServerAuthError
+    ApiException
         If the username or password fields are empty or are invalid. 
 
     """
@@ -65,20 +64,23 @@ def login():
     username = request.form.get("username")
     password = request.form.get("password")
     if not username_isvalid(username) or not password_isvalid(password):
-        raise AdminServerAuthError(
-            msg='Invalid username or password.',
+        return ApiException(
+            error_type = "Authentication Error",
+            message='Invalid username or password.',
             status=401
         )
     admin = dao.get_admin(username)
     if not admin:
-        raise AdminServerAuthError(
-            msg='Invalid username or password.',
+        return ApiException(
+            error_type = "Authentication Error",
+            message='Invalid username or password.',
             status=401
         )
     authorized = dao.check_password(admin['password'], password)
     if not authorized:
-        raise AdminServerAuthError(
-            msg='Invalid username or password.',
+        return ApiException(
+            error_type = "Authentication Error",
+            message='Invalid username or password.',
             status=401
         )
 
