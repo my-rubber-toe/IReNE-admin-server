@@ -62,7 +62,7 @@ def password_isvalid(password):
         True if valid, false otherwise.
 
     """
-    match = re.search(r'(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d\w].{8,}', password)
+    match = re.search(r'(^[a-z](?!\.)(?!.*\.$)(?!.*?\.\.)[a-zA-Z0-9_.]{5,19})$', password)
     if(match is None):
         return False
     else:

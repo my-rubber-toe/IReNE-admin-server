@@ -40,7 +40,7 @@ class admin(Document):
             - password: <String> Admin's  password.
                 - password attribute follows this regex: '(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z]))'
     """
-    username = StringField(min_length=6, max_length=20, required=True, unique=True, regex='(^[^.]([a-zA-Z0-9]*)[\.]([a-zA-Z0-9]*))[^.]$' )
+    username = StringField(min_length=6, max_length=20, required=True, unique=True, regex='(^[a-z](?!\.)(?!.*\.$)(?!.*?\.\.)[a-zA-Z0-9_.]{5,19})$' )
     password = StringField(required=True)
 
 class tag(Document):
