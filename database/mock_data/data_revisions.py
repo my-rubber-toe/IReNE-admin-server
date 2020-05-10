@@ -30,8 +30,11 @@ fake = Faker()
 #     # hour12.append(int(hour24[1]))
 #     return date + " "+ time
 
-def build_doc_rev(revision_type):
-    doc = document_case.objects[random.randint(0, docSize-1)]
+def build_doc_rev(revision_type, docIndex=-1):
+    if(docIndex<0):
+        doc = document_case.objects[random.randint(0, docSize-1)]
+    else:
+        doc = document_case.objects[docIndex]
     collab = doc.creatoriD
     return document_case_revision(
         creatorId = collab.id,
@@ -55,6 +58,31 @@ for x in range(5000):
 
 docSize = document_case.objects.count()
 
+#___________________CREATION_____________________________________________
+for i in range(0,docSize):
+    rev = build_doc_rev("Creation", i)
+    document = document_case.objects[i]
+    rev.field_changed = fields_embedded(new=creation_embedded(creatoriD=document.creatoriD, title=document.title, description=document.description,
+                             incidentDate=document.incidentDate, creationDate=document.creationDate,
+                             lastModificationDate=document.lastModificationDate,
+                             tagsDoc=[], infrasDocList=document.infrasDocList, damageDocList=document.damageDocList,
+                             location=[], author=document.author, actor=document.actor,
+                             section=[], timeline=[], language=document.language),
+        old=creation_embedded())
+    rev.save()
+
+#___________________DELETION_____________________________________________
+for i in range(0,docSize):
+    rev = build_doc_rev("Deletion", i)
+    document = document_case.objects[i]
+    rev.field_changed = fields_embedded(old=creation_embedded(creatoriD=document.creatoriD, title=document.title, description=document.description,
+                             incidentDate=document.incidentDate, creationDate=document.creationDate,
+                             lastModificationDate=document.lastModificationDate,
+                             tagsDoc=document.tagsDoc, infrasDocList=document.infrasDocList, damageDocList=document.damageDocList,
+                             location=document.location, author=document.author, actor=document.actor,
+                             section=document.section, timeline=document.timeline, language=document.language),
+        new=creation_embedded())
+    rev.save()
 #___________________ACTORS_____________________________________________
 roles = ['Advisor', 'Contributor', 'Data Manager', 'Investigator', 'Researcher', 'Principal Investigator']
 actors = []

@@ -272,22 +272,26 @@ class creation_embedded(EmbeddedDocument):
             Returns the json equivalent of the object.
     """
     creatoriD = ReferenceField('collaborator')
-    title = StringField(min_length=10, max_length=250, required=False, default=None,
+    # creatoriD = StringField(min_length=10, max_length = 100, required=True)
+    title = StringField(min_length=10, max_length=100, required=False,
                         regex="^([A-ZÁÉÍÓÚÑ]+)([A-Z a-z 0-9 À-ÿ : \-]*)([A-Za-z0-9À-ÿ]$)")
-    language = StringField(min_length=0, required=False)
-    location = ListField(StringField(min_length=0, required=False))
+    language = StringField(min_length=1, max_length=20, required=False, regex="^[A-Z][a-z]{1,20}$")
     description = StringField(min_length=0, max_length=500, required=False)
-    published = BooleanField(default=True, required=False)
-    incidentDate = StringField(min_length=1, required=False, regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
-    creationDate = StringField(min_length=1, required=False, regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
-    lastModificationDate = StringField(min_length=1, required=False, regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
-    tagsDoc = ListField(StringField(min_length=0, max_length=30, required=False))
-    infrasDocList = ListField(StringField(min_length=1, max_length=30, required=False))
-    damageDocList = ListField(StringField(min_length=1, max_length=30, required=False))
-    author = ListField(EmbeddedDocumentField(author))
-    actor = ListField(EmbeddedDocumentField(actor))
-    section = ListField(EmbeddedDocumentField(section))
-    timeline = ListField(EmbeddedDocumentField(timeline))
+    published = BooleanField(default=False, required=False)
+    incidentDate = StringField(min_length=9, max_length=11, required=False,
+                               regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
+    creationDate = StringField(min_length=9, max_length=11, required=False,
+                               regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
+    lastModificationDate = StringField(min_length=9, max_length=11, required=False,
+                                       regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
+    tagsDoc = ListField(StringField(min_length=0, max_length=50, unique=False), required=False, max_length=10)
+    infrasDocList = ListField(StringField(min_length=1, max_length=50, required=False))
+    damageDocList = ListField(StringField(min_length=1, max_length=50, required=False))
+    location = ListField(EmbeddedDocumentField(location), max_length=5, required=False)
+    author = ListField(EmbeddedDocumentField(author), min_length=1, max_length=10, required=False)
+    actor = ListField(EmbeddedDocumentField(actor), min_length=1, max_length=5, required=False)
+    section = ListField(EmbeddedDocumentField(section), max_length=10, required=False)
+    timeline = ListField(EmbeddedDocumentField(timeline), max_length=5, required=False)
 
     def _author_to_json(self):
         auth = []
