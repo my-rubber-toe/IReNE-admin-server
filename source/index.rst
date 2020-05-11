@@ -16,6 +16,7 @@ Indices and tables
    access_requests
    collaborators
    documents
+   documents_rev
    exceptions
    main
    tags

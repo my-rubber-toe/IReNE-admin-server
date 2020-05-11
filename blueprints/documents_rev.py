@@ -1,6 +1,6 @@
 """
-documents.py
-Every route regarding documents, including publishing or unpublishing a document and seeing all of current documents in the systen can be found here.
+documents_rev.py
+Every route regarding documents revision, including getting all the revision history of the different documents found in the system and filter and sort those revisions.
 """
 from flask import Blueprint, Response, request
 from utils.responses import ApiResult, ApiException

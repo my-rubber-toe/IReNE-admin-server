@@ -348,7 +348,7 @@ class section_embedded(EmbeddedDocument):
 
 
 class damage_embedded(EmbeddedDocument):
-     damageDocList = ListField(StringField(min_length=1,max_length=50,required=True, 
+    damageDocList = ListField(StringField(min_length=1,max_length=50,required=True, 
         regex='^[A-ZÁÉÍÓÚÑÜ][a-z A-Z À-ÿ / & , \- ]*$'))
 
     def to_json(self):
