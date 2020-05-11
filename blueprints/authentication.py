@@ -58,8 +58,14 @@ def login():
         If the username or password fields are empty or are invalid. 
 
     """
-
-    username = request.form.get("username")
+    try:
+        username = request.form.get("username").lower()
+    except:
+        return ApiException(
+            error_type = "Authentication Error",
+            message='Invalid username or password.',
+            status=401
+        )
     password = request.form.get("password")
     if not username_isvalid(username) or not password_isvalid(password):
         return ApiException(

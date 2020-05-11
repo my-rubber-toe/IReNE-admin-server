@@ -40,7 +40,7 @@ def username_isvalid(username):
         True if valid, false otherwise.
 
     """
-    match = re.search(r'^(?![.])(?!.*[.]{2})[\w.]{6,20}(?<![.])$',username)
+    match = re.search(r'(^[a-zA-Z](?!\.)(?!.*\.$)(?!.*?\.\.)[a-zA-Z0-9_.]{5,19})$',username)
     if(match is None):
         return False
     else:
@@ -62,7 +62,7 @@ def password_isvalid(password):
         True if valid, false otherwise.
 
     """
-    match = re.search(r'(^[a-z](?!\.)(?!.*\.$)(?!.*?\.\.)[a-zA-Z0-9_.]{5,19})$', password)
+    match = re.search(r'(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d\w].{8,}', password)
     if(match is None):
         return False
     else:
