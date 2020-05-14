@@ -48,7 +48,10 @@ class TagsDAO:
         """
         try:
             tag.objects(id=tagID).delete()
-            document_case.objects().update(pull__tagsDoc=tagID)
-            return tagID
         except DoesNotExist:
             return None
+        try:
+            document_case.objects().update(pull__tagsDoc=tagID)
+        except:
+            pass
+        return tagID

@@ -59,10 +59,13 @@ class CollaboratorsDAO:
         try:
             collaborator.objects(id=collabID).update_one(set__banned=True, full_result=True)
             collab = collaborator.objects.get(id=collabID)
-            document_case.objects(creatoriD=collab.id).update(set__published=False, full_result=True)
-            self.email_manager.email_collaborator(email=collab.email, email_type='ban')
         except DoesNotExist:
             return None
+        try:
+            document_case.objects(creatoriD=collab.id).update(set__published=False, full_result=True)
+        except:
+            pass
+        self.email_manager.email_collaborator(email=collab.email, email_type='ban')
         return collab
 
     def unban_collaborator(self, collabID):
@@ -82,10 +85,13 @@ class CollaboratorsDAO:
         try:
             collaborator.objects(id=collabID).update_one(set__banned=False, full_result=True)
             collab = collaborator.objects.get(id=collabID)
-            document_case.objects(creatoriD=collab.id).update(set__published=True, full_result=True)
-            self.email_manager.email_collaborator(email=collab.email, email_type='unban')
         except DoesNotExist:
             return None
+        try:
+            document_case.objects(creatoriD=collab.id).update(set__published=True, full_result=True)
+            self.email_manager.email_collaborator(email=collab.email, email_type='unban')
+        except:
+            pass
         return collab
 
     def get_collab(self, collabID):
