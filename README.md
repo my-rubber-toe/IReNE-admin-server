@@ -59,8 +59,6 @@ To import the test developed, open up Postman and press the Import button on the
 ### Running the tests
 
 Before running the tests, please make sure that you have succesfully follow through the previous steps and that the application server is up and running. The following variables should be updated on the Postmand Environment in order to perform the tests correctly.
-* Tag quantity
-* Access Request quantity
 * IP Address
 
 Once these steps are performed, go to the arrow inside the Admin-Server-API and press on the run button. A new window should pop up with all the test requests. Before pressing the *Run Admin-Server-API* collection, make sure to uncheck the logout request. 
