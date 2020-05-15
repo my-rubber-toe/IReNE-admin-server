@@ -44,9 +44,8 @@ class AccessRequestsDAO:
             Collaborator object of the item that matched the ID or None if the collaborator was not found.
 
         """
-        try:
-            collab = collaborator.objects(id = arID).update_one(set__approved = True)
-        except DoesNotExist:
+        collab = collaborator.objects(id = arID).update_one(set__approved = True)
+        if(collab == 0):
             return None
         return collab
 
@@ -66,8 +65,7 @@ class AccessRequestsDAO:
 
 
         """
-        try:
-            ar = collaborator.objects(id = arID, approved = False).delete()
-        except DoesNotExist:
+        collab = collaborator.objects(id = arID).update_one(set__approved = False)
+        if(collab == 0):
             return None
-        return ar
+        return collab

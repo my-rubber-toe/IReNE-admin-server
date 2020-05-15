@@ -67,6 +67,13 @@ def get_revision():
     
     """
     revDocId = request.form.get('revDocId')
+    valid_revdoc_id = objectId_is_valid(revDocId)
+    if not valid_revdoc_id:
+        return ApiException(
+            error_type = "Validation Error",
+            message='The revision document ID given is not valid.',
+            status=400
+        )
     revision = dao.get_document_rev(revDocId)
     if revision is None:
         return ApiException(

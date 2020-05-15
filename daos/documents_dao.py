@@ -73,7 +73,11 @@ class DocumentsDAO:
             DocumentCase object of the item that matched the ID or None if the document was not found.
 
         """
-        return document_case.objects.get(id=documentID)
+        try:
+            doc = document_case.objects.get(id=documentID)
+        except DoesNotExist:
+            return None
+        return doc
 
     def publish_document(self, documentID):
         """
@@ -90,13 +94,16 @@ class DocumentsDAO:
             DocumentCase object of the item that matched the ID or None if the document was not found.
 
         """
-        document_case.objects(id=documentID).update_one(set__published=True, full_result=True)
-        doc: document_case = document_case.objects.get(id=documentID)
+        try:
+            document_case.objects(id=documentID).update_one(set__published=True, full_result=True)
+            doc: document_case = document_case.objects.get(id=documentID)
 
-        # Automatically fetches collaborator since its a reference field
-        collab: collaborator = doc.creatoriD
+            # Automatically fetches collaborator since its a reference field
+            collab: collaborator = doc.creatoriD
 
-        self.email_manager.email_collaborator(doc_title=doc.title, email=collab.email, email_type='publish')
+            self.email_manager.email_collaborator(doc_title=doc.title, email=collab.email, email_type='publish')
+        except DoesNotExist:
+            return None
 
         return doc
 
@@ -115,12 +122,14 @@ class DocumentsDAO:
             DocumentCase object of the item that matched the ID or None if the document was not found.
 
         """
+        try:
+            document_case.objects(id=documentID).update_one(set__published=False, full_result=True)
+            doc: document_case = document_case.objects.get(id=documentID)
+            # Automatically fetches collaborator since its a reference field
+            collab: collaborator = doc.creatoriD
 
-        document_case.objects(id=documentID).update_one(set__published=False, full_result=True)
-        doc: document_case = document_case.objects.get(id=documentID)
-        # Automatically fetches collaborator since its a reference field
-        collab: collaborator = doc.creatoriD
-
-        self.email_manager.email_collaborator(doc_title=doc.title, email=collab.email, email_type='unpublish')
+            self.email_manager.email_collaborator(doc_title=doc.title, email=collab.email, email_type='unpublish')
+        except DoesNotExist:
+            return None
 
         return doc

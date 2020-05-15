@@ -46,12 +46,12 @@ class TagsDAO:
             Dictionary of the tag removed None if no tag was found.
 
         """
-        try:
-            tag.objects(id=tagID).delete()
-        except DoesNotExist:
+        tagVar = tag.objects(id=tagID)
+        deleted_quantity = tagVar.delete()
+        if(deleted_quantity == 0):
             return None
         try:
             document_case.objects().update(pull__tagsDoc=tagID)
         except:
             pass
-        return tagID
+        return tagVar

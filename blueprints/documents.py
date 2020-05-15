@@ -55,10 +55,17 @@ def documents_view(docID):
         If the document id is not valid or if a document with the given id was not found.
 
     """
+    valid_doc_id = objectId_is_valid(docID)
+    if not valid_doc_id:
+        return ApiException(
+            error_type = "Validation Error",
+            message='The documents ID given is not valid.',
+            status=400
+        )
     document = dao.get_document(docID)
     if not document:
         return ApiException(
-            error_type = "Validation Error",
+            error_type = "Database Error",
             message='The documents ID given was not found.',
             status=404
         )
