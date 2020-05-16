@@ -13,7 +13,7 @@ from daos.admin_dao import AdminDAO
 from utils.validators import objectId_is_valid
 import json
 
-blueprint = Blueprint('documents', __name__, url_prefix='/admin/documents')
+blueprint = Blueprint('documents', __name__, url_prefix='/documents')
 dao = DocumentsDAO()
 daoCollab = CollaboratorsDAO()
 daoAdmin = AdminDAO()

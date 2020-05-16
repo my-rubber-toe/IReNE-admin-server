@@ -2,7 +2,7 @@ FROM python:3.8.0
 
 ########## ENV ##########
 ENV FLASK_APP=app
-ENV FLASK_ENV=production
+ENV FLASK_ENV=development
 ENV FLASK_DEBUG=0
 
 # System port to use
@@ -10,16 +10,17 @@ ENV PORT=80
 ENV HOST=localhost
 
 # Database
-ENV DB_HOST=mongodb://<dbuser>:<dbuser-passwd>@irene-db:27017/test?authSource=admin
-
+ENV DB_NAME='IReNEdb'
+ENV DB_HOST="mongodb://testuser:testpassword@irene-db:27017/?authSource=admin"
 
 # Emails
-ENV ENABLE_EMAIL=0 # Set to 1 to enable
-ENV EMAIL_SENDER=<your-gmail-email-or-upr-email>
-ENV EMAIL_PASSWD=<your-email-passwod>
+ENV ENABLE_EMAIL=0 
+ENV EMAIL_SENDER=irene.mock5@gmail.com
+ENV EMAIL_PASSWD=icom@uprm
 
-ENV FLASK_SECRET_KEY=<your-secret>
-ENV FLASK_SALT=<your-salt>
+# Set to true for testing purpouses
+ENV FLASK_SECRET_KEY=SomeVerySecretString
+ENV FLASK_SALT=SomeVerySecretSalt
 
 
 COPY . /app

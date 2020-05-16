@@ -13,7 +13,7 @@ from utils.validators import objectId_is_valid
 import json
 
 
-blueprint = Blueprint('collaborators', __name__, url_prefix='/admin/collaborators')
+blueprint = Blueprint('collaborators', __name__, url_prefix='/collaborators')
 dao =  CollaboratorsDAO()
 daoAdmin = AdminDAO()
 

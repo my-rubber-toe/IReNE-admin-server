@@ -12,7 +12,7 @@ from daos.documents_dao import DocumentsDAO
 from utils.validators import objectId_is_valid
 import json
 
-blueprint = Blueprint('documents-rev', __name__, url_prefix='/admin/documents-hist')
+blueprint = Blueprint('documents-rev', __name__, url_prefix='/documents-hist')
 dao = RevDocumentsDAO()
 daoDocuments = DocumentsDAO()
 daoCollaborators = CollaboratorsDAO()

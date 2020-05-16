@@ -11,6 +11,7 @@ FLASK_DEBUG = os.getenv('FLASK_DEBUG')
 PORT = os.getenv("PORT")
 HOST = os.getenv('HOST')
 
+DB_NAME = os.getenv("DB_NAME")
 DB_HOST = os.getenv("DB_HOST")
 
 ENABLE_EMAIL = os.getenv('ENABLE_EMAIL')

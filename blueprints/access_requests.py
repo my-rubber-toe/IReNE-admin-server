@@ -14,7 +14,7 @@ from daos.access_requests_dao import AccessRequestsDAO
 from daos.admin_dao import AdminDAO
 import json
 
-blueprint = Blueprint('access-requests', __name__, url_prefix='/admin/access-requests')
+blueprint = Blueprint('access-requests', __name__, url_prefix='/access-requests')
 dao = AccessRequestsDAO()
 daoAdmin = AdminDAO()
 

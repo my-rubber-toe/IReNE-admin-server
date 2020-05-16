@@ -6,10 +6,9 @@ This file contains all the schema objects representative of the entities in the 
 
 from mongoengine import *
 import json
+from config import environment
 
-disconnect()
-
-connect('testdb2')
+connect(environment.DB_NAME, host=environment.DB_HOST)
 
 class collaborator(Document):
     """

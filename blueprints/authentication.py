@@ -13,7 +13,7 @@ from datetime import timedelta
 from daos.admin_dao import AdminDAO
 from utils.validators import username_isvalid, password_isvalid
 
-blueprint = Blueprint('authentication', __name__, url_prefix='/admin/auth')
+blueprint = Blueprint('authentication', __name__, url_prefix='/auth')
 dao = AdminDAO()
 # Set blacklist set for blacklisted tokens
 token_blacklist = TTLCache(maxsize=10000, ttl=600)

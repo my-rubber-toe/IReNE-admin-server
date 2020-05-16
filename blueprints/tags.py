@@ -12,7 +12,7 @@ from daos.tags_dao import TagsDAO
 from daos.admin_dao import AdminDAO
 import json
 
-blueprint = Blueprint('tags', __name__, url_prefix='/admin/tags')
+blueprint = Blueprint('tags', __name__, url_prefix='/tags')
 dao = TagsDAO()
 daoAdmin = AdminDAO()
 
