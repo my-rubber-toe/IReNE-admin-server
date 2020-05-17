@@ -65,7 +65,7 @@ class AccessRequestsDAO:
 
 
         """
-        collab = collaborator.objects(id = arID).update_one(set__approved = False)
+        collab = collaborator.objects(id = arID).delete()
         if(collab == 0):
             return None
         return collab
