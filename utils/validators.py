@@ -62,6 +62,8 @@ def password_isvalid(password):
         True if valid, false otherwise.
 
     """
+    if(len(password)>128):
+        return False
     match = re.search(r'(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d\w].{8,}', password)
     if(match is None):
         return False
