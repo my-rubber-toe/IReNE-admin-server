@@ -59,8 +59,7 @@ def create_app(config=None):
         app.config.from_object(config or {})
 
         # Setup Flask Secret Key
-        app.secret_key = "Iamthedatabasekey_Icannotberandom"
-
+        app.secret_key = environment.FLASK_SECRET_KEY
         # Setup JWTManager to the app context on the attribute "jwt"
         app.config['JWT_BLACKLIST_ENABLED'] = True
         app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
