@@ -8,8 +8,6 @@ from mongoengine import *
 import json
 from config import environment
 
-connect(environment.DB_NAME, host=environment.DB_HOST)
-
 class collaborator(Document):
     """
         Document Class for Collaborators.

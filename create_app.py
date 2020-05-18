@@ -9,7 +9,7 @@ from utils.responses import ApiException, ApiResult
 from exceptions.handler import AdminServerApiError, AdminServerAuthError, AdminServerError, AdminServerRequestError
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
-from database import schema_DB
+from database import schema_DB, init_db
 from config import environment
 
 class ApiFlask(Flask):
@@ -68,6 +68,9 @@ def create_app(config=None):
         app.__setattr__("jwt", JWTManager(app))
         # Setup CORS for all endpoints
         register_cors(app)
+
+        # Register Database
+        init_db.register_database(app)
 
         # Setup Flask blueprints to establish app endpoints
         register_blueprints(app)
