@@ -51,7 +51,7 @@ class TagsDAO:
         if(deleted_quantity == 0):
             return None
         try:
-            document_case.objects().update(pull__tagsDoc=tagID)
+            document_case.objects().update(pull__tagsDoc=tagVar.tagItem)
         except:
             pass
         return tagVar

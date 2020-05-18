@@ -218,6 +218,34 @@ class document_case(Document):
 
 
 class creation_embedded(EmbeddedDocument):
+    """
+        EmbeddedDocument Class for a document just created. 
+        This embedded document makes sure that each field in the document logged as created follows the regex pattern in the database.
+        List of attributes:
+            - creatoriD: <String>  the Collaborator's id which created the Case study.
+            - title: <String> The case study's title .
+            - language: <String> The language which the case study is written.
+            - description: <String> Case study's description.
+            - published: <Boolean> <Default=False> When set to true, the case study will be visible in SearchSpace service.
+            - incidentDate: <String>  Date when the incident happened, it has to have the following format: 'YYYY-MM-DD'.
+                 - incidentDate attribute follows this regex: '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
+            - creationDate: <String>  Date when the case study was created, it has to have the following format: 'YYYY-MM-DD'.
+                - creationDate attribute follows this regex: '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
+            - lastModificationDate: <String>  Last date when the case study was modified, it has to have the following format: 'YYYY-MM-DD'.
+                - lastModificationDate attribute follows this regex: '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
+            - tagsDoc: List<String> of tags from the case study.
+            - infrasDocList: List<String> of infrastructure categories from the case study.
+            - damageDocList: List<String> of damage categories from the case study.
+            - location: List<Location> of addresses where the case study took place.
+            - author: List<Author> of author objects, the ones who wrote the case study.
+            - actor: List<Actor> of actor objects, the ones who plays a role in the case study.
+            - section: List<Section> of section objects, this will consist the body of the case study.
+            - timeline: List<Timeline> of timeline objects, this will consist of the events that happened within the case study.
+        Methods
+        -------
+        to_json()
+            Returns the json equivalent of the object.
+    """
     creatoriD = ReferenceField('collaborator')
     title = StringField(min_length=10, max_length=250, required=False, default=None, regex="^([A-ZÁÉÍÓÚÑÜ]+)([A-Z a-z 0-9 À-ÿ : \-]*)([A-Za-z0-9À-ÿ]$)")
     language = StringField(min_length=0, required=False)
@@ -299,6 +327,16 @@ class creation_embedded(EmbeddedDocument):
 
 
 class title_embedded(EmbeddedDocument):
+    """
+        EmbeddedDocument Class for a title. 
+        This embedded document makes sure that each title follows the regex pattern in the database.
+        List of attributes:
+            - title: <Title> Title belonging to a document.
+        Methods
+        -------
+        to_json()
+            Returns the json equivalent of the object.
+    """
     title = StringField(min_length=10, max_length=100, required=True, regex="^([A-ZÁÉÍÓÚ]+)([A-Z a-z 0-9 À-ÿ : \-]*)([A-Za-z0-9áéíóú]$)")
 
     def to_json(self):
@@ -306,6 +344,16 @@ class title_embedded(EmbeddedDocument):
 
 
 class description_embedded(EmbeddedDocument):
+    """
+        EmbeddedDocument Class for a description. 
+        This embedded document makes sure that each description follows the regex pattern in the database.
+        List of attributes:
+            - description: <Description> Description belonging to a document.
+        Methods
+        -------
+        to_json()
+            Returns the json equivalent of the object.
+    """
     description = StringField(min_length=0, max_length=500, required=False)
 
     def to_json(self):
@@ -313,6 +361,16 @@ class description_embedded(EmbeddedDocument):
 
 
 class infrastructure_embedded(EmbeddedDocument):
+    """
+        EmbeddedDocument Class for a list of infrastructure list. 
+        This embedded document makes sure that the values of each infrastructure type follows the regex pattern in the database.
+        List of attributes:
+            - infrasDocList: <List> Infrastructures belonging to a document.
+        Methods
+        -------
+        to_json()
+            Returns the json equivalent of the object.
+    """
     infrasDocList = ListField(StringField(min_length=1,max_length=50,required=True, 
         regex='^[A-ZÁÉÍÓÚÑÜ][a-z A-Z À-ÿ / & , \- ]*$'))
 
@@ -321,6 +379,16 @@ class infrastructure_embedded(EmbeddedDocument):
 
 
 class timeline_embedded(EmbeddedDocument):
+    """
+        EmbeddedDocument Class for timelines. 
+        This embedded document makes sure that the values of each timeline event follows the regex pattern in the database.
+        List of attributes:
+            - timeline: <List> All the timelines events belonging to a document.
+        Methods
+        -------
+        to_json()
+            Returns the json equivalent of the object.
+    """
     timeline = ListField(EmbeddedDocumentField(timeline))
 
     def to_json(self):
@@ -335,6 +403,16 @@ class timeline_embedded(EmbeddedDocument):
 
 
 class section_embedded(EmbeddedDocument):
+    """
+        EmbeddedDocument Class for a section. 
+        This embedded document makes sure that the values of each damage type follows the regex pattern in the database.
+        List of attributes:
+            - section: <Section> Section belonging to a document.
+        Methods
+        -------
+        to_json()
+            Returns the json equivalent of the object.
+    """
     section = EmbeddedDocumentField(section)
 
     def to_json(self):
@@ -347,6 +425,16 @@ class section_embedded(EmbeddedDocument):
 
 
 class damage_embedded(EmbeddedDocument):
+    """
+        EmbeddedDocument Class for damage types. 
+        This embedded document makes sure that the values of each damage type follows the regex pattern in the database.
+        List of attributes:
+            - damageDocList: <List> All the damages types belonging to a document.
+        Methods
+        -------
+        to_json()
+            Returns the json equivalent of the object.
+    """
     damageDocList = ListField(StringField(min_length=1,max_length=50,required=True, 
         regex='^[A-ZÁÉÍÓÚÑÜ][a-z A-Z À-ÿ / & , \- ]*$'))
 
@@ -355,6 +443,16 @@ class damage_embedded(EmbeddedDocument):
 
 
 class actor_embedded(EmbeddedDocument):
+    """
+        EmbeddedDocument Class for actors. 
+        This embedded document makes sure that the values of each actor follows the regex pattern in the database.
+        List of attributes:
+            - actor: <List> All the actors belonging to a document.
+        Methods
+        -------
+        to_json()
+            Returns the json equivalent of the object.
+    """
     actor = ListField(EmbeddedDocumentField(actor))
 
     def to_json(self):
@@ -368,6 +466,16 @@ class actor_embedded(EmbeddedDocument):
 
 
 class author_embedded(EmbeddedDocument):
+    """
+        EmbeddedDocument Class for Authors. 
+        This embedded document makes sure that the values of each author follows the regex pattern in the database.
+        List of attributes:
+            - author: <List> All the authors belonging to a document.
+        Methods
+        -------
+        to_json()
+            Returns the json equivalent of the object.
+    """
     author = ListField(EmbeddedDocumentField(author))
 
     def to_json(self):
@@ -382,12 +490,32 @@ class author_embedded(EmbeddedDocument):
 
 
 class incident_embedded(EmbeddedDocument):
+    """
+        EmbeddedDocument Class for Incident Dates. 
+        This embedded document makes sure that the values of each incident date follows the regex pattern in the database.
+        List of attributes:
+            - incidentDate: <List> All the incident dates belonging to a document.
+        Methods
+        -------
+        to_json()
+            Returns the json equivalent of the object.
+    """
     incidentDate = StringField(min_length=1, required=True, regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
     def to_json(self):
         return self.incidentDate
 
 
 class tag_embedded(EmbeddedDocument):
+    """
+        EmbeddedDocument Class for Tags. 
+        This embedded document makes sure that the values of each tag follow the regex pattern in the database.
+        List of attributes:
+            - tagsDoc: <List> All the tags belonging to a document.
+        Methods
+        -------
+        to_json()
+            Returns the json equivalent of the object.
+    """
     tagsDoc = ListField(StringField(min_length=0,max_length=50,
         regex='^[A-ZÁÉÍÓÚÑÜ][a-z A-Z À-ÿ / & , \- ]*$'), required=False, max_length=10)
     def to_json(self):
@@ -395,6 +523,16 @@ class tag_embedded(EmbeddedDocument):
 
 
 class location_embedded(EmbeddedDocument):
+    """
+        EmbeddedDocument Class for Locations. 
+        These embedded documents make sure that the values of each location follow the regex pattern in the database.
+        List of attributes:
+            - location: <List> All the locations belonging to a document.
+        Methods
+        -------
+        to_json()
+            Returns the json equivalent of the object.
+    """
     location = ListField(EmbeddedDocumentField(location), max_length=5, required=False)
 
     def to_json(self):
