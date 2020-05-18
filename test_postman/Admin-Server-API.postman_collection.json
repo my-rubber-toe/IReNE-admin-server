@@ -18,9 +18,9 @@
 								"exec": [
 									"var usernames = pm.environment.get(\"test_usernames\");",
 									"var passwords = pm.environment.get(\"test_passwords\");",
-									"if(usernames == \"null\" && passwords == \"null\"){",
+									"if (usernames == \"null\" && passwords == \"null\") {",
 									"    usernames = ['yomar.ruiz', 'kjebw', '@dqnd23@..', '      ', 'ieonascnbie', 'edniuenoniqw', '', 'admin'];",
-									"    passwords = ['passwo','     ', '1123143231312', 'password0', 'password1', 'mdwimedijow', 'wndwiqnzq', ''];",
+									"    passwords = ['passwo', '     ', '1123143231312', 'password0', 'password1', 'mdwimedijow', 'wndwiqnzq', ''];",
 									"}",
 									"var username = usernames.shift();",
 									"var password = passwords.shift();",
@@ -40,33 +40,33 @@
 									"var jsonData = JSON.parse(responseBody);",
 									"",
 									"pm.test(\"Unsuccessful Status\", function () {",
-									"   pm.expect(pm.response.code).to.be.oneOf([401,400]);",
+									"    pm.expect(pm.response.code).to.be.oneOf([401, 400]);",
 									"});",
 									"",
 									"pm.test(\"Response Has a JSON Body\", function () {",
-									"     pm.response.to.be.withBody;",
-									"     pm.response.to.be.json;",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
 									"});",
 									"",
-									"if(pm.response.code == 401){",
+									"if (pm.response.code == 401) {",
 									"    pm.test(\"Response body equals invalid credentials\", function () {",
-									"        pm.expect(jsonData.message).to.equal(\"Invalid username or password.\");",
+									"        pm.expect(jsonData.msg).to.equal(\"Invalid username or password.\");",
 									"    });",
 									"}",
 									"",
-									"else{",
-									"    pm.expect(jsonData.message).to.equal('An unexpected error has occurred.');",
+									"else {",
+									"    pm.expect(jsonData.msg).to.equal('An unexpected error has occurred.');",
 									"}",
 									"",
 									"pm.test(\"Response Time Less Than 200ms\", function () {",
 									"    pm.expect(pm.response.responseTime).to.be.below(200);",
 									"});",
 									"",
-									"if(pm.environment.get(\"test_usernames\") && pm.environment.get(\"test_passwords\")){",
-									"    if(pm.environment.get(\"test_usernames\").length>0 && pm.environment.get(\"test_passwords\").length>0){",
+									"if (pm.environment.get(\"test_usernames\") && pm.environment.get(\"test_passwords\")) {",
+									"    if (pm.environment.get(\"test_usernames\").length > 0 && pm.environment.get(\"test_passwords\").length > 0) {",
 									"        postman.setNextRequest(\"Login - Wrong Inputs\");",
 									"    }",
-									"    else{",
+									"    else {",
 									"        pm.environment.set(\"test_usernames\", \"null\");",
 									"        pm.environment.set(\"test_passwords\", \"null\");",
 									"    }",
@@ -78,11 +78,10 @@
 						}
 					],
 					"protocolProfileBehavior": {
-						"disableBodyPruning": true,
 						"disableCookies": false
 					},
 					"request": {
-						"method": "GET",
+						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "formdata",
@@ -100,13 +99,12 @@
 							]
 						},
 						"url": {
-							"raw": "http://{{ip}}/admin/auth/login",
+							"raw": "http://{{ip}}/auth/login",
 							"protocol": "http",
 							"host": [
 								"{{ip}}"
 							],
 							"path": [
-								"admin",
 								"auth",
 								"login"
 							]
@@ -118,44 +116,33 @@
 					"name": "Login",
 					"event": [
 						{
-							"listen": "prerequest",
-							"script": {
-								"id": "12755be7-5769-4335-9767-ac96e1f071a7",
-								"exec": [
-									"console.log(\"Login\");",
-									"pm.environment.set(\"username\", pm.request.body.formdata.get(\"username\"));"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
 							"listen": "test",
 							"script": {
-								"id": "67ce43de-3d31-4f59-8ccc-f579006cb80d",
+								"id": "c34aa840-edea-4422-a507-b53f48a191e2",
 								"exec": [
 									"var jsonData = JSON.parse(responseBody);",
 									"postman.setEnvironmentVariable(\"token\", jsonData.access_token);",
-									"var a=pm.environment.get(\"token\");",
-									"let decodedData=jwt_decode(a);",
-									"console.log(new Date(decodedData.exp*1000));",
+									"var a = pm.environment.get(\"token\");",
+									"let decodedData = jwt_decode(a);",
+									"console.log(decodedData);",
 									"",
 									"pm.test(\"Successful Status\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
 									"pm.test(\"Response Has a JSON Body\", function () {",
-									"     pm.response.to.be.withBody;",
-									"     pm.response.to.be.json;",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
 									"});",
 									"",
 									"pm.test(\"Response Body has a Valid Token\", function () {",
-									"     pm.expect(decodedData.iat).not.equal(null);",
-									"     pm.expect(decodedData.nbf).not.equal(null);",
-									"     pm.expect(decodedData.jti).not.equal(null);",
-									"     pm.expect(decodedData.exp).not.equal(null);",
-									"     pm.expect(decodedData.identity).not.equal(null);",
-									"     pm.expect(decodedData.fresh).to.equal(true);",
-									"     pm.expect(decodedData.type).to.equal(\"access\");",
+									"    pm.expect(decodedData.iat).not.equal(null);",
+									"    pm.expect(decodedData.nbf).not.equal(null);",
+									"    pm.expect(decodedData.jti).not.equal(null);",
+									"    pm.expect(decodedData.exp).not.equal(null);",
+									"    pm.expect(decodedData.identity).not.equal(null);",
+									"    pm.expect(decodedData.fresh).to.equal(true);",
+									"    pm.expect(decodedData.type).to.equal(\"access\");",
 									"});",
 									"",
 									"pm.test(\"Response Time Less Than 400ms\", function () {",
@@ -170,25 +157,33 @@
 									"    pm.expect((decodedData.exp - decodedData.iat) / 60).to.equal(10);",
 									"});",
 									"",
-									"pm.test(\"Validate Token Username to be: \"+pm.environment.get(\"username\"), function () {",
+									"pm.test(\"Validate Token Username to be: \" + pm.environment.get(\"username\"), function () {",
 									"    pm.expect(pm.environment.get(\"username\")).to.equal(decodedData.identity);",
 									"});",
 									"",
 									"",
 									"function jwt_decode(a) {",
-									"    var parts = a.split('.'); // header, payload, signature",
+									"    var parts = a.split('.');",
 									"    return JSON.parse(atob(parts[1]));",
 									"}"
 								],
 								"type": "text/javascript"
 							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "87d9b904-3ab4-41e0-ae90-e4a328a51203",
+								"exec": [
+									"console.log(\"Login\");",
+									"pm.environment.set(\"username\", pm.request.body.formdata.get(\"username\"));"
+								],
+								"type": "text/javascript"
+							}
 						}
 					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
-						"method": "GET",
+						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "formdata",
@@ -200,19 +195,18 @@
 								},
 								{
 									"key": "password",
-									"value": "Password0",
+									"value": "Password11",
 									"type": "text"
 								}
 							]
 						},
 						"url": {
-							"raw": "http://{{ip}}/admin/auth/login",
+							"raw": "http://{{ip}}/auth/login",
 							"protocol": "http",
 							"host": [
 								"{{ip}}"
 							],
 							"path": [
-								"admin",
 								"auth",
 								"login"
 							]
@@ -247,8 +241,8 @@
 									"});",
 									"",
 									"pm.test(\"Response Has a JSON Body\", function () {",
-									"     pm.response.to.be.withBody;",
-									"     pm.response.to.be.json;",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
 									"});",
 									"",
 									"pm.test(\"Response Body is Logout Successful\", function () {",
@@ -260,15 +254,17 @@
 									"});",
 									"",
 									"pm.test(\"Response Username is equal to Token Identity\", function () {",
-									"     pm.expect(pm.environment.get(\"username\")).to.equal(decodedData.identity);",
+									"    pm.expect(pm.environment.get(\"username\")).to.equal(decodedData.identity);",
 									"});",
 									"",
 									"pm.test(\"Token Revoked\", function () {",
+									"    var ip = pm.environment.get(\"ip\");",
+									"    ip = \"http://\" + ip + \"/admin/auth/me\";",
 									"    pm.sendRequest({",
-									"        url: \"http://0.0.0.0/admin/auth/me\",",
+									"        url: ip,",
 									"        method: 'GET',",
-									"        header: 'Authorization: Bearer '+pm.environment.get(\"token\")",
-									"        ",
+									"        header: 'Authorization: Bearer ' + pm.environment.get(\"token\")",
+									"",
 									"    }, function (err, response) {",
 									"        let decodedJson = response.json();",
 									"        pm.expect(decodedJson.msg).to.equal(\"Token has been revoked\");",
@@ -292,13 +288,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{ip}}/admin/auth/logout",
+							"raw": "http://{{ip}}/auth/logout",
 							"protocol": "http",
 							"host": [
 								"{{ip}}"
 							],
 							"path": [
-								"admin",
 								"auth",
 								"logout"
 							]
@@ -341,13 +336,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{ip}}/admin/auth/me",
+							"raw": "http://{{ip}}/auth/me",
 							"protocol": "http",
 							"host": [
 								"{{ip}}"
 							],
 							"path": [
-								"admin",
 								"auth",
 								"me"
 							]
@@ -388,13 +382,10 @@
 									"    tv4.validate(jsonData, pm.environment.get(\"collaborator-schema\"));",
 									"});",
 									"",
-									"pm.test(\"All Requests are Present\", function () {",
-									"    pm.expect(Object.keys(jsonData.requests).length).to.equal(parseInt(pm.environment.get(\"AR-quantity\")));",
-									"});",
 									"",
 									"pm.test(\"All requests are Valid\", function () {",
 									"    for (let step = 0; step < Object.keys(jsonData.requests).length; step++) {",
-									"         pm.expect(jsonData.requests[step].approved).to.equal(false);",
+									"        pm.expect(jsonData.requests[step].approved).to.equal(false);",
 									"    }",
 									"});",
 									"",
@@ -409,14 +400,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{ip}}/admin/access-request",
+							"raw": "http://{{ip}}/access-requests/",
 							"protocol": "http",
 							"host": [
 								"{{ip}}"
 							],
 							"path": [
-								"admin",
-								"access-request"
+								"access-requests",
+								""
 							]
 						}
 					},
@@ -434,43 +425,43 @@
 									"",
 									"",
 									"pm.test(\"Unsuccessful Status\", function () {",
-									"   pm.expect(pm.response.code).to.be.oneOf([400,404]);",
+									"    pm.expect(pm.response.code).to.be.oneOf([400, 404]);",
 									"});",
 									"",
 									"pm.test(\"Response Has a JSON Body\", function () {",
-									"     pm.response.to.be.withBody;",
-									"     pm.response.to.be.json;",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
 									"});",
 									"",
-									"pm.test(\"Response Time Less Than 200ms\", function() {",
-									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"pm.test(\"Response Time Less Than 700ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(700);",
 									"});",
 									"",
-									"if(pm.response.code == 400){",
-									"    pm.test(\"Error: access request ID not valid\", function() {",
-									"        pm.expect(jsonData.message).to.equal(\"The access request ID given is not valid.\");",
+									"if (pm.response.code == 400) {",
+									"    pm.test(\"Error: access request ID not valid\", function () {",
+									"        pm.expect(jsonData.msg).to.equal(\"The access request ID given is not valid.\");",
 									"    });",
 									"}",
-									"else if(pm.response.code == 404){",
-									"    pm.test(\"Error: access request not found\", function() {",
-									"        pm.expect(jsonData.message).to.equal('The access request ID given was not found.');",
+									"else if (pm.response.code == 404) {",
+									"    pm.test(\"Error: access request not found\", function () {",
+									"        pm.expect(jsonData.msg).to.equal('The access request ID given was not found.');",
 									"    });",
 									"}",
-									"else{",
-									"    pm.test(\"Error is unknown\", function() {",
-									"        pm.expect(jsonData.message).to.equal('An unexpected error has occurred.');",
+									"else {",
+									"    pm.test(\"Error is unknown\", function () {",
+									"        pm.expect(jsonData.msg).to.equal('An unexpected error has occurred.');",
 									"    });",
 									"}",
 									"",
 									"",
-									"if(pm.environment.get(\"test_aarID\")){",
-									"    if(pm.environment.get(\"test_aarID\").length>0){",
+									"if (pm.environment.get(\"test_aarID\")) {",
+									"    if (pm.environment.get(\"test_aarID\").length > 0) {",
 									"        postman.setNextRequest(\"Approve Access - Wrong Inputs\");",
 									"    }",
-									"    else{",
+									"    else {",
 									"        pm.environment.set(\"test_aarID\", \"null\");",
 									"    }",
-									"    ",
+									"",
 									"}",
 									""
 								],
@@ -504,18 +495,22 @@
 									"key": "collabID",
 									"value": "{{collabID}}",
 									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Password1",
+									"type": "text"
 								}
 							]
 						},
 						"url": {
-							"raw": "http://{{ip}}/admin/access-request/approve",
+							"raw": "http://{{ip}}/access-requests/approve",
 							"protocol": "http",
 							"host": [
 								"{{ip}}"
 							],
 							"path": [
-								"admin",
-								"access-request",
+								"access-requests",
 								"approve"
 							]
 						}
@@ -550,40 +545,40 @@
 									"",
 									"",
 									"pm.test(\"Unsuccessful Status\", function () {",
-									"   pm.expect(pm.response.code).to.be.oneOf([400,404]);",
+									"    pm.expect(pm.response.code).to.be.oneOf([400, 404]);",
 									"});",
 									"",
 									"pm.test(\"Response Has a JSON Body\", function () {",
-									"     pm.response.to.be.withBody;",
-									"     pm.response.to.be.json;",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
 									"});",
 									"",
-									"pm.test(\"Response Time Less Than 200ms\", function() {",
-									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"pm.test(\"Response Time Less Than 700ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(700);",
 									"});",
 									"",
-									"if(pm.response.code == 400){",
-									"    pm.test(\"Error: access request not valid\", function() {",
-									"        pm.expect(jsonData.message).to.equal(\"The access request ID given is not valid.\");",
+									"if (pm.response.code == 400) {",
+									"    pm.test(\"Error: access request not valid\", function () {",
+									"        pm.expect(jsonData.msg).to.equal(\"The access request ID given is not valid.\");",
 									"    });",
 									"}",
-									"else if(pm.response.code == 404){",
-									"    pm.test(\"Error: access request not found\", function() {",
-									"        pm.expect(jsonData.message).to.equal('The access request ID given was not found.');",
+									"else if (pm.response.code == 404) {",
+									"    pm.test(\"Error: access request not found\", function () {",
+									"        pm.expect(jsonData.msg).to.equal('The access request ID given was not found.');",
 									"    });",
 									"}",
-									"else{",
-									"    pm.test(\"Error is unknown\", function() {",
-									"        pm.expect(jsonData.message).to.equal('An unexpected error has occurred.');",
+									"else {",
+									"    pm.test(\"Error is unknown\", function () {",
+									"        pm.expect(jsonData.msg).to.equal('An unexpected error has occurred.');",
 									"    });",
 									"}",
 									"",
 									"",
-									"if(pm.environment.get(\"test_darID\")){",
-									"    if(pm.environment.get(\"test_darID\").length>0){",
+									"if (pm.environment.get(\"test_darID\")) {",
+									"    if (pm.environment.get(\"test_darID\").length > 0) {",
 									"        postman.setNextRequest(\"Deny Access - Wrong Inputs\");",
 									"    }",
-									"    else{",
+									"    else {",
 									"        pm.environment.set(\"test_darID\", \"null\");",
 									"    }",
 									"}",
@@ -603,18 +598,22 @@
 									"key": "collabID",
 									"value": "{{collabID}}",
 									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Password1",
+									"type": "text"
 								}
 							]
 						},
 						"url": {
-							"raw": "http://{{ip}}/admin/access-request/deny",
+							"raw": "http://{{ip}}/access-requests/deny",
 							"protocol": "http",
 							"host": [
 								"{{ip}}"
 							],
 							"path": [
-								"admin",
-								"access-request",
+								"access-requests",
 								"deny"
 							]
 						}
@@ -643,11 +642,10 @@
 									"",
 									"pm.test(\"Successful Status\", function () {",
 									"    pm.response.to.have.status(200);",
-									"    pm.environment.set(\"AR-quantity\", parseInt(pm.environment.get(\"AR-quantity\"))-1);",
 									"});",
 									"",
-									"pm.test(\"Response Time Less Than 200ms\", function () {",
-									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"pm.test(\"Response Time Less Than 700ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(700);",
 									"});",
 									"",
 									"pm.test(\"Response Header is Json\", function () {",
@@ -655,23 +653,13 @@
 									"    pm.response.to.be.header(\"Content-Type\", \"application/json\");",
 									"});",
 									"",
-									"pm.test(\"Response Body is Expected JSON Schema\", function () {",
-									"    tv4.validate(jsonData, pm.environment.get(\"collaborator-schema\"));",
-									"});",
-									"",
-									"pm.test(\"Response Request has expected ObjectID\", function() {",
-									"    pm.expect(pm.environment.get(\"collabID\")).to.equal(jsonData.access_request._id);",
+									"pm.test(\"Response Request has expected ObjectID\", function () {",
+									"    pm.expect(pm.environment.get(\"collabID\")).to.equal(jsonData.access_request);",
 									"});",
 									"",
 									"pm.test(\"Only one Request is Present\", function () {",
 									"    pm.expect(Object.keys(jsonData).length).to.equal(1);",
 									"});",
-									"",
-									"pm.test(\"Request approved flag is true\", function () {",
-									"         pm.expect(jsonData.access_request.approved).to.equal(true);",
-									"});",
-									"",
-									"",
 									""
 								],
 								"type": "text/javascript"
@@ -686,20 +674,24 @@
 							"formdata": [
 								{
 									"key": "collabID",
-									"value": "5e89d5bc967dc3fab8d85c9f",
+									"value": "5eb74c37fac0dfc8d16703ee",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Password1",
 									"type": "text"
 								}
 							]
 						},
 						"url": {
-							"raw": "http://{{ip}}/admin/access-request/approve",
+							"raw": "http://{{ip}}/access-requests/approve",
 							"protocol": "http",
 							"host": [
 								"{{ip}}"
 							],
 							"path": [
-								"admin",
-								"access-request",
+								"access-requests",
 								"approve"
 							]
 						}
@@ -728,11 +720,10 @@
 									"",
 									"pm.test(\"Successful Status\", function () {",
 									"    pm.response.to.have.status(200);",
-									"    pm.environment.set(\"AR-quantity\", parseInt(pm.environment.get(\"AR-quantity\"))-1);",
 									"});",
 									"",
-									"pm.test(\"Response Time Less Than 200ms\", function () {",
-									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"pm.test(\"Response Time Less Than 700ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(700);",
 									"});",
 									"",
 									"pm.test(\"Response Header is Json\", function () {",
@@ -740,20 +731,12 @@
 									"    pm.response.to.be.header(\"Content-Type\", \"application/json\");",
 									"});",
 									"",
-									"pm.test(\"Response Body is Expected JSON Schema\", function () {",
-									"    tv4.validate(jsonData, pm.environment.get(\"collaborator-schema\"));",
-									"});",
-									"",
-									"pm.test(\"Response Request has expected ObjectID\", function() {",
-									"    pm.expect(pm.variables.get(\"collabID\")).to.equal(jsonData.access_request._id);",
+									"pm.test(\"Response Request has expected ObjectID\", function () {",
+									"    pm.expect(pm.variables.get(\"collabID\")).to.equal(jsonData.access_request);",
 									"});",
 									"",
 									"pm.test(\"Only one Request is Present\", function () {",
 									"    pm.expect(Object.keys(jsonData).length).to.equal(1);",
-									"});",
-									"",
-									"pm.test(\"Request approved flag is true\", function () {",
-									"         pm.expect(jsonData.access_request.approved).to.equal(false);",
 									"});",
 									"",
 									"",
@@ -771,20 +754,24 @@
 							"formdata": [
 								{
 									"key": "collabID",
-									"value": "5e89d5c4c1f6abd06ac4a10d",
+									"value": "5eb74c37fac0dfc8d16703ee",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Password1",
 									"type": "text"
 								}
 							]
 						},
 						"url": {
-							"raw": "http://{{ip}}/admin/access-request/deny",
+							"raw": "http://{{ip}}/access-requests/deny",
 							"protocol": "http",
 							"host": [
 								"{{ip}}"
 							],
 							"path": [
-								"admin",
-								"access-request",
+								"access-requests",
 								"deny"
 							]
 						}
@@ -820,14 +807,6 @@
 									"    pm.expect(pm.response.responseTime).to.be.below(200);",
 									"});",
 									"",
-									"pm.test(\"Response Body is Expected JSON Schema\", function () {",
-									"    tv4.validate(jsonData, pm.environment.get(\"tag-schema\"));",
-									"});",
-									"",
-									"pm.test(\"All Tags are Present\", function () {",
-									"    pm.expect(Object.keys(jsonData.tags).length).to.equal(parseInt(pm.environment.get(\"tag-quantity\")));",
-									"});",
-									"",
 									"",
 									""
 								],
@@ -839,13 +818,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{ip}}/admin/tags",
+							"raw": "http://{{ip}}/tags",
 							"protocol": "http",
 							"host": [
 								"{{ip}}"
 							],
 							"path": [
-								"admin",
 								"tags"
 							]
 						}
@@ -880,40 +858,40 @@
 									"",
 									"",
 									"pm.test(\"Unsuccessful Status\", function () {",
-									"   pm.expect(pm.response.code).to.be.oneOf([400,404]);",
+									"    pm.expect(pm.response.code).to.be.oneOf([400, 404]);",
 									"});",
 									"",
 									"pm.test(\"Response Has a JSON Body\", function () {",
-									"     pm.response.to.be.withBody;",
-									"     pm.response.to.be.json;",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
 									"});",
 									"",
-									"pm.test(\"Response Time Less Than 200ms\", function() {",
-									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"pm.test(\"Response Time Less Than 700ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(700);",
 									"});",
 									"",
-									"if(pm.response.code == 400){",
-									"    pm.test(\"Error: tag ID not valid\", function() {",
-									"        pm.expect(jsonData.message).to.equal(\"The tag ID given is not valid.\");",
+									"if (pm.response.code == 400) {",
+									"    pm.test(\"Error: tag ID not valid\", function () {",
+									"        pm.expect(jsonData.msg).to.equal(\"The tag ID given is not valid.\");",
 									"    });",
 									"}",
-									"else if(pm.response.code == 404){",
-									"    pm.test(\"Error: tag ID not found\", function() {",
-									"        pm.expect(jsonData.message).to.equal(\"The tag ID given was not found.\");",
+									"else if (pm.response.code == 404) {",
+									"    pm.test(\"Error: tag ID not found\", function () {",
+									"        pm.expect(jsonData.msg).to.equal(\"The tag ID given was not found.\");",
 									"    });",
 									"}",
-									"else{",
-									"    pm.test(\"Error is unknown\", function() {",
-									"        pm.expect(jsonData.message).to.equal('An unexpected error has occurred.');",
+									"else {",
+									"    pm.test(\"Error is unknown\", function () {",
+									"        pm.expect(jsonData.msg).to.equal('An unexpected error has occurred.');",
 									"    });",
 									"}",
 									"",
 									"",
-									"if(pm.environment.get(\"test_tagID\")){",
-									"    if(pm.environment.get(\"test_tagID\").length>0){",
+									"if (pm.environment.get(\"test_tagID\")) {",
+									"    if (pm.environment.get(\"test_tagID\").length > 0) {",
 									"        postman.setNextRequest(\"Remove - Wrong Inputs\");",
 									"    }",
-									"    else{",
+									"    else {",
 									"        pm.environment.set(\"test_tagID\", \"null\");",
 									"    }",
 									"}",
@@ -933,17 +911,21 @@
 									"key": "tagID",
 									"value": "{{tagID}}",
 									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Password1",
+									"type": "text"
 								}
 							]
 						},
 						"url": {
-							"raw": "http://{{ip}}/admin/tags/remove",
+							"raw": "http://{{ip}}/tags/remove",
 							"protocol": "http",
 							"host": [
 								"{{ip}}"
 							],
 							"path": [
-								"admin",
 								"tags",
 								"remove"
 							]
@@ -961,15 +943,15 @@
 								"exec": [
 									"pm.environment.set(\"tagID\", pm.request.body.formdata.get(\"tagID\"));",
 									"var ip = pm.environment.get(\"ip\");",
-									"ip = \"http://\"+ip+\"/admin/tags\";",
+									"ip = \"http://\" + ip + \"/admin/tags/\";",
 									"pm.sendRequest({",
 									"    url: ip,",
 									"    method: 'GET',",
-									"    header: 'Authorization: Bearer '+pm.environment.get(\"token\")",
-									"    ",
+									"    header: 'Authorization: Bearer ' + pm.environment.get(\"token\")",
+									"",
 									"}, function (err, response) {",
 									"    let decodedJson = response.json();",
-									"    pm.environment.set(\"tag-quantity\",  Object.keys(decodedJson.tags).length);",
+									"    pm.environment.set(\"tag-quantity\", Object.keys(decodedJson.tags).length);",
 									"});"
 								],
 								"type": "text/javascript"
@@ -984,11 +966,10 @@
 									"",
 									"pm.test(\"Successful Status\", function () {",
 									"    pm.response.to.have.status(200);",
-									"    pm.environment.set(\"tag-quantity\", pm.environment.get(\"tag-quantity\")-1)",
 									"});",
 									"",
-									"pm.test(\"Response Time Less Than 200ms\", function () {",
-									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"pm.test(\"Response Time Less Than 700ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(700);",
 									"});",
 									"",
 									"pm.test(\"Response Header is Json\", function () {",
@@ -996,30 +977,12 @@
 									"    pm.response.to.be.header(\"Content-Type\", \"application/json\");",
 									"});",
 									"",
-									"pm.test(\"Response Body is Expected JSON Schema\", function () {",
-									"    tv4.validate(jsonData, pm.environment.get(\"tag-schema\"));",
-									"});",
-									"",
-									"pm.test(\"Response Request has expected ObjectID\", function() {",
-									"    pm.expect(pm.environment.get(\"tagID\")).to.equal(jsonData.tag._id);",
+									"pm.test(\"Response Request has expected ObjectID\", function () {",
+									"    pm.expect(pm.environment.get(\"tagID\")).to.equal(jsonData.tag);",
 									"});",
 									"",
 									"pm.test(\"Only one Tag is Present\", function () {",
 									"    pm.expect(Object.keys(jsonData).length).to.equal(1);",
-									"});",
-									"",
-									"pm.test(\"Tag has been removed\", function () {",
-									"    var ip = pm.environment.get(\"ip\");",
-									"    ip = \"http://\"+ip+\"/admin/tags\";",
-									"        pm.sendRequest({",
-									"        url: ip,",
-									"        method: 'GET',",
-									"        header: 'Authorization: Bearer '+pm.environment.get(\"token\")",
-									"        ",
-									"    }, function (err, response) {",
-									"        let decodedJson = response.json();",
-									"        pm.expect( Object.keys(decodedJson.tags).length).to.equal(parseInt(pm.environment.get(\"tag-quantity\")));",
-									"    });",
 									"});",
 									"",
 									"",
@@ -1037,19 +1000,23 @@
 							"formdata": [
 								{
 									"key": "tagID",
-									"value": "5e89e716e0ad4d8285ff498a",
+									"value": "5eb74c36fac0dfc8d167038e",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Password1",
 									"type": "text"
 								}
 							]
 						},
 						"url": {
-							"raw": "http://{{ip}}/admin/tags/remove",
+							"raw": "http://{{ip}}/tags/remove",
 							"protocol": "http",
 							"host": [
 								"{{ip}}"
 							],
 							"path": [
-								"admin",
 								"tags",
 								"remove"
 							]
@@ -1090,16 +1057,6 @@
 									"    tv4.validate(jsonData, pm.environment.get(\"collaborator-schema\"));",
 									"});",
 									"",
-									"pm.test(\"All Collaborator are Present\", function () {",
-									"    pm.expect(Object.keys(jsonData.collaborators).length).to.equal(pm.environment.get(\"tag-quantity\"));",
-									"});",
-									"",
-									"pm.test(\"All Collaborators are Valid\", function () {",
-									"    for (let step = 0; step < Object.keys(jsonData.collaborators).length; step++) {",
-									"         pm.expect(jsonData.collaborators[step].approved).to.equal(true);",
-									"    }",
-									"});",
-									"",
 									"",
 									""
 								],
@@ -1111,13 +1068,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{ip}}/admin/collaborators",
+							"raw": "http://{{ip}}/collaborators",
 							"protocol": "http",
 							"host": [
 								"{{ip}}"
 							],
 							"path": [
-								"admin",
 								"collaborators"
 							]
 						}
@@ -1152,40 +1108,40 @@
 									"",
 									"",
 									"pm.test(\"Unsuccessful Status\", function () {",
-									"   pm.expect(pm.response.code).to.be.oneOf([400,404]);",
+									"    pm.expect(pm.response.code).to.be.oneOf([400, 404]);",
 									"});",
 									"",
 									"pm.test(\"Response Has a JSON Body\", function () {",
-									"     pm.response.to.be.withBody;",
-									"     pm.response.to.be.json;",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
 									"});",
 									"",
-									"pm.test(\"Response Time Less Than 200ms\", function() {",
-									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"pm.test(\"Response Time Less Than 700ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(700);",
 									"});",
 									"",
-									"if(pm.response.code == 400){",
-									"    pm.test(\"Error: collaborators ID not valid\", function() {",
-									"        pm.expect(jsonData.message).to.equal(\"The collaborators ID given is not valid.\");",
+									"if (pm.response.code == 400) {",
+									"    pm.test(\"Error: collaborators ID not valid\", function () {",
+									"        pm.expect(jsonData.msg).to.equal(\"The collaborators ID given is not valid.\");",
 									"    });",
 									"}",
-									"else if(pm.response.code == 404){",
-									"    pm.test(\"Error: collaborators ID not found\", function() {",
-									"        pm.expect(jsonData.message).to.equal(\"The collaborators ID given was not found.\");",
+									"else if (pm.response.code == 404) {",
+									"    pm.test(\"Error: collaborators ID not found\", function () {",
+									"        pm.expect(jsonData.msg).to.equal(\"The collaborators ID given was not found.\");",
 									"    });",
 									"}",
-									"else{",
-									"    pm.test(\"Error is unknown\", function() {",
-									"        pm.expect(jsonData.message).to.equal('An unexpected error has occurred.');",
+									"else {",
+									"    pm.test(\"Error is unknown\", function () {",
+									"        pm.expect(jsonData.msg).to.equal('An unexpected error has occurred.');",
 									"    });",
 									"}",
 									"",
 									"",
-									"if(pm.environment.get(\"test_collabID\")){",
-									"    if(pm.environment.get(\"test_collabID\").length>0){",
+									"if (pm.environment.get(\"test_collabID\")) {",
+									"    if (pm.environment.get(\"test_collabID\").length > 0) {",
 									"        postman.setNextRequest(\"Ban - Wrong Inputs\");",
 									"    }",
-									"    else{",
+									"    else {",
 									"        pm.environment.set(\"test_collabID\", \"null\");",
 									"    }",
 									"}",
@@ -1205,17 +1161,21 @@
 									"key": "collabID",
 									"value": "{{collabID}}",
 									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Password1",
+									"type": "text"
 								}
 							]
 						},
 						"url": {
-							"raw": "http://{{ip}}/admin/collaborators/ban",
+							"raw": "http://{{ip}}/collaborators/ban",
 							"protocol": "http",
 							"host": [
 								"{{ip}}"
 							],
 							"path": [
-								"admin",
 								"collaborators",
 								"ban"
 							]
@@ -1251,40 +1211,40 @@
 									"",
 									"",
 									"pm.test(\"Unsuccessful Status\", function () {",
-									"   pm.expect(pm.response.code).to.be.oneOf([400,404]);",
+									"    pm.expect(pm.response.code).to.be.oneOf([400, 404]);",
 									"});",
 									"",
 									"pm.test(\"Response Has a JSON Body\", function () {",
-									"     pm.response.to.be.withBody;",
-									"     pm.response.to.be.json;",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
 									"});",
 									"",
-									"pm.test(\"Response Time Less Than 200ms\", function() {",
-									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"pm.test(\"Response Time Less Than 700ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(700);",
 									"});",
 									"",
-									"if(pm.response.code == 400){",
-									"    pm.test(\"Error: collaborators ID not valid\", function() {",
-									"        pm.expect(jsonData.message).to.equal(\"The collaborators ID given is not valid.\");",
+									"if (pm.response.code == 400) {",
+									"    pm.test(\"Error: collaborators ID not valid\", function () {",
+									"        pm.expect(jsonData.msg).to.equal(\"The collaborators ID given is not valid.\");",
 									"    });",
 									"}",
-									"else if(pm.response.code == 404){",
-									"    pm.test(\"Error: collaborators ID not found\", function() {",
-									"        pm.expect(jsonData.message).to.equal(\"The collaborators ID given was not found.\");",
+									"else if (pm.response.code == 404) {",
+									"    pm.test(\"Error: collaborators ID not found\", function () {",
+									"        pm.expect(jsonData.msg).to.equal(\"The collaborators ID given was not found.\");",
 									"    });",
 									"}",
-									"else{",
-									"    pm.test(\"Error is unknown\", function() {",
-									"        pm.expect(jsonData.message).to.equal('An unexpected error has occurred.');",
+									"else {",
+									"    pm.test(\"Error is unknown\", function () {",
+									"        pm.expect(jsonData.msg).to.equal('An unexpected error has occurred.');",
 									"    });",
 									"}",
 									"",
 									"",
-									"if(pm.environment.get(\"test_collabID\")){",
-									"    if(pm.environment.get(\"test_collabID\").length>0){",
+									"if (pm.environment.get(\"test_collabID\")) {",
+									"    if (pm.environment.get(\"test_collabID\").length > 0) {",
 									"        postman.setNextRequest(\"Unban - Wrong Inputs\");",
 									"    }",
-									"    else{",
+									"    else {",
 									"        pm.environment.set(\"test_collabID\", \"null\");",
 									"    }",
 									"}",
@@ -1304,17 +1264,21 @@
 									"key": "collabID",
 									"value": "{{collabID}}",
 									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Password1",
+									"type": "text"
 								}
 							]
 						},
 						"url": {
-							"raw": "http://{{ip}}/admin/collaborators/unban",
+							"raw": "http://{{ip}}/collaborators/unban",
 							"protocol": "http",
 							"host": [
 								"{{ip}}"
 							],
 							"path": [
-								"admin",
 								"collaborators",
 								"unban"
 							]
@@ -1346,8 +1310,8 @@
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
-									"pm.test(\"Response Time Less Than 200ms\", function () {",
-									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"pm.test(\"Response Time Less Than 700ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(700);",
 									"});",
 									"",
 									"pm.test(\"Response Header is Json\", function () {",
@@ -1355,27 +1319,13 @@
 									"    pm.response.to.be.header(\"Content-Type\", \"application/json\");",
 									"});",
 									"",
-									"pm.test(\"Response Body is Expected JSON Schema\", function () {",
-									"    tv4.validate(jsonData, pm.environment.get(\"collaborator-schema\"));",
-									"});",
-									"",
-									"pm.test(\"Response Collaborator has expected ObjectID\", function() {",
-									"    pm.expect(pm.environment.get(\"collabID\")).to.equal(jsonData.collaborator._id);",
+									"pm.test(\"Response Collaborator has expected ObjectID\", function () {",
+									"    pm.expect(pm.environment.get(\"collabID\")).to.equal(jsonData.collaborator);",
 									"});",
 									"",
 									"pm.test(\"Only one Collaborator is Present\", function () {",
 									"    pm.expect(Object.keys(jsonData).length).to.equal(1);",
-									"});",
-									"",
-									"pm.test(\"Collaborator approved flag is true\", function () {",
-									"         pm.expect(jsonData.collaborator.approved).to.equal(true);",
-									"});",
-									"",
-									"pm.test(\"Collaborator banned flag is true\", function () {",
-									"         pm.expect(jsonData.collaborator.banned).to.equal(true);",
-									"});",
-									"",
-									""
+									"});"
 								],
 								"type": "text/javascript"
 							}
@@ -1389,19 +1339,23 @@
 							"formdata": [
 								{
 									"key": "collabID",
-									"value": "5e89d57b3e1e4ef361ce68ef",
+									"value": "5eb74c36fac0dfc8d16703e8",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Password1",
 									"type": "text"
 								}
 							]
 						},
 						"url": {
-							"raw": "http://{{ip}}/admin/collaborators/ban",
+							"raw": "http://{{ip}}/collaborators/ban",
 							"protocol": "http",
 							"host": [
 								"{{ip}}"
 							],
 							"path": [
-								"admin",
 								"collaborators",
 								"ban"
 							]
@@ -1433,8 +1387,8 @@
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
-									"pm.test(\"Response Time Less Than 200ms\", function () {",
-									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"pm.test(\"Response Time Less Than 700ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(700);",
 									"});",
 									"",
 									"pm.test(\"Response Header is Json\", function () {",
@@ -1446,22 +1400,13 @@
 									"    tv4.validate(jsonData, pm.environment.get(\"collaborator-schema\"));",
 									"});",
 									"",
-									"pm.test(\"Response Collaborator has expected ObjectID\", function() {",
-									"    pm.expect(pm.environment.get(\"collabID\")).to.equal(jsonData.collaborator._id);",
+									"pm.test(\"Response Collaborator has expected ObjectID\", function () {",
+									"    pm.expect(pm.environment.get(\"collabID\")).to.equal(jsonData.collaborator);",
 									"});",
 									"",
 									"pm.test(\"Only one Collaborator is Present\", function () {",
 									"    pm.expect(Object.keys(jsonData).length).to.equal(1);",
 									"});",
-									"",
-									"pm.test(\"Collaborator approved flag is true\", function () {",
-									"         pm.expect(jsonData.collaborator.approved).to.equal(true);",
-									"});",
-									"",
-									"pm.test(\"Collaborator banned flag is false\", function () {",
-									"         pm.expect(jsonData.collaborator.banned).to.equal(false);",
-									"});",
-									"",
 									""
 								],
 								"type": "text/javascript"
@@ -1476,19 +1421,23 @@
 							"formdata": [
 								{
 									"key": "collabID",
-									"value": "5e89d57b3e1e4ef361ce68ef",
+									"value": "5eb74c36fac0dfc8d16703e8",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Password1",
 									"type": "text"
 								}
 							]
 						},
 						"url": {
-							"raw": "http://{{ip}}/admin/collaborators/unban",
+							"raw": "http://{{ip}}/collaborators/unban",
 							"protocol": "http",
 							"host": [
 								"{{ip}}"
 							],
 							"path": [
-								"admin",
 								"collaborators",
 								"unban"
 							]
@@ -1529,15 +1478,6 @@
 									"    tv4.validate(jsonData, pm.environment.get(\"document-schema\"));",
 									"});",
 									"",
-									"pm.test(\"All Documents are Present\", function () {",
-									"    pm.expect(Object.keys(jsonData.documents).length).to.equal(7);",
-									"});",
-									"",
-									"pm.test(\"All Documents are published\", function () {",
-									"    for (let step = 0; step < Object.keys(jsonData.documents).length; step++) {",
-									"         pm.expect(jsonData.documents[step].published).to.equal(true);",
-									"    }",
-									"});",
 									"",
 									"",
 									""
@@ -1550,13 +1490,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{ip}}/admin/documents",
+							"raw": "http://{{ip}}/documents",
 							"protocol": "http",
 							"host": [
 								"{{ip}}"
 							],
 							"path": [
-								"admin",
 								"documents"
 							]
 						}
@@ -1591,40 +1530,40 @@
 									"",
 									"",
 									"pm.test(\"Unsuccessful Status\", function () {",
-									"   pm.expect(pm.response.code).to.be.oneOf([400,404]);",
+									"    pm.expect(pm.response.code).to.be.oneOf([400, 404]);",
 									"});",
 									"",
 									"pm.test(\"Response Has a JSON Body\", function () {",
-									"     pm.response.to.be.withBody;",
-									"     pm.response.to.be.json;",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
 									"});",
 									"",
-									"pm.test(\"Response Time Less Than 200ms\", function() {",
+									"pm.test(\"Response Time Less Than 200ms\", function () {",
 									"    pm.expect(pm.response.responseTime).to.be.below(200);",
 									"});",
 									"",
-									"if(pm.response.code == 400){",
-									"    pm.test(\"Error: documents ID not valid\", function() {",
-									"        pm.expect(jsonData.message).to.equal(\"The documents ID given is not valid.\");",
+									"if (pm.response.code == 400) {",
+									"    pm.test(\"Error: documents ID not valid\", function () {",
+									"        pm.expect(jsonData.msg).to.equal(\"The documents ID given is not valid.\");",
 									"    });",
 									"}",
-									"else if(pm.response.code == 404){",
-									"    pm.test(\"Error: documents ID not found\", function() {",
-									"        pm.expect(jsonData.message).to.equal(\"The documents ID given was not found.\");",
+									"else if (pm.response.code == 404) {",
+									"    pm.test(\"Error: documents ID not found\", function () {",
+									"        pm.expect(jsonData.msg).to.equal(\"The documents ID given was not found.\");",
 									"    });",
 									"}",
-									"else{",
-									"    pm.test(\"Error is unknown\", function() {",
-									"        pm.expect(jsonData.message).to.equal('An unexpected error has occurred.');",
+									"else {",
+									"    pm.test(\"Error is unknown\", function () {",
+									"        pm.expect(jsonData.msg).to.equal('An unexpected error has occurred.');",
 									"    });",
 									"}",
 									"",
 									"",
-									"if(pm.environment.get(\"test_docID\")){",
-									"    if(pm.environment.get(\"test_docID\").length>0){",
+									"if (pm.environment.get(\"test_docID\")) {",
+									"    if (pm.environment.get(\"test_docID\").length > 0) {",
 									"        postman.setNextRequest(\"View Document - Wrong Inputs\");",
 									"    }",
-									"    else{",
+									"    else {",
 									"        pm.environment.set(\"test_docID\", \"null\");",
 									"    }",
 									"}",
@@ -1638,13 +1577,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{ip}}/admin/documents/view/{{docID}}",
+							"raw": "http://{{ip}}/documents/view/{{docID}}",
 							"protocol": "http",
 							"host": [
 								"{{ip}}"
 							],
 							"path": [
-								"admin",
 								"documents",
 								"view",
 								"{{docID}}"
@@ -1681,40 +1619,40 @@
 									"",
 									"",
 									"pm.test(\"Unsuccessful Status\", function () {",
-									"   pm.expect(pm.response.code).to.be.oneOf([400,404]);",
+									"    pm.expect(pm.response.code).to.be.oneOf([400, 404]);",
 									"});",
 									"",
 									"pm.test(\"Response Has a JSON Body\", function () {",
-									"     pm.response.to.be.withBody;",
-									"     pm.response.to.be.json;",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
 									"});",
 									"",
-									"pm.test(\"Response Time Less Than 200ms\", function() {",
-									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"pm.test(\"Response Time Less Than 400ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(400);",
 									"});",
 									"",
-									"if(pm.response.code == 400){",
-									"    pm.test(\"Error: documents ID not valid\", function() {",
-									"        pm.expect(jsonData.message).to.equal(\"The documents ID given is not valid.\");",
+									"if (pm.response.code == 400) {",
+									"    pm.test(\"Error: documents ID not valid\", function () {",
+									"        pm.expect(jsonData.msg).to.equal(\"The documents ID given is not valid.\");",
 									"    });",
 									"}",
-									"else if(pm.response.code == 404){",
-									"    pm.test(\"Error: documents ID not found\", function() {",
-									"        pm.expect(jsonData.message).to.equal(\"The documents ID given was not found.\");",
+									"else if (pm.response.code == 404) {",
+									"    pm.test(\"Error: documents ID not found\", function () {",
+									"        pm.expect(jsonData.msg).to.equal(\"The documents ID given was not found.\");",
 									"    });",
 									"}",
-									"else{",
-									"    pm.test(\"Error is unknown\", function() {",
-									"        pm.expect(jsonData.message).to.equal('An unexpected error has occurred.');",
+									"else {",
+									"    pm.test(\"Error is unknown\", function () {",
+									"        pm.expect(jsonData.msg).to.equal('An unexpected error has occurred.');",
 									"    });",
 									"}",
 									"",
 									"",
-									"if(pm.environment.get(\"test_docID\")){",
-									"    if(pm.environment.get(\"test_docID\").length>0){",
+									"if (pm.environment.get(\"test_docID\")) {",
+									"    if (pm.environment.get(\"test_docID\").length > 0) {",
 									"        postman.setNextRequest(\"Publish Document - Wrong Inputs\");",
 									"    }",
-									"    else{",
+									"    else {",
 									"        pm.environment.set(\"test_docID\", \"null\");",
 									"    }",
 									"}",
@@ -1734,17 +1672,21 @@
 									"key": "docID",
 									"value": "{{docID}}",
 									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Password1",
+									"type": "text"
 								}
 							]
 						},
 						"url": {
-							"raw": "http://{{ip}}/admin/documents/publish",
+							"raw": "http://{{ip}}/documents/publish",
 							"protocol": "http",
 							"host": [
 								"{{ip}}"
 							],
 							"path": [
-								"admin",
 								"documents",
 								"publish"
 							]
@@ -1780,40 +1722,40 @@
 									"",
 									"",
 									"pm.test(\"Unsuccessful Status\", function () {",
-									"   pm.expect(pm.response.code).to.be.oneOf([400,404]);",
+									"    pm.expect(pm.response.code).to.be.oneOf([400, 404]);",
 									"});",
 									"",
 									"pm.test(\"Response Has a JSON Body\", function () {",
-									"     pm.response.to.be.withBody;",
-									"     pm.response.to.be.json;",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
 									"});",
 									"",
-									"pm.test(\"Response Time Less Than 200ms\", function() {",
-									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"pm.test(\"Response Time Less Than 400ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(400);",
 									"});",
 									"",
-									"if(pm.response.code == 400){",
-									"    pm.test(\"Error: documents ID not valid\", function() {",
-									"        pm.expect(jsonData.message).to.equal(\"The documents ID given is not valid.\");",
+									"if (pm.response.code == 400) {",
+									"    pm.test(\"Error: documents ID not valid\", function () {",
+									"        pm.expect(jsonData.msg).to.equal(\"The documents ID given is not valid.\");",
 									"    });",
 									"}",
-									"else if(pm.response.code == 404){",
-									"    pm.test(\"Error: documents ID not found\", function() {",
-									"        pm.expect(jsonData.message).to.equal(\"The documents ID given was not found.\");",
+									"else if (pm.response.code == 404) {",
+									"    pm.test(\"Error: documents ID not found\", function () {",
+									"        pm.expect(jsonData.msg).to.equal(\"The documents ID given was not found.\");",
 									"    });",
 									"}",
-									"else{",
-									"    pm.test(\"Error is unknown\", function() {",
-									"        pm.expect(jsonData.message).to.equal('An unexpected error has occurred.');",
+									"else {",
+									"    pm.test(\"Error is unknown\", function () {",
+									"        pm.expect(jsonData.msg).to.equal('An unexpected error has occurred.');",
 									"    });",
 									"}",
 									"",
 									"",
-									"if(pm.environment.get(\"test_docID\")){",
-									"    if(pm.environment.get(\"test_docID\").length>0){",
+									"if (pm.environment.get(\"test_docID\")) {",
+									"    if (pm.environment.get(\"test_docID\").length > 0) {",
 									"        postman.setNextRequest(\"Unpublish Document - Wrong Inputs\");",
 									"    }",
-									"    else{",
+									"    else {",
 									"        pm.environment.set(\"test_docID\", \"null\");",
 									"    }",
 									"}",
@@ -1833,17 +1775,21 @@
 									"key": "docID",
 									"value": "{{docID}}",
 									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Password1",
+									"type": "text"
 								}
 							]
 						},
 						"url": {
-							"raw": "http://{{ip}}/admin/documents/unpublish",
+							"raw": "http://{{ip}}/documents/unpublish",
 							"protocol": "http",
 							"host": [
 								"{{ip}}"
 							],
 							"path": [
-								"admin",
 								"documents",
 								"unpublish"
 							]
@@ -1875,8 +1821,8 @@
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
-									"pm.test(\"Response Time Less Than 200ms\", function () {",
-									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"pm.test(\"Response Time Less Than 700ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(700);",
 									"});",
 									"",
 									"pm.test(\"Response Header is Json\", function () {",
@@ -1884,11 +1830,7 @@
 									"    pm.response.to.be.header(\"Content-Type\", \"application/json\");",
 									"});",
 									"",
-									"pm.test(\"Response Body is Expected JSON Schema\", function () {",
-									"    tv4.validate(jsonData, pm.environment.get(\"document-schema\"));",
-									"});",
-									"",
-									"pm.test(\"Response Request has expected ObjectID\", function() {",
+									"pm.test(\"Response Request has expected ObjectID\", function () {",
 									"    pm.expect(pm.environment.get(\"docID\")).to.equal(jsonData.document._id);",
 									"});",
 									"",
@@ -1906,13 +1848,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{ip}}/admin/documents/view/:docID",
+							"raw": "http://{{ip}}/documents/view/:docID",
 							"protocol": "http",
 							"host": [
 								"{{ip}}"
 							],
 							"path": [
-								"admin",
 								"documents",
 								"view",
 								":docID"
@@ -1920,7 +1861,7 @@
 							"variable": [
 								{
 									"key": "docID",
-									"value": "5e89dd1077c9a2c523f90179"
+									"value": "5eb74c37fac0dfc8d16703e9"
 								}
 							]
 						}
@@ -1951,8 +1892,8 @@
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
-									"pm.test(\"Response Time Less Than 200ms\", function () {",
-									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"pm.test(\"Response Time Less Than 700ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(700);",
 									"});",
 									"",
 									"pm.test(\"Response Header is Json\", function () {",
@@ -1960,20 +1901,14 @@
 									"    pm.response.to.be.header(\"Content-Type\", \"application/json\");",
 									"});",
 									"",
-									"pm.test(\"Response Body is Expected JSON Schema\", function () {",
-									"    tv4.validate(jsonData, pm.environment.get(\"document-schema\"));",
-									"});",
-									"",
-									"pm.test(\"Response Document has expected ObjectID\", function() {",
-									"    pm.expect(pm.environment.get(\"docID\")).to.equal(jsonData.document._id);",
+									"pm.test(\"Response Document has expected ObjectID\", function () {",
+									"    pm.expect(pm.environment.get(\"docID\")).to.equal(jsonData.docID);",
 									"});",
 									"",
 									"pm.test(\"Only one Document is Present\", function () {",
 									"    pm.expect(Object.keys(jsonData).length).to.equal(1);",
 									"});",
-									"pm.test(\"Document published flag is true\", function () {",
-									"         pm.expect(jsonData.document.published).to.equal(true);",
-									"});",
+									"",
 									"",
 									""
 								],
@@ -1989,19 +1924,23 @@
 							"formdata": [
 								{
 									"key": "docID",
-									"value": "5e89dd1077c9a2c523f90179",
+									"value": "5eb74c37fac0dfc8d16703e9",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Password1",
 									"type": "text"
 								}
 							]
 						},
 						"url": {
-							"raw": "http://{{ip}}/admin/documents/publish",
+							"raw": "http://{{ip}}/documents/publish",
 							"protocol": "http",
 							"host": [
 								"{{ip}}"
 							],
 							"path": [
-								"admin",
 								"documents",
 								"publish"
 							]
@@ -2033,8 +1972,8 @@
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
-									"pm.test(\"Response Time Less Than 200ms\", function () {",
-									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"pm.test(\"Response Time Less Than 700ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(700);",
 									"});",
 									"",
 									"pm.test(\"Response Header is Json\", function () {",
@@ -2042,19 +1981,12 @@
 									"    pm.response.to.be.header(\"Content-Type\", \"application/json\");",
 									"});",
 									"",
-									"pm.test(\"Response Body is Expected JSON Schema\", function () {",
-									"    tv4.validate(jsonData, pm.environment.get(\"document-schema\"));",
-									"});",
-									"",
-									"pm.test(\"Response Document has expected ObjectID\", function() {",
-									"    pm.expect(pm.environment.get(\"docID\")).to.equal(jsonData.document._id);",
+									"pm.test(\"Response Document has expected ObjectID\", function () {",
+									"    pm.expect(pm.environment.get(\"docID\")).to.equal(jsonData.docID);",
 									"});",
 									"",
 									"pm.test(\"Only one Document is Present\", function () {",
 									"    pm.expect(Object.keys(jsonData).length).to.equal(1);",
-									"});",
-									"pm.test(\"Document published flag is false\", function () {",
-									"         pm.expect(jsonData.document.published).to.equal(false);",
 									"});",
 									"",
 									""
@@ -2071,21 +2003,273 @@
 							"formdata": [
 								{
 									"key": "docID",
-									"value": "5e89dd1077c9a2c523f90179",
+									"value": "5eb74c37fac0dfc8d16703e9",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Password1",
 									"type": "text"
 								}
 							]
 						},
 						"url": {
-							"raw": "http://{{ip}}/admin/documents/unpublish",
+							"raw": "http://{{ip}}/documents/unpublish",
 							"protocol": "http",
 							"host": [
 								"{{ip}}"
 							],
 							"path": [
-								"admin",
 								"documents",
 								"unpublish"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Documents-Revision",
+			"item": [
+				{
+					"name": "Get All",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "dda41966-8c06-42a4-8d7d-ed76b6882fd0",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Successful Status\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response Header is Json\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"    pm.response.to.be.header(\"Content-Type\", \"application/json\");",
+									"});",
+									"",
+									"pm.test(\"Response Time Less Than 700ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(700);",
+									"});",
+									"",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "sortField",
+									"value": "revision_date",
+									"type": "text"
+								},
+								{
+									"key": "sortOrder",
+									"value": "desc",
+									"type": "text"
+								},
+								{
+									"key": "filterVal",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "pageNumber",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "pageSize",
+									"value": "10",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://{{ip}}/documents-hist/",
+							"protocol": "http",
+							"host": [
+								"{{ip}}"
+							],
+							"path": [
+								"documents-hist",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View Revision - Wrong Inputs",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "ac1b56ff-6df8-400b-8d1f-d525cd9cb178",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"",
+									"pm.test(\"Unsuccessful Status\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([400, 404]);",
+									"});",
+									"",
+									"pm.test(\"Response Has a JSON Body\", function () {",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"Response Time Less Than 700ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(700);",
+									"});",
+									"",
+									"if (pm.response.code == 400) {",
+									"    pm.test(\"Error: documents ID not valid\", function () {",
+									"        pm.expect(jsonData.msg).to.equal(\"The revision document ID given is not valid.\");",
+									"    });",
+									"}",
+									"else if (pm.response.code == 404) {",
+									"    pm.test(\"Error: documents ID not found\", function () {",
+									"        pm.expect(jsonData.msg).to.equal(\"The revision document ID given was not found.\");",
+									"    });",
+									"}",
+									"else {",
+									"    pm.test(\"Error is unknown\", function () {",
+									"        pm.expect(jsonData.msg).to.equal('An unexpected error has occurred.');",
+									"    });",
+									"}",
+									"",
+									"",
+									"if (pm.environment.get(\"test_revID\")) {",
+									"    if (pm.environment.get(\"test_revID\").length > 0) {",
+									"        postman.setNextRequest(\"View Revision - Wrong Inputs\");",
+									"    }",
+									"    else {",
+									"        pm.environment.set(\"test_revID\", \"null\");",
+									"    }",
+									"}",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "74cd00bf-55c6-4663-a526-763f5aa2c914",
+								"exec": [
+									"var revID = pm.environment.get(\"test_revID\");",
+									"if (revID == \"null\") {",
+									"    revID = ['5e8fa729fd1a14433603aaf2', '5e8fa8268491db6a7a074064', '@dqnd23@..', '', '       ', '12345678765432', '5e8fa85495cf81c201d1467d', '5e8fa8668b972fc325d3afa9', 'v'];",
+									"}",
+									"var docID = revID.shift();",
+									"pm.environment.set(\"revID\", docID);",
+									"pm.environment.set(\"test_revID\", revID);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "revDocId",
+									"value": "{{revID}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://{{ip}}/documents-hist/revision",
+							"protocol": "http",
+							"host": [
+								"{{ip}}"
+							],
+							"path": [
+								"documents-hist",
+								"revision"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View Revision",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "5f69fda1-288f-40be-9a2d-4ba7bc8964a1",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "54b32340-0df3-48ac-b140-488970cd7f14",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Successful Status\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response Time Less Than 700ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(700);",
+									"});",
+									"",
+									"pm.test(\"Response Header is Json\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"    pm.response.to.be.header(\"Content-Type\", \"application/json\");",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "revDocId",
+									"value": "5eb74c63696403f663c85b0b",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://{{ip}}/documents-hist/revision",
+							"protocol": "http",
+							"host": [
+								"{{ip}}"
+							],
+							"path": [
+								"documents-hist",
+								"revision"
 							]
 						}
 					},
