@@ -21,8 +21,6 @@ class ApiException(object):
     -------
     __init__()
         Constructor of the class
-    to_result()
-        Returns the exception error in a Response object.
     """
     def __init__(self, error_type='ApiError', message='Error', status=500, content_type = 'application/json'):
         self.res = json.dumps({"error_type":error_type, "msg":message, 'status': status})
